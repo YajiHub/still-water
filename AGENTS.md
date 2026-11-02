@@ -7,7 +7,7 @@ linted, tested and auto-deployed by GitHub Actions to an Ubuntu VM through a sel
 
 ## Current Status & Next Step
 - **Phase:** 0 (setup) 🟡. No code yet. Active plan: [planning/still-water/MAP.md](planning/still-water/MAP.md)
-- **Next:** resolve [Orientation](planning/still-water/decisions/03-orientation.md), then `execute-phase Phase 0` ([SETUP.md](docs/SETUP.md) has the step details)
+- **Next:** `execute-phase Phase 0` ([SETUP.md](docs/SETUP.md) §2 onward has the step details)
 - **Latest session:** [docs/sessions/2026-11-02-setup.md](docs/sessions/2026-11-02-setup.md)
 
 ## Routing (one home per fact)

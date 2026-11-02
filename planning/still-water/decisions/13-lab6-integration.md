@@ -18,7 +18,7 @@ Lab 6 (CI/CD) normally uses a sample Express app in its own repo. Should it use 
 **One public repo.** The Lab 6 CI/CD pipeline lints, tests and deploys **`server/`** (the Colyseus game server) to an Ubuntu Server VM through a self-hosted runner.
 
 Details:
-- **Repo name (proposed):** `itsd85-lab5-6-<section>-<surname>`. Rename if the instructor prefers otherwise.
+- **Repo:** [`YajiHub/still-water`](https://github.com/YajiHub/still-water) (public). The handout's `itsd85-lab<no>-<section>-<teamname>` format isn't enforced; rename only if the instructor asks.
 - **Tags/releases:** `lab5-v1.0` (APK + Lab 5 paper) and `lab6-v1.0` (Lab 6 paper).
 - **Workflow:** `.github/workflows/ci-cd.yml` at the repo root, with jobs running in `server/`.
   **No workflow-level `paths:` filter.** The `protect-main` ruleset requires the `test` check, and a workflow

@@ -1,5 +1,5 @@
 # Still Water *(working title)*
-Team: _TBD_ Platform: Android Orientation: _landscape (proposed)_
+Team: _TBD_ Platform: Android Orientation: landscape
 
 > One-page Game Design Document in the format the lab requires (Phase 1, Step 1.2).
 > **Draft for Checkpoint 1.** This is a summary: full details live in [DESIGN.md](DESIGN.md).

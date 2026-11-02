@@ -60,7 +60,7 @@ Feature freeze at the start of Week 5: only playtest fixes after that.
 5+ testers from outside the team, 15–20 min each: levels 1–3 offline + one online match. Think-aloud. Observe silently (help only after 2 min stuck, and note it). 15-item Likert form + 6 open questions (in the handout). Analysis: any item averaging < 3.5 is a problem area. A level cleared by < 60% of testers, or needing > 4 attempts on average, is too hard (except the final level). Fix the most severe and most-reported issues, then retest with 2 new players.
 
 ## Final deliverables
-- GitHub repo (handout format `itsd85-lab<no>-<section>-<teamname>`; ours is shared with Lab 6, proposed `itsd85-lab5-6-<section>-<surname>`) with `README.md` (headings below, in its Lab 5 section), `docs/GDD.md`, `docs/CREDITS.md`, `docs/paper-lab5.pdf`, `docs/screenshots/`, `docs/playtest/` (anonymized).
+- GitHub repo (handout format `itsd85-lab<no>-<section>-<teamname>`; ours is [`YajiHub/still-water`](https://github.com/YajiHub/still-water), shared with Lab 6) with `README.md` (headings below, in its Lab 5 section), `docs/GDD.md`, `docs/CREDITS.md`, `docs/paper-lab5.pdf`, `docs/screenshots/`, `docs/playtest/` (anonymized).
 - README headings: About the game · How to play · Offline and online modes · How to build · Download · Playtest results · Credits · Paper.
 - Tag `lab5-v1.0` (the handout says `v1.0`; renamed because Lab 6 shares the repo), GitHub Release with the `.apk` + `paper-lab5.pdf` attached (the APK is never committed; 100 MB file limit).
 - Demo video 2–3 min: title screen, level unlocking, a win and a loss, airplane-mode offline, online on two phones.

@@ -53,7 +53,7 @@ Optional pressure: a level timer. *(Open: does every level have a timer, or only
 - **Left thumb:** a floating virtual joystick that appears where the thumb touches the left half of the screen.
 - **Right thumb:** a **Jump** button (bottom-right). Possibly a small **Look** drag area on the right half later.
 - **Camera:** third-person follow camera *(Open: fixed angle vs player-rotatable. See [Camera Style](../planning/still-water/decisions/05-camera-style.md))*.
-- **Orientation:** *(Open, leaning landscape. See [Orientation](../planning/still-water/decisions/03-orientation.md))*.
+- **Orientation:** landscape, auto-rotating between Left and Right (Locked — [Orientation](../planning/still-water/decisions/03-orientation.md)).
 - **Base:** Unity **Starter Assets – Third Person** (free, official), adapted.
 
 ### 3.2 Feel helpers (Draft, required in some form)

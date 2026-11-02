@@ -56,7 +56,7 @@
 │   │   │   │   └── UI/         per-screen controllers, TouchControls, PauseMenu
 │   │   │   ├── Configs/        LevelConfig_01 … 05.asset, MovementConfig.asset, ListenerConfig.asset
 │   │   │   ├── Prefabs/  Art/  Audio/  Materials/  Shaders/  Fonts/
-│   │   ├── StarterAssets/                  imported package (keep separate, edit minimally)
+│   │   ├── Starter Assets/                 imported package v2.0.2 (keep separate, edit minimally)
 │   │   └── ThirdParty/                     other imported assets
 │   ├── Packages/manifest.json              ← check here for exact package versions
 │   └── ProjectSettings/
@@ -100,7 +100,7 @@ on platform positions. *(Draft — confirm in the [Netcode Model](../planning/st
 | `Platform` | Type (safe/fake/moving/sinking), sink behavior, glow | |
 | `PlayerMovement` | Starter Assets controller + feel helpers + swim state | Values come from `MovementConfig` |
 | `ListenerAI` | Dormant → Alerted → Hunting → Catch/Returning | Offline only. Online, the server drives it and the client just displays it. |
-| `TouchControls` | Floating joystick + jump button + pause | Built on the Input System's on-screen controls |
+| `TouchControls` | Floating joystick + jump button + pause | Starter Assets v2 ships `TouchscreenInput` (UI Toolkit `UIDocument`: move + look sticks, jump, sprint, safe-area aware). Adapt it to a floating move stick in Phase 1. |
 | `NetClient` | Connect, matchmake, join by code, send position, receive state, handle errors | Every failure → event → error screen |
 
 ## 4. Server systems (planned)
@@ -153,7 +153,7 @@ Rules: write to a temp file, then replace the real file (so a crash mid-save can
 
 - **Unity version (pinned):** 6000.3.27f2 (Unity 6.3 LTS).
 - **Unity Hub modules:** Android Build Support + OpenJDK + Android SDK & NDK Tools (installed and verified 2026-11-02).
-- **Player settings:** package `com.itsd85.<team>.stillwater` (lowercase), orientation per [Orientation](../planning/still-water/decisions/03-orientation.md), Internet permission (Unity adds it automatically when networking is used; verify), IL2CPP + ARM64 for the release APK.
+- **Player settings:** package `com.itsd85.<team>.stillwater` (lowercase), orientation Auto Rotation with Landscape Left/Right only ([Orientation](../planning/still-water/decisions/03-orientation.md)), UI reference 1920×1080 + safe area, Internet permission (Unity adds it automatically when networking is used; verify), IL2CPP + ARM64 for the release APK.
 - **Output:** `.apk` for the lab (attached to the GitHub Release, never committed).
 - **Git:** Unity `.gitignore` (excludes `Library/`, `Temp/`, `Obj/`, `Build/`, `Logs/`, `UserSettings/`). Set Unity to **Visible Meta Files** + **Force Text** serialization. Consider Git LFS for large binaries (GitHub's free LFS quota is limited, so keep big source art out of the repo). Never commit `.keystore`/`.jks`, `.env`, builds.
 - **Dev environment:** everything on Windows (see [SETUP.md](SETUP.md)). Repo `C:\Users\LEGION2\Yaji\projects\still-water`.

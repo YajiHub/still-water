@@ -16,7 +16,7 @@ Unity 6 (Unity Personal) · Colyseus (MIT) · Node.js · Docker · Render · Ble
 ## Assets
 | Asset | Used for | Author | Source link | License | Modified? |
 |---|---|---|---|---|---|
-| Starter Assets – Third Person | Player controller base | Unity Technologies | Unity Asset Store | Unity Asset Store EULA | yes |
+| Starter Assets: First Person + Third Person \| Character Controllers v2.0.2 | Player controller base, touch joysticks | Unity Technologies | Unity Asset Store | Unity Asset Store EULA | yes |
 | | | | | | |
 
 ## Fonts

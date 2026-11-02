@@ -17,7 +17,7 @@
 ## 1. Repo folder
 
 - [x] Project docs are in `C:\Users\LEGION2\Yaji\projects\still-water` (so `AGENTS.md` is at the root).
-- [ ] In PowerShell:
+- [x] In PowerShell:
   ```powershell
   cd C:\Users\LEGION2\Yaji\projects\still-water
   git init -b main
@@ -28,29 +28,29 @@
 
 ## 2. Unity project
 
-- [ ] Unity Hub → **New project** → Editor **6000.3.27f2** → template **Universal 3D**
-- [ ] Project name **`client`**, Location **`C:\Users\LEGION2\Yaji\projects\still-water`** → Unity creates `C:\Users\LEGION2\Yaji\projects\still-water\client`
-- [ ] Untick *Connect to Unity Cloud*, *Unity Version Control*, *Use AI Assistant* → **Create project**
-- [ ] Add Unity's ignore file inside `client/` (its rules are relative to the Unity project):
+- [x] Unity Hub → **New project** → Editor **6000.3.27f2** → template **Universal 3D**
+- [x] Project name **`client`**, Location **`C:\Users\LEGION2\Yaji\projects\still-water`** → Unity creates `C:\Users\LEGION2\Yaji\projects\still-water\client`
+- [x] Untick *Connect to Unity Cloud*, *Unity Version Control*, *Use AI Assistant* → **Create project**
+- [x] Add Unity's ignore file inside `client/` (its rules are relative to the Unity project):
   ```powershell
   Invoke-WebRequest https://raw.githubusercontent.com/github/gitignore/main/Unity.gitignore -OutFile C:\Users\LEGION2\Yaji\projects\still-water\client\.gitignore
   ```
-- [ ] **Edit → Project Settings → Editor:** Version Control = *Visible Meta Files*, Asset Serialization = *Force Text* (usually already set)
+- [x] **Edit → Project Settings → Editor:** Version Control = *Visible Meta Files*, Asset Serialization = *Force Text* (usually already set)
 - [ ] **Edit → Preferences → External Tools:** pick Rider or VS Code
 
 ## 3. Android + first phone build
 
-- [ ] **File → Build Profiles → Android → Switch Platform**
-- [ ] **Project Settings → Player (Android tab):** Company Name, Product Name `Still Water`, Package Name `com.itsd85.<yourname>.stillwater`, **Default Orientation** per [Orientation](../planning/still-water/decisions/03-orientation.md) (proposed: Landscape Left)
-- [ ] Phone: **Settings → About phone → tap Build number 7×** → Developer options → **USB debugging** on → plug in → allow
-- [ ] Build Profiles → Android → **Run Device** = your phone → **Build And Run** → save to `C:\Users\LEGION2\Yaji\projects\still-water\Builds\` (git-ignored). The first build takes 5–15 min.
-- [ ] ✅ The default URP sample scene opens on the phone
+- [x] **File → Build Profiles → Android → Switch Platform**
+- [ ] **Project Settings → Player (Android tab):** Company Name, Product Name `Still Water`, Package Name `com.itsd85.<yourname>.stillwater`, Resolution and Presentation → **Default Orientation = Auto Rotation**, allowed: only **Landscape Right** + **Landscape Left** ([Orientation](../planning/still-water/decisions/03-orientation.md))
+- [x] Phone: **Settings → About phone → tap Build number 7×** → Developer options → **USB debugging** on → plug in → allow
+- [x] Build Profiles → Android → **Run Device** = your phone → **Build And Run** → save to `C:\Users\LEGION2\Yaji\projects\still-water\Builds\` (git-ignored). The first build takes 5–15 min.
+- [x] ✅ The default URP sample scene opens on the phone
 
 ## 4. Starter Assets (the player controller base)
 
-- [ ] Browser: Asset Store → **Starter Assets – Third Person** → *Add to My Assets*
-- [ ] Unity: **Window → Package Manager → My Assets** → Download → Import. If it asks to enable the new Input System and restart: **Yes**
-- [ ] Open `Assets/StarterAssets/ThirdPersonController/Scenes/Playground` → **Play** → WASD + Space work
+- [x] Browser: Asset Store → **Starter Assets: First Person + Third Person | Character Controllers** (v2.0.2, Unity 6, Cinemachine 3) → *Add to My Assets*
+- [x] Unity: **Window → Package Manager → My Assets** → Download → Import. If it asks to enable the new Input System and restart: **Yes**
+- [x] Open `Assets/Starter Assets/Sample/ThirdPersonController/Playground` → **Play** → WASD + Space work
 - [ ] Troubleshooting:
   - Pink materials → **Window → Rendering → Render Pipeline Converter → Material Upgrade → Convert**
   - Red Cinemachine errors → paste them to the AI agent (the package was made for an older Unity)
@@ -60,7 +60,8 @@
 ## 5. First commit + GitHub
 
 - [ ] `git add . && git commit -m "Unity 6.3 project, Starter Assets, planning docs"`
-- [ ] Create a **public** GitHub repo, proposed name `itsd85-lab5-6-<section>-<surname>` (shared with Lab 6; see [Lab 6 Integration](../planning/still-water/decisions/13-lab6-integration.md)), then `git remote add origin <url>` and `git push -u origin main`
+- [x] **Public** GitHub repo [`YajiHub/still-water`](https://github.com/YajiHub/still-water) (shared with Lab 6; see [Lab 6 Integration](../planning/still-water/decisions/13-lab6-integration.md)), remote `origin` = `yaji.github.com:YajiHub/still-water.git` (SSH host alias in `~/.ssh/config`)
+- [ ] `git push -u origin main`
 - [ ] ✅ GitHub shows `client/Assets`, and **no** `client/Library`
 
 ## 6. Hello server
@@ -84,7 +85,7 @@
 ## Phase 0 done when
 
 - [ ] Character runs on the phone · [ ] server reachable from the phone · [ ] repo on GitHub
-- [ ] [Orientation](../planning/still-water/decisions/03-orientation.md) locked · [ ] instructor asked about Option A ([Hosting and LAN Plan](../planning/still-water/decisions/12-hosting-and-lan.md))
+- [x] [Orientation](../planning/still-water/decisions/03-orientation.md) locked · [ ] instructor asked about Option A ([Hosting and LAN Plan](../planning/still-water/decisions/12-hosting-and-lan.md))
 - [ ] GDD + paper-prototype photo submitted (Checkpoint 1)
 
 Then update the Phase table in the [MAP](../planning/still-water/MAP.md) and do **Phase 0b (§7)**, then **Phase 1: Feel prototype**.

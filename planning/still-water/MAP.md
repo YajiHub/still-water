@@ -6,7 +6,7 @@
 
 | Phase | Scope | Blocking Decisions | Status |
 |---|---|---|---|
-| 0. Decide & set up | ✅ Unity 6.3 LTS + Android modules installed. Remaining: repo + Unity project `client`, Starter Assets on the phone, GitHub, Colyseus hello room reachable from the phone. Checklist: [SETUP.md](../../docs/SETUP.md). *(Lab checkpoints 1–2: GDD approved, repo runs)* | [Orientation](./decisions/03-orientation.md), [Hosting and LAN Plan](./decisions/12-hosting-and-lan.md) | 🟡 In Progress |
+| 0. Decide & set up | ✅ Unity 6.3 LTS + Android modules installed. ✅ Repo initialized, Orientation locked, Unity project `client` created (Android active). Remaining: Player settings, Starter Assets on the phone, GitHub, Colyseus hello room reachable from the phone. Checklist: [SETUP.md](../../docs/SETUP.md). *(Lab checkpoints 1–2: GDD approved, repo runs)* | [Hosting and LAN Plan](./decisions/12-hosting-and-lan.md) (instructor question only) | 🟡 In Progress |
 | 0b. CI/CD pipeline (Lab 6) | Server `/` + `/health`, first pure logic function + tests, ESLint/typecheck, Dockerfile + compose; Ubuntu Server VM + Docker + self-hosted runner; `ci-cd.yml` test → deploy; ruleset `protect-main`; Tests A/B/C. Checklist: [LAB6_REQUIREMENTS.md](../../docs/LAB6_REQUIREMENTS.md), [SETUP.md §7](../../docs/SETUP.md#7-cicd-pipeline-lab-6). *(Lab 6 checkpoints 1–6; Tests A/B/C can be repeated later with real features)* | [Server Test and Lint Tooling](./decisions/14-server-test-tooling.md) | [ ] Pending |
 | 1. Feel prototype | Grey-box Level 1. Joystick + jump + feel helpers + swim/climb-out. Camera test. 1-day art spike. Must feel good before moving on. | [Camera Style](./decisions/05-camera-style.md), [Art Style](./decisions/08-art-style.md) | [ ] Pending |
 | 2. Core loop + progression | Reveal, safe/fake platforms, splash → Listener → catch, win/lose, stars, GameState, save, Level Select with locks, Result screen | [Core Loop Rules](./decisions/04-core-loop-rules.md), [Save Data](./decisions/11-save-data.md) | [ ] Pending |
@@ -22,12 +22,12 @@
 > Step details: [SETUP.md](../../docs/SETUP.md). Retag anything you like.
 
 ### Phase 0 — Decide & set up
-- [ ] 🧑 Resolve [Orientation](./decisions/03-orientation.md) (wayfinder grill)
-- [ ] 🤖 `git init -b main` + repo Git settings (`core.autocrlf=false`, `core.fileMode=false`) — SETUP §1
-- [ ] 🧑 Create the Unity project `client` (Universal 3D, 6000.3.27f2) in Unity Hub — SETUP §2
-- [ ] 🤖 Add Unity's `.gitignore` inside `client/`; confirm Visible Meta Files + Force Text — SETUP §2
-- [ ] 🧑 Switch to Android, Player settings (package name, orientation) — SETUP §3
-- [ ] 🧑 Import Starter Assets; Playground runs in the Editor — SETUP §4 (🤝 if import errors need fixing)
+- [x] 🧑 Resolve [Orientation](./decisions/03-orientation.md) (wayfinder grill)
+- [x] 🤖 `git init -b main` + repo Git settings (`core.autocrlf=false`, `core.fileMode=false`) — SETUP §1
+- [x] 🧑 Create the Unity project `client` (Universal 3D, 6000.3.27f2) in Unity Hub — SETUP §2
+- [x] 🤖 Add Unity's `.gitignore` inside `client/`; confirm Visible Meta Files + Force Text — SETUP §2
+- [ ] 🧑 Switch to Android, Player settings (package name, orientation: Auto Rotation, Landscape L/R only) — SETUP §3
+- [x] 🧑 Import Starter Assets; Playground runs in the Editor — SETUP §4 (🤝 if import errors need fixing)
 - [ ] 🧑 Build And Run on the phone: character moves with the on-screen joystick — SETUP §3–4
 - [ ] 🤝 Create the public GitHub repo + first push (agent can use `gh` if you're logged in) — SETUP §5
 - [ ] 🤖 Scaffold the Colyseus server in `server/` and confirm `http://localhost:2567` — SETUP §6
@@ -67,9 +67,9 @@ A submitted lab build: an Android APK of a 3D poolrooms horror platformer with 5
 - [Engine and Stack](./decisions/01-engine-and-stack.md) (by: me): Unity 6 (C#, URP) client + Colyseus (Node/TypeScript) server in Docker (deployed by CI/CD to a VM; optional Render); Supabase optional for the leaderboard.
 - [Lab 6 Integration](./decisions/13-lab6-integration.md) (by: me): one public repo; the Lab 6 pipeline lints/tests/deploys `server/` to an Ubuntu VM via a self-hosted runner; tags `lab5-v1.0` / `lab6-v1.0`; no workflow-level path filter.
 - [Control Scheme](./decisions/02-control-scheme.md) (by: me): floating virtual joystick + Jump button, free 3D movement with feel helpers (not tap-to-hop), built on Unity Starter Assets – Third Person.
+- [Orientation](./decisions/03-orientation.md) (by: me): landscape, auto-rotate Left/Right only; UI reference 1920×1080, safe area respected.
 
 ## Active Frontier (Open & Unblocked)
-- [ ] [Orientation](./decisions/03-orientation.md) — grill
 - [ ] [Hosting and LAN Plan](./decisions/12-hosting-and-lan.md) — research (+ ask the instructor about Option A)
 - [ ] [Server Test and Lint Tooling](./decisions/14-server-test-tooling.md) — research
 - [ ] [Camera Style](./decisions/05-camera-style.md) — prototype
