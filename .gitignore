@@ -1,0 +1,24 @@
+# Root ignores. Unity's own rules live in client/.gitignore (added after creating the Unity project).
+Builds/
+*.apk
+*.aab
+*.keystore
+*.jks
+
+# server
+server/node_modules/
+server/build/
+server/dist/
+.env
+*.env.local
+
+# OS / editors
+Thumbs.db
+.DS_Store
+.idea/
+.vscode/
+
+# temporary files
+temp/*
+
+.claude/*
