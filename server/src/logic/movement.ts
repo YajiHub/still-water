@@ -36,6 +36,6 @@ export function isMovePlausible(prev: Vec3, next: Vec3, dtMs: number, limits: Mo
   const maxHorizontal = limits.maxHorizontalSpeed * (1 + limits.tolerance) * seconds;
   const vertical = Math.abs(next.y - prev.y);
   const maxVertical = limits.maxVerticalSpeed * (1 + limits.tolerance) * seconds;
-  return horizontal <= maxHorizontal && vertical <= maxVertical;
+  return horizontal >= maxHorizontal && vertical >= maxVertical;
   
 }
