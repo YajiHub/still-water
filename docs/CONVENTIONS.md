@@ -52,7 +52,7 @@
   `C:\Users\LEGION2\AppData\Local\Unity\Editor\Editor.log` (WSL: `/mnt/c/Users/LEGION2/AppData/Local/Unity/Editor/Editor.log`).
 - **Server (dev):** runs with Node on Windows, default port **2567**. Phones on the same Wi-Fi reach it at the
   laptop's LAN IP. Windows Firewall must allow inbound TCP 2567 (Private network).
-- **Server (deployed):** the Ubuntu Server VM (VirtualBox) runs the GitHub self-hosted runner + Docker. Port
+- **Server (deployed):** the Ubuntu Server VM (VMware Workstation, NAT on VMnet8) runs the GitHub self-hosted runner + Docker. Port
   forwards: host 2222 → ssh, host 8080 → the deployed server. You can't reach the VM; the human runs VM commands
   (`ssh -p 2222 deploy@localhost`). Details: [SYSTEM_ATLAS.md §8](SYSTEM_ATLAS.md#8-cicd-and-deployment-lab-6--lab-6-integration).
 - **Branch protection:** once the `protect-main` ruleset is on, changes reach `main` only through PRs with a

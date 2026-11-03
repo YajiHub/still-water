@@ -1,0 +1,4 @@
+self-hosted-runner:
+  # Custom label of the self-hosted runner in the Ubuntu VM.
+  labels:
+    - deploy

@@ -7,7 +7,7 @@ linted, tested and auto-deployed by GitHub Actions to an Ubuntu VM through a sel
 
 ## Current Status & Next Step
 - **Phase:** 0b (Lab 6 CI/CD) 🟡: server, tests, Docker image and the CI `test` job are green on GitHub. Phase 0 🟡: only the Third Person phone build + Checkpoint 1 (GDD + paper-prototype photo) left. Active plan: [planning/still-water/MAP.md](planning/still-water/MAP.md)
-- **Next:** `execute-phase Phase 0b` → SETUP §7.4: VirtualBox + Ubuntu Server 24.04 VM, Docker, manual dry run (📸 CP5), then the self-hosted runner and the `deploy` job.
+- **Next:** `execute-phase Phase 0b` → SETUP §7.4: VMware Workstation + Ubuntu Server 24.04 VM, Docker, manual dry run (📸 CP5), then the self-hosted runner and the `deploy` job.
 - **Latest session:** [docs/sessions/2026-11-03-server-and-ci.md](docs/sessions/2026-11-03-server-and-ci.md)
 
 ## Routing (one home per fact)

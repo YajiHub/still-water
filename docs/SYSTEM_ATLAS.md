@@ -179,7 +179,7 @@ laptop (Windows) ──git push / PR──► GitHub ──► job "test" (ubunt
                                                │ only if green AND push to main
                                                ▼
                          job "deploy" on the self-hosted runner (label: deploy)
-                         inside the Ubuntu Server VM (VirtualBox on the same laptop)
+                         inside the Ubuntu Server VM (VMware Workstation, same laptop)
                            docker compose -p stillwater up -d --build  (APP_VERSION = commit SHA)
                            health-check loop: curl localhost:8080/health must show the SHA
                            docker image prune -f
@@ -188,7 +188,7 @@ laptop (Windows) ──git push / PR──► GitHub ──► job "test" (ubunt
 - **Workflow file:** `.github/workflows/ci-cd.yml` (repo root). Jobs use `defaults.run.working-directory: server`, and the setup-node npm cache uses `server/package-lock.json`.
   **No workflow-level `paths:` filter** (a skipped workflow never reports the required `test` check, which would block merging Unity-only PRs).
 - **Docker:** `server/Dockerfile` (node:24-alpine, `npm ci`, build TS, `ARG/ENV APP_VERSION`, non-root `USER node`, `HEALTHCHECK` on `/health`), `server/compose.yaml` (image `stillwater-server:${APP_VERSION}`, ports **`8080:2567`**, `restart: unless-stopped`). Images are tagged per commit for rollback.
-- **VM (VirtualBox, NAT) port forwards:**
+- **VM (VMware Workstation, NAT on VMnet8) port forwards** (Virtual Network Editor → VMnet8 → NAT Settings; the guest port points at the VM's IP):
 
   | Name | Host port | Guest port | Use |
   |---|---|---|---|

@@ -1,5 +1,5 @@
 # Lab 6 pipeline: test (GitHub cloud runner) -> deploy (self-hosted
-# runner in the Ubuntu VM, added later).
+# runner in the Ubuntu VM, label `deploy`).
 # No workflow-level `paths:` filter on purpose: the protect-main ruleset
 # requires the `test` check, and a skipped workflow never reports it
 # (see planning/still-water/decisions/13-lab6-integration.md).
@@ -39,3 +39,47 @@ jobs:
       - run: npm run lint
       - run: npm run typecheck
       - run: npm test
+
+  deploy:
+    # Only after green tests, and only for pushes to main (never PRs).
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # The self-hosted runner inside the Ubuntu VM.
+    runs-on: [self-hosted, deploy]
+    # One deploy at a time; a newer push waits instead of cancelling.
+    concurrency:
+      group: deploy-vm
+      cancel-in-progress: false
+    defaults:
+      run:
+        working-directory: server
+    env:
+      APP_VERSION: ${{ github.sha }}
+    steps:
+      # actions/checkout v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Build and start (image tagged with the commit SHA)
+        run: docker compose -p stillwater up -d --build
+
+      # Waits until /health reports THIS commit, not just "ok":
+      # a stale or crashed container must fail the deploy.
+      - name: Health check
+        run: |
+          for i in $(seq 1 30); do
+            if curl -fsS http://localhost:8080/health \
+              | grep -q "\"version\":\"$APP_VERSION\""; then
+              echo "Live: $APP_VERSION (after $i tries)"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "::error::/health never reported $APP_VERSION"
+          docker compose -p stillwater logs --tail 50
+          exit 1
+
+      # Removes only untagged layers; per-SHA images stay for rollback.
+      - name: Clean up dangling images
+        run: docker image prune -f
