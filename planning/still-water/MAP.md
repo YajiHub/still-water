@@ -6,7 +6,7 @@
 
 | Phase | Scope | Blocking Decisions | Status |
 |---|---|---|---|
-| 0. Decide & set up | ✅ Unity 6.3 LTS + Android modules installed. ✅ Repo initialized, Orientation locked, Unity project `client` created (Android active). Remaining: Player settings, Starter Assets on the phone, GitHub, Colyseus hello room reachable from the phone. Checklist: [SETUP.md](../../docs/SETUP.md). *(Lab checkpoints 1–2: GDD approved, repo runs)* | [Hosting and LAN Plan](./decisions/12-hosting-and-lan.md) (instructor question only) | 🟡 In Progress |
+| 0. Decide & set up | ✅ Unity + Android, repo on GitHub, Orientation locked, `client` project (Android, Player settings), Starter Assets touch controls on the phone (First Person Playground), Colyseus hello room joined from Editor + phone (LAN `ws://192.168.1.9:2567`). Remaining: Company Name, Third Person Playground phone build, QA profile, instructor message, npm registry choice. Checklist: [SETUP.md](../../docs/SETUP.md). *(Lab checkpoints 1–2: GDD approved, repo runs)* | [Hosting and LAN Plan](./decisions/12-hosting-and-lan.md) (instructor question only) | 🟡 In Progress |
 | 0b. CI/CD pipeline (Lab 6) | Server `/` + `/health`, first pure logic function + tests, ESLint/typecheck, Dockerfile + compose; Ubuntu Server VM + Docker + self-hosted runner; `ci-cd.yml` test → deploy; ruleset `protect-main`; Tests A/B/C. Checklist: [LAB6_REQUIREMENTS.md](../../docs/LAB6_REQUIREMENTS.md), [SETUP.md §7](../../docs/SETUP.md#7-cicd-pipeline-lab-6). *(Lab 6 checkpoints 1–6; Tests A/B/C can be repeated later with real features)* | [Server Test and Lint Tooling](./decisions/14-server-test-tooling.md) | [ ] Pending |
 | 1. Feel prototype | Grey-box Level 1. Joystick + jump + feel helpers + swim/climb-out. Camera test. 1-day art spike. Must feel good before moving on. | [Camera Style](./decisions/05-camera-style.md), [Art Style](./decisions/08-art-style.md) | [ ] Pending |
 | 2. Core loop + progression | Reveal, safe/fake platforms, splash → Listener → catch, win/lose, stars, GameState, save, Level Select with locks, Result screen | [Core Loop Rules](./decisions/04-core-loop-rules.md), [Save Data](./decisions/11-save-data.md) | [ ] Pending |
@@ -29,10 +29,10 @@
 - [ ] 🧑 Switch to Android, Player settings (package name, orientation: Auto Rotation, Landscape L/R only) — SETUP §3
 - [x] 🧑 Import Starter Assets; Playground runs in the Editor — SETUP §4 (🤝 if import errors need fixing)
 - [ ] 🧑 Build And Run on the phone: character moves with the on-screen joystick — SETUP §3–4
-- [ ] 🤝 Create the public GitHub repo + first push (agent can use `gh` if you're logged in) — SETUP §5
-- [ ] 🤖 Scaffold the Colyseus server in `server/` and confirm `http://localhost:2567` — SETUP §6
-- [ ] 🧑 Windows Firewall rule for TCP 2567 (admin PowerShell) — SETUP §6
-- [ ] 🤝 `NetTest` script joins the default room from the Editor, then from the phone — SETUP §6
+- [x] 🤝 Create the public GitHub repo + first push (agent can use `gh` if you're logged in) — SETUP §5
+- [x] 🤖 Scaffold the Colyseus server in `server/` and confirm `http://localhost:2567` — SETUP §6
+- [x] 🧑 Windows Firewall rule for TCP 2567 (admin PowerShell) — SETUP §6
+- [x] 🤖 `NetTest` script (`client/Assets/_Project/Scripts/Net/NetTest.cs`, retagged from 🤝) joins the default room from the Editor, then from the phone — SETUP §6
 - [ ] 🧑 Copy the QA profile template to `docs/testing/QA-PROFILE.md` and fill it in
 - [ ] 🧑 Send the instructor the Lab 6 integration + Option A questions; submit GDD + paper-prototype photo
 

@@ -27,6 +27,11 @@ Put game rules in **pure functions** under `server/src/logic/` (no Colyseus impo
 - `decideWinner(players)`: the earliest server-timestamped finish wins; forfeit rules
 Rooms call these functions. Tests import them directly. These are also the functions to break on purpose for Lab 6's Test B.
 
+## Findings from the scaffold (2026-11-02, `create-colyseus-app@0.18.1 --ts --preset minimal`)
+- The template already ships **mocha + tsx + `@colyseus/testing`**: `"test": "mocha -r tsx test/**.test.ts --exit --timeout 15000"`, with `test/MyRoom.test.ts` booting the real server. Scripts: `start` (`tsx watch`), `build` (`tsc -p tsconfig.build.json`), `clean`, `loadtest`. No lint/typecheck yet.
+- On **Windows (Node 24.13.0)** `npm test` passes (`1 passing`) but the process then crashes: `Assertion failed: !(handle->flags & UV_HANDLE_CLOSING), file src\win\async.c` → exit code `-1073740791`. So locally `npm test` reports failure. Not yet checked on Linux (CI runs `ubuntu-latest`).
+- The lockfile resolves every package from `registry.npmmirror.com` (the user's global npm registry), not `registry.npmjs.org`. CI and the VM would download from that mirror.
+
 ## Recommendation
 **A** (`node:test` + `tsx`) + ESLint/typescript-eslint + a `tsc --noEmit` step. Scripts: `lint`, `typecheck`, `test`, `build`, `start`.
 

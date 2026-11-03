@@ -153,7 +153,7 @@ Rules: write to a temp file, then replace the real file (so a crash mid-save can
 
 - **Unity version (pinned):** 6000.3.27f2 (Unity 6.3 LTS).
 - **Unity Hub modules:** Android Build Support + OpenJDK + Android SDK & NDK Tools (installed and verified 2026-11-02).
-- **Player settings:** package `com.itsd85.<team>.stillwater` (lowercase), orientation Auto Rotation with Landscape Left/Right only ([Orientation](../planning/still-water/decisions/03-orientation.md)), UI reference 1920×1080 + safe area, Internet permission (Unity adds it automatically when networking is used; verify), IL2CPP + ARM64 for the release APK.
+- **Player settings:** package `com.itsd85.<team>.stillwater` (lowercase), orientation Auto Rotation with Landscape Left/Right only ([Orientation](../planning/still-water/decisions/03-orientation.md)), UI reference 1920×1080 + safe area, Internet permission (Unity adds it automatically when networking is used; verify), **Allow downloads over HTTP = Always allowed** (LAN servers are plain `http`/`ws`; Colyseus matchmakes over HTTP), IL2CPP + ARM64 for the release APK.
 - **Output:** `.apk` for the lab (attached to the GitHub Release, never committed).
 - **Git:** Unity `.gitignore` (excludes `Library/`, `Temp/`, `Obj/`, `Build/`, `Logs/`, `UserSettings/`). Set Unity to **Visible Meta Files** + **Force Text** serialization. Consider Git LFS for large binaries (GitHub's free LFS quota is limited, so keep big source art out of the repo). Never commit `.keystore`/`.jks`, `.env`, builds.
 - **Dev environment:** everything on Windows (see [SETUP.md](SETUP.md)). Repo `C:\Users\LEGION2\Yaji\projects\still-water`.

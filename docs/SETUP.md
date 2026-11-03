@@ -61,25 +61,26 @@
 
 - [ ] `git add . && git commit -m "Unity 6.3 project, Starter Assets, planning docs"`
 - [x] **Public** GitHub repo [`YajiHub/still-water`](https://github.com/YajiHub/still-water) (shared with Lab 6; see [Lab 6 Integration](../planning/still-water/decisions/13-lab6-integration.md)), remote `origin` = `yaji.github.com:YajiHub/still-water.git` (SSH host alias in `~/.ssh/config`)
-- [ ] `git push -u origin main`
+- [x] `git push -u origin main`
 - [ ] ✅ GitHub shows `client/Assets`, and **no** `client/Library`
 
 ## 6. Hello server
 
-- [ ] PowerShell:
+- [x] PowerShell (scaffolded with create-colyseus-app 0.18.1 → colyseus 0.18.10; `npm install` runs automatically):
   ```powershell
   cd C:\Users\LEGION2\Yaji\projects\still-water
-  npm create colyseus-app@latest ./server
-  cd server; npm install; npm start
+  npm create colyseus-app@0.18.1 ./server -- --ts --preset minimal --yes
+  cd server; npm start
   ```
-- [ ] Browser `http://localhost:2567` loads → the server is running
-- [ ] Firewall (PowerShell **as Administrator**, once). Also make sure your Wi-Fi is set to a *Private* network:
+- [x] Browser `http://localhost:2567` loads → the server is running
+- [x] Firewall (PowerShell **as Administrator**, once). Also make sure your Wi-Fi is set to a *Private* network:
   ```powershell
   New-NetFirewallRule -DisplayName "Colyseus 2567" -Direction Inbound -Protocol TCP -LocalPort 2567 -Action Allow -Profile Private
   ```
-- [ ] Unity: **Package Manager → + → Add package from git URL** → `https://github.com/colyseus/colyseus-unity-sdk.git#upm`
-- [ ] Ask the AI agent for a minimal `NetTest` script that joins the server's default room (check the room name in `server/src/app.config.ts` and the installed SDK's API) → Play → the Console prints *Joined room*
-- [ ] On the phone: use the laptop's LAN IP (`ipconfig` → IPv4, e.g. `ws://192.168.1.23:2567`) → ✅ joins from the phone
+- [x] Unity: **Package Manager → + → Add package from git URL** → `https://github.com/colyseus/colyseus-unity-sdk.git#upm` (`io.colyseus.sdk` 0.18.10 on 2026-11-02, matching the server; the exact commit is pinned in `Packages/packages-lock.json`)
+- [x] **Project Settings → Player → Other Settings → Allow downloads over HTTP = Always allowed.** Unity 6 blocks plain HTTP by default, and Colyseus matchmakes over HTTP before opening the WebSocket (error: `Insecure connection not allowed`).
+- [x] `NetTest` script (`Assets/_Project/Scripts/Net/NetTest.cs`) in scene `Assets/_Project/Scenes/NetTest.unity` joins `my_room` → Play → the Console prints *Joined room*
+- [x] On the phone: use the laptop's Wi-Fi IP (`ipconfig` → the **Wi-Fi** adapter's IPv4, here `ws://192.168.1.9:2567`; ignore the VMware/WSL/ZeroTier adapters) → ✅ joins from the phone
 - [ ] Commit
 
 ## Phase 0 done when

@@ -25,7 +25,7 @@ linted, tested and auto-deployed by GitHub Actions to an Ubuntu VM through a sel
 Conflicts: decision files win → DESIGN.md / SYSTEM_ATLAS.md → GDD.md. Fix the loser.
 
 ## Commands
-- **Server** (`server/`, once it exists): `npm run lint` · `npm run typecheck` · `npm test` · `npm run dev` (:2567)
+- **Server** (`server/`, run on Windows Node 24): `npm start` (tsx watch, :2567) · `npm test` (mocha) · `npm run build`. `lint` / `typecheck` arrive in Phase 0b.
 - **Unity:** no CLI tests yet. Verify in the Editor (Play) and on the phone (Build And Run).
 
 ## Never
