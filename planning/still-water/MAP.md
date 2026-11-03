@@ -6,8 +6,8 @@
 
 | Phase | Scope | Blocking Decisions | Status |
 |---|---|---|---|
-| 0. Decide & set up | ✅ Unity + Android, repo on GitHub, Orientation locked, `client` project (Android, Player settings), Starter Assets touch controls on the phone (First Person Playground), Colyseus hello room joined from Editor + phone (LAN `ws://192.168.1.9:2567`). Remaining: Company Name, Third Person Playground phone build, QA profile, instructor message, npm registry choice. Checklist: [SETUP.md](../../docs/SETUP.md). *(Lab checkpoints 1–2: GDD approved, repo runs)* | [Hosting and LAN Plan](./decisions/12-hosting-and-lan.md) (instructor question only) | 🟡 In Progress |
-| 0b. CI/CD pipeline (Lab 6) | Server `/` + `/health`, first pure logic function + tests, ESLint/typecheck, Dockerfile + compose; Ubuntu Server VM + Docker + self-hosted runner; `ci-cd.yml` test → deploy; ruleset `protect-main`; Tests A/B/C. Checklist: [LAB6_REQUIREMENTS.md](../../docs/LAB6_REQUIREMENTS.md), [SETUP.md §7](../../docs/SETUP.md#7-cicd-pipeline-lab-6). *(Lab 6 checkpoints 1–6; Tests A/B/C can be repeated later with real features)* | [Server Test and Lint Tooling](./decisions/14-server-test-tooling.md) | [ ] Pending |
+| 0. Decide & set up | ✅ Unity + Android, repo on GitHub, Orientation locked, `client` project (Android, Player settings), Starter Assets touch controls on the phone (First Person Playground), Colyseus hello room joined from Editor + phone (LAN `ws://192.168.1.9:2567`). server lockfile on registry.npmjs.org, QA profile. Remaining: Company Name, Third Person Playground phone build, instructor message. Checklist: [SETUP.md](../../docs/SETUP.md). *(Lab checkpoints 1–2: GDD approved, repo runs)* | — | 🟡 In Progress |
+| 0b. CI/CD pipeline (Lab 6) | Server `/` + `/health`, first pure logic function + tests, ESLint/typecheck, Dockerfile + compose; Ubuntu Server VM + Docker + self-hosted runner; `ci-cd.yml` test → deploy; ruleset `protect-main`; Tests A/B/C. Checklist: [LAB6_REQUIREMENTS.md](../../docs/LAB6_REQUIREMENTS.md), [SETUP.md §7](../../docs/SETUP.md#7-cicd-pipeline-lab-6). *(Lab 6 checkpoints 1–6; Tests A/B/C can be repeated later with real features)* | — | [ ] Pending |
 | 1. Feel prototype | Grey-box Level 1. Joystick + jump + feel helpers + swim/climb-out. Camera test. 1-day art spike. Must feel good before moving on. | [Camera Style](./decisions/05-camera-style.md), [Art Style](./decisions/08-art-style.md) | [ ] Pending |
 | 2. Core loop + progression | Reveal, safe/fake platforms, splash → Listener → catch, win/lose, stars, GameState, save, Level Select with locks, Result screen | [Core Loop Rules](./decisions/04-core-loop-rules.md), [Save Data](./decisions/11-save-data.md) | [ ] Pending |
 | 3. Levels 2–5 + offline | Moving / sinking platforms, fog and flicker, difficulty curve, optional Ghost rival; airplane-mode test. *(Checkpoints 3–4)* | [Offline Rival](./decisions/09-offline-rival.md) | [ ] Pending |
@@ -33,14 +33,14 @@
 - [x] 🤖 Scaffold the Colyseus server in `server/` and confirm `http://localhost:2567` — SETUP §6
 - [x] 🧑 Windows Firewall rule for TCP 2567 (admin PowerShell) — SETUP §6
 - [x] 🤖 `NetTest` script (`client/Assets/_Project/Scripts/Net/NetTest.cs`, retagged from 🤝) joins the default room from the Editor, then from the phone — SETUP §6
-- [ ] 🧑 Copy the QA profile template to `docs/testing/QA-PROFILE.md` and fill it in
+- [x] 🤖 Fill in `docs/testing/QA-PROFILE.md` (retagged from 🧑)
 - [ ] 🧑 Send the instructor the Lab 6 integration + Option A questions; submit GDD + paper-prototype photo
 
-### Phase 0b — CI/CD pipeline (Lab 6) · blocked by [Server Test and Lint Tooling](./decisions/14-server-test-tooling.md)
-- [ ] 🧑 SSH key on GitHub, `ssh -T`, switch the remote to SSH — SETUP §7.1 (📸 CP1)
+### Phase 0b — CI/CD pipeline (Lab 6) · tooling per [Server Test and Lint Tooling](./decisions/14-server-test-tooling.md)
+- [ ] 🧑 SSH already works (remote `yaji.github.com:YajiHub/still-water.git`); take the CP1 screenshot (`node -v`, `npm -v`, `git --version`, `ssh -T`) — SETUP §7.1 (📸 CP1)
 - [ ] 🤖 `GET /` status page + `GET /health` (`{status, version}` from `APP_VERSION`) — SETUP §7.2
 - [ ] 🤝 First pure logic function `isMovePlausible()` in `server/src/logic/`: agent writes the signature + tests, you write the body
-- [ ] 🤖 ESLint (typescript-eslint), `typecheck`, `test` scripts; lockfile committed (📸 CP2)
+- [ ] 🤖 ESLint (typescript-eslint), `typecheck`, `test` = `node --import tsx --test` (port `MyRoom.test.ts`, drop mocha); lockfile committed (📸 CP2)
 - [ ] 🤖 `server/Dockerfile`, `server/compose.yaml` (`8080:2567`), `.dockerignore`
 - [ ] 🤖 `.github/workflows/ci-cd.yml` `test` job → green (📸 CP3–CP4)
 - [ ] 🧑 Ubuntu Server VM + Docker + manual dry run + firewall 8080 — SETUP §7.4 (📸 CP5)
@@ -68,10 +68,10 @@ A submitted lab build: an Android APK of a 3D poolrooms horror platformer with 5
 - [Lab 6 Integration](./decisions/13-lab6-integration.md) (by: me): one public repo; the Lab 6 pipeline lints/tests/deploys `server/` to an Ubuntu VM via a self-hosted runner; tags `lab5-v1.0` / `lab6-v1.0`; no workflow-level path filter.
 - [Control Scheme](./decisions/02-control-scheme.md) (by: me): floating virtual joystick + Jump button, free 3D movement with feel helpers (not tap-to-hop), built on Unity Starter Assets – Third Person.
 - [Orientation](./decisions/03-orientation.md) (by: me): landscape, auto-rotate Left/Right only; UI reference 1920×1080, safe area respected.
+- [Hosting and LAN Plan](./decisions/12-hosting-and-lan.md) (by: delegated): one Colyseus server; Option A = VM on the laptop (`ws://<Wi-Fi IP>:8080`), Option B = same image on Render (`wss`), dev on :2567; in-app server picker. ⚠️ instructor OK pending.
+- [Server Test and Lint Tooling](./decisions/14-server-test-tooling.md) (by: delegated): `node:test` + `tsx` (mocha crashes on Windows), ESLint + typescript-eslint, `tsc --noEmit`; CI: `npm ci` → lint → typecheck → test.
 
 ## Active Frontier (Open & Unblocked)
-- [ ] [Hosting and LAN Plan](./decisions/12-hosting-and-lan.md) — research (+ ask the instructor about Option A)
-- [ ] [Server Test and Lint Tooling](./decisions/14-server-test-tooling.md) — research
 - [ ] [Camera Style](./decisions/05-camera-style.md) — prototype
 - [ ] [Art Style](./decisions/08-art-style.md) — prototype
 - [ ] [Core Loop Rules](./decisions/04-core-loop-rules.md) — domain-model

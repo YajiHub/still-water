@@ -1,6 +1,6 @@
 # Hosting and LAN Plan
 
-- **Status:** Open
+- **Status:** Locked (2026-11-03) (by: delegated: the user asked for the recommended option). ⚠️ Instructor confirmation of Option A still to get (message below).
 - **Type:** research (+ one question for the instructor)
 - **Blocks:** Phase 0 (server skeleton), Phase 4
 
@@ -29,4 +29,20 @@ Where does the Colyseus server run for development, for the "same Wi-Fi" require
 5. In-app: Settings or Lobby has a server picker (Local dev / LAN VM / Cloud, or enter an address) so the demo can switch.
 
 ## Decision
-_(fill in after the instructor answers)_
+**One Colyseus server everywhere; the game picks the address.**
+
+| Use | Where the server runs | Address the game uses |
+|---|---|---|
+| Development | `npm start` on Windows (:2567) | `ws://localhost:2567` (Editor) / `ws://<laptop Wi-Fi IP>:2567` (phone). Verified 2026-11-03 with `ws://192.168.1.9:2567`. |
+| **Option A** (same Wi-Fi, required) | The pipeline-deployed Docker container in the Ubuntu VM on the laptop | `ws://<laptop Wi-Fi IP>:8080` |
+| **Option B** (internet, higher grade + bonus) | The same Docker image on the Render free tier | `wss://<app>.onrender.com` |
+
+- In-app **server picker** (Settings or Lobby): Local dev / LAN / Cloud, plus a custom address. Never hard-coded.
+- Render is built in Phase 4 after LAN play works (warm it up before demos; the LAN option is the fallback).
+- Player setting **Allow downloads over HTTP = Always allowed** is required for the plain `ws`/`http` LAN servers.
+
+## Why (portfolio + lab)
+One authoritative server for both options means one codebase and one set of tests, and the online rule that "the server decides the winner" applies to both. For a portfolio it's a real deployment story: Docker image → CI/CD to a self-hosted VM → the same image in the cloud. A phone-hosted mode (Netcode for GameObjects) would roughly double the online work for no extra rubric points.
+
+## If the instructor says a phone must host
+Fallback: run the server on the laptop's own hotspot (no external network at all), and argue it in the paper. Only if that is also refused, add a separate phone-host mode in Phase 4 (new decision).

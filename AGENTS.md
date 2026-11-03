@@ -19,7 +19,7 @@ linted, tested and auto-deployed by GitHub Actions to an Ubuntu VM through a sel
 | Plan, phases, decisions | [planning/still-water/MAP.md](planning/still-water/MAP.md) + `decisions/` |
 | Grading checklists | [Lab 5](docs/LAB5_REQUIREMENTS.md) · [Lab 6](docs/LAB6_REQUIREMENTS.md) |
 | Machine setup steps | [docs/SETUP.md](docs/SETUP.md) |
-| Session history · my knowledge gaps · QA profile | [docs/sessions/](docs/sessions/) · `docs/learning/gaps.md` (created by wrap-up) · `docs/testing/QA-PROFILE.md` (to add) |
+| Session history · my knowledge gaps · QA profile | [docs/sessions/](docs/sessions/) · `docs/learning/gaps.md` (created by wrap-up) · [docs/testing/QA-PROFILE.md](docs/testing/QA-PROFILE.md) |
 | Ideas · asset credits | [docs/IDEAS.md](docs/IDEAS.md) · [docs/CREDITS.md](docs/CREDITS.md) |
 
 Conflicts: decision files win → DESIGN.md / SYSTEM_ATLAS.md → GDD.md. Fix the loser.

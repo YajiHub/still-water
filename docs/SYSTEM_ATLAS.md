@@ -19,7 +19,7 @@
 │     │                                                                 │
 │     └── Online only: NetClient (Colyseus Unity SDK) ──────────────┐   │
 └───────────────────────────────────────────────────────────────────│───┘
-                                                                    │ WebSocket (wss)
+                                                                    │ WebSocket (ws on LAN, wss on Render)
 ┌──────────────────────── Colyseus server (Node + TS) ──────────────▼───┐
 │  RaceRoom: holds layout + seed, validates moves, runs the online       │
 │  Listener, decides splashes / catches / finish / winner                │

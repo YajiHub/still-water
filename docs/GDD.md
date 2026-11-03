@@ -35,7 +35,7 @@ Clearing level *n* unlocks level *n+1*. Progress is saved on the phone immediate
 Solo campaign (levels 1–5) playable in airplane mode. Planned extra: **vs computer** "Ghost Swimmer" rival that races you on the same level and gets better each level.
 
 ## 8. Online mode
-Real-time **1v1 race** on two phones. Both get the same level and the same safe path. First to the Exit wins. Data sent: player positions (~15–20×/s), plus events (fell, climbed, reached exit). A Colyseus game server holds the path, validates moves, runs the monster, and **decides the winner**. A splash online costs a time penalty instead of a loss. Online results do not affect offline unlocks. If the server is unreachable or a player disconnects, a clear message appears and the game returns to the menu.
+Real-time **1v1 race** on two phones. Both get the same level and the same safe path. First to the Exit wins. Data sent: player positions (~15–20×/s), plus events (fell, climbed, reached exit). A Colyseus game server holds the path, validates moves, runs the monster, and **decides the winner**. Being caught online costs a time penalty instead of a loss. Online results do not affect offline unlocks. If the server is unreachable or a player disconnects, a clear message appears and the game returns to the menu.
 
 ## 9. Screens
 Title, Main Menu, Settings, Credits, Mode Select, Level Select, Level (HUD), Pause, Result, Lobby, Online Match, Online Result, Connection Error.

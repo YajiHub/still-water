@@ -7,12 +7,12 @@
 ## 0. Tools (check once)
 
 - [x] Unity Hub + **Unity 6000.3.27f2 (6.3 LTS)** with Android Build Support, OpenJDK, Android SDK & NDK
-- [x] Hub template fix (junction). See the "Unity Hub quirk" in [AGENTS.md](../AGENTS.md)
-- [ ] Node.js LTS: `node -v` in PowerShell
-- [ ] Git for Windows: `git --version`
-- [ ] Code editor: JetBrains Rider (free for non-commercial use) or VS Code + C# Dev Kit + Unity extension
+- [x] Hub template fix (junction). See the "Unity Hub quirk" in [CONVENTIONS.md §2](CONVENTIONS.md#2-dev-environment-everything-runs-on-windows)
+- [x] Node.js 24 LTS: `node -v` in PowerShell (v24.13.0, npm 11.19.0). WSL has its own Node 22: don't use it for this repo.
+- [x] Git for Windows: `git --version` (2.52.0)
+- [x] Code editor: VS Code + C# Dev Kit + Unity extension
 - [ ] AI agent: Claude Code (Windows) and/or pi (WSL, via `/mnt/c/Users/LEGION2/Yaji/projects/still-water`)
-- [ ] *(Optional, later)* Docker Desktop, only to test the deploy image locally. Render builds the Dockerfile itself.
+- [ ] *(Optional, later)* Docker Desktop, only to test the deploy image locally. The VM (§7.4) is where the image really runs.
 
 ## 1. Repo folder
 
@@ -101,7 +101,7 @@ Then update the Phase table in the [MAP](../planning/still-water/MAP.md) and do 
 
 **7.2 Server ready for CI (Part 2)**, which the AI agent can do (see [Server Test and Lint Tooling](../planning/still-water/decisions/14-server-test-tooling.md))
 - [ ] `GET /` status page + `GET /health` → `{status, version}` from `APP_VERSION`
-- [ ] First pure logic function in `server/src/logic/` + tests in `server/test/`
+- [ ] First pure logic function in `server/src/logic/` + tests in `server/test/` (`node:test` + `tsx`, see the decision)
 - [ ] ESLint (typescript-eslint), `typecheck`, `test` scripts in `server/package.json`; `package-lock.json` committed
 - [ ] `server/Dockerfile`, `server/compose.yaml` (`8080:2567`, image tagged with `APP_VERSION`), `.dockerignore`
 - [ ] Locally: `npm run lint`, `npm run typecheck`, `npm test` all pass; `http://localhost:2567/` shows version `dev`. 📸 CP2
