@@ -31,6 +31,7 @@ describe("HTTP routes", () => {
     const res = await colyseus.http.get("/");
     assert.equal(res.statusCode, 200);
     assert.match(String(res.data), /Still Water server/);
+    assert.match(String(res.data), /Something in the water is listening/);
     assert.match(String(res.data), /version dev/);
   });
 });
