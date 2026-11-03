@@ -112,14 +112,14 @@ Then update the Phase table in the [MAP](../planning/still-water/MAP.md) and do 
 - [x] `.github/workflows/ci-cd.yml` with the `test` job (working directory `server`) → push → green in the Actions tab. 📸 CP4
 
 **7.4 Ubuntu Server VM (Part 5)**
-- [ ] VirtualBox + Ubuntu Server 24.04 LTS ISO. VM: 2 vCPU, 2–4 GB RAM, 25 GB. Port forwards: **ssh 2222→22**, **game 8080→8080**
-- [ ] Install with user `deploy` + OpenSSH; then `ssh -p 2222 deploy@localhost`
-- [ ] `sudo apt install -y docker.io docker-compose-v2 git curl`, enable docker, `usermod -aG docker deploy`, log in again, `docker run --rm hello-world`
-- [ ] Manual dry run: clone, `APP_VERSION=manual docker compose -p stillwater up -d --build` (in `server/`), then open `http://localhost:8080/health` in the Windows browser. 📸 CP5. Then `down` and delete the clone.
+- [x] VMware Workstation (already installed; replaces the handout's VirtualBox) + Ubuntu Server **26.04.1 LTS** (handout: 24.04 or newer). VM IP on VMnet8: `192.168.95.132`. VM `stillwater-vm`: 2 vCPU, 4 GB RAM, 25 GB, network **NAT** (VMnet8). Port forwards in Edit → Virtual Network Editor → VMnet8 → NAT Settings: ssh `2222 → VM-IP:22`, game `8080 → VM-IP:8080`
+- [x] Install with user `deploy` + OpenSSH; then `ssh -p 2222 deploy@localhost`
+- [x] `sudo apt install -y docker.io docker-compose-v2 git curl`, enable docker, `usermod -aG docker deploy`, log in again, `docker run --rm hello-world`
+- [x] Manual dry run: clone, `APP_VERSION=manual docker compose -p stillwater up -d --build` (in `server/`), then open `http://localhost:8080/health` in the Windows browser. 📸 CP5. Then `down` and delete the clone.
 - [ ] Windows Firewall: allow inbound TCP **8080** (Private), so phones can reach the deployed server
 
 **7.5 Self-hosted runner + deploy job (Part 6)**
-- [ ] GitHub → Settings → Actions → Runners → New self-hosted runner (Linux x64) → run the shown commands in the VM, with `--labels deploy`, then `sudo ./svc.sh install deploy && sudo ./svc.sh start`
+- [x] GitHub → Settings → Actions → Runners → New self-hosted runner (Linux x64) → run the shown commands in the VM, with `--labels deploy`, then `sudo ./svc.sh install deploy && sudo ./svc.sh start`
 - [ ] Add the `deploy` job (`needs: test`, main push only, `concurrency`, `APP_VERSION: ${{ github.sha }}`, compose up `--build`, health-check loop, prune) → push → test → deploy green → the browser shows the SHA. 📸 CP6 (runner Idle, green run, SHA matches)
 - [ ] Phone check: the game connects to `ws://<laptop LAN IP>:8080`
 

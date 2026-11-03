@@ -7,7 +7,7 @@
 | Phase | Scope | Blocking Decisions | Status |
 |---|---|---|---|
 | 0. Decide & set up | ✅ Unity + Android, repo on GitHub, Orientation locked, `client` project (Android, Player settings), Starter Assets touch controls on the phone (First Person Playground), Colyseus hello room joined from Editor + phone (LAN `ws://192.168.1.9:2567`). server lockfile on registry.npmjs.org, QA profile. Third Person Playground on the phone (Colyseus SDK embedded in `client/Packages/io.colyseus.sdk` to drop a broken upstream symlink). Remaining: GDD + paper-prototype photo (Checkpoint 1). Checklist: [SETUP.md](../../docs/SETUP.md). *(Lab checkpoints 1–2: GDD approved, repo runs)* | — | 🟡 In Progress |
-| 0b. CI/CD pipeline (Lab 6) | ✅ `/` + `/health`, lint/typecheck/`node:test`, Dockerfile + compose (built + healthy locally), `ci-cd.yml` test job (actionlint clean, CI steps pass in a `node:24` container except the TODO). ✅ `isMovePlausible` (13/13 tests). ✅ CI `test` job green on GitHub. Remaining: VM + Docker, self-hosted runner, deploy job, ruleset `protect-main`, Tests A/B/C. Checklist: [LAB6_REQUIREMENTS.md](../../docs/LAB6_REQUIREMENTS.md), [SETUP.md §7](../../docs/SETUP.md#7-cicd-pipeline-lab-6). *(Lab 6 checkpoints 1–6; Tests A/B/C can be repeated later with real features)* | — | 🟡 In Progress |
+| 0b. CI/CD pipeline (Lab 6) | ✅ `/` + `/health`, lint/typecheck/`node:test`, Dockerfile + compose (built + healthy locally), `ci-cd.yml` test job (actionlint clean, CI steps pass in a `node:24` container except the TODO). ✅ `isMovePlausible` (13/13 tests). ✅ CI `test` job green on GitHub. ✅ VM + Docker + manual dry run. ✅ runner Idle, deploy job written. Remaining: firewall 8080, first green deploy, ruleset `protect-main`, Tests A/B/C. Checklist: [LAB6_REQUIREMENTS.md](../../docs/LAB6_REQUIREMENTS.md), [SETUP.md §7](../../docs/SETUP.md#7-cicd-pipeline-lab-6). *(Lab 6 checkpoints 1–6; Tests A/B/C can be repeated later with real features)* | — | 🟡 In Progress |
 | 1. Feel prototype | Grey-box Level 1. Joystick + jump + feel helpers + swim/climb-out. Camera test. 1-day art spike. Must feel good before moving on. | [Camera Style](./decisions/05-camera-style.md), [Art Style](./decisions/08-art-style.md) | [ ] Pending |
 | 2. Core loop + progression | Reveal, safe/fake platforms, splash → Listener → catch, win/lose, stars, GameState, save, Level Select with locks, Result screen | [Core Loop Rules](./decisions/04-core-loop-rules.md), [Save Data](./decisions/11-save-data.md) | [ ] Pending |
 | 3. Levels 2–5 + offline | Moving / sinking platforms, fog and flicker, difficulty curve, optional Ghost rival; airplane-mode test. *(Checkpoints 3–4)* | [Offline Rival](./decisions/09-offline-rival.md) | [ ] Pending |
@@ -43,9 +43,9 @@
 - [x] 🤖 ESLint (typescript-eslint), `typecheck`, `test` = `node --import tsx --test --test-concurrency=1` (port `MyRoom.test.ts`, drop mocha); lockfile committed (📸 CP2 once the body is in)
 - [x] 🤖 `server/Dockerfile`, `server/compose.yaml` (`8080:2567`), `.dockerignore`
 - [x] 🤖 `.github/workflows/ci-cd.yml` `test` job (SHA-pinned actions) → green on GitHub (`d96878c`) (📸 CP3–CP4)
-- [ ] 🧑 Ubuntu Server VM + Docker + manual dry run + firewall 8080 — SETUP §7.4 (📸 CP5)
-- [ ] 🧑 Register the self-hosted runner as a service (label `deploy`) — SETUP §7.5
-- [ ] 🤖 `deploy` job with the health-check loop → green, SHA visible (📸 CP6)
+- [ ] 🧑 Ubuntu Server VM + Docker + manual dry run ✅ (VMware, Ubuntu 26.04.1, `192.168.95.132`) · firewall 8080 still open — SETUP §7.4 (📸 CP5)
+- [x] 🧑 Register the self-hosted runner as a service (label `deploy`, runner `stillwater-vm`, Idle) — SETUP §7.5
+- [ ] 🤖 `deploy` job with the health-check loop (written, actionlint clean) → green on GitHub, SHA visible (📸 CP6)
 - [ ] 🧑 Ruleset `protect-main`; Tests A/B/C with timings — SETUP §7.6 (🤝 Test B: you choose what to break)
 
 ## Destination
