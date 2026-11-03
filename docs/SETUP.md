@@ -77,7 +77,7 @@
   ```powershell
   New-NetFirewallRule -DisplayName "Colyseus 2567" -Direction Inbound -Protocol TCP -LocalPort 2567 -Action Allow -Profile Private
   ```
-- [x] Unity: **Package Manager → + → Add package from git URL** → `https://github.com/colyseus/colyseus-unity-sdk.git#upm` (`io.colyseus.sdk` 0.18.10 on 2026-11-02, matching the server; the exact commit is pinned in `Packages/packages-lock.json`)
+- [x] Unity: **Package Manager → + → Add package from git URL** → `https://github.com/colyseus/colyseus-unity-sdk.git#upm` (`io.colyseus.sdk` 0.18.10, commit `0bb05cb`, matching the server). **Now embedded** in `client/Packages/io.colyseus.sdk`: upstream ships `Runtime/Example/Schema` as a symlink, which Windows checks out as a plain file with no `.meta`, and Android builds fail (`has no meta file, but it's in an immutable folder`). The embedded copy is identical except that one file is removed. To update the SDK later: re-copy from `Library/PackageCache` and delete that file again.
 - [x] **Project Settings → Player → Other Settings → Allow downloads over HTTP = Always allowed.** Unity 6 blocks plain HTTP by default, and Colyseus matchmakes over HTTP before opening the WebSocket (error: `Insecure connection not allowed`).
 - [x] `NetTest` script (`Assets/_Project/Scripts/Net/NetTest.cs`) in scene `Assets/_Project/Scenes/NetTest.unity` joins `my_room` → Play → the Console prints *Joined room*
 - [x] On the phone: use the laptop's Wi-Fi IP (`ipconfig` → the **Wi-Fi** adapter's IPv4, here `ws://192.168.1.9:2567`; ignore the VMware/WSL/ZeroTier adapters) → ✅ joins from the phone
