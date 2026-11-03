@@ -124,8 +124,8 @@ Then update the Phase table in the [MAP](../planning/still-water/MAP.md) and do 
 - [ ] Phone check: the game connects to `ws://<laptop LAN IP>:8080`
 
 **7.6 End-to-end (Part 7)**
-- [ ] Ruleset `protect-main` (PR required, status check `test`, block force pushes)
-- [ ] **Test A:** branch → change the status-page text → PR → merge → deployed (record the time)
-- [ ] **Test B:** branch → break a logic function (e.g. the winner decision) → PR → `test` red, merge blocked → close the PR
-- [ ] **Test C:** merge an obvious bad text change → roll back via revert PR (Method 1) and via `--no-build` with an old SHA (Method 2)
+- [x] Ruleset `protect-main` (PR required, status check `test`, block force pushes)
+- [x] **Test A:** branch → change the status-page text → PR → merge → deployed (record the time)
+- [x] **Test B:** branch → break a logic function (e.g. the winner decision) → PR → `test` red, merge blocked → close the PR
+- [x] **Test C:** merge an obvious bad text change → roll back via revert PR (Method 1) and via `--no-build` with an old SHA (Method 2)
 - [ ] Fill in the results table in [LAB6_REQUIREMENTS.md](LAB6_REQUIREMENTS.md); collect ≥ 5 deploy timings for the paper

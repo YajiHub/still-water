@@ -200,7 +200,7 @@ laptop (Windows) ──git push / PR──► GitHub ──► job "test" (ubunt
 - **Server addresses the game knows:** `Local dev` (`ws://localhost:2567` / LAN IP:2567), `LAN VM` (LAN IP:8080), optional `Cloud` (Render `wss://`). Chosen in the game's settings or lobby.
 - **Branch ruleset `protect-main`:** PR required (0 approvals when solo), required status check `test`, block force pushes.
 - **Repo settings:** public; Actions → "Require approval for all external contributors" (protects the self-hosted runner).
-- **Rollback:** Method 1 = `git revert` through a PR; Method 2 = in the runner's work folder, `APP_VERSION=<old sha> docker compose -p stillwater up -d --no-build`.
+- **Rollback:** Method 1 = `git revert` through a PR; Method 2 = in the runner's work folder (`~/_work/still-water/still-water/server` on the VM), `APP_VERSION=<old sha> docker compose -p stillwater up -d --no-build` (measured 0.48 s). Method 2 is temporary: the next merge to `main` redeploys the latest SHA.
 - **Tests:** `server/test/` on pure functions in `server/src/logic/` (see [Server Test and Lint Tooling](../planning/still-water/decisions/14-server-test-tooling.md)).
 
 ## 9. Glossary
