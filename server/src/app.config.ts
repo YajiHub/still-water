@@ -45,7 +45,9 @@ const server = defineServer({
 
     // Lab 6 Test A edits this text to prove a merge reaches the VM without touching it.
     app.get("/", (_req, res) => {
-      res.type("html").send(`<h1>Still Water server</h1><p>version ${version()}</p>`);
+      res.type("html").send(
+        `<h1>Still Water server</h1><p>Something in the water is listening.</p><p>version ${version()}</p>`,
+      );
     });
 
     // The deploy job's health-check loop waits until this returns the new commit SHA.

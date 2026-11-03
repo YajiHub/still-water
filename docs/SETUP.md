@@ -120,7 +120,7 @@ Then update the Phase table in the [MAP](../planning/still-water/MAP.md) and do 
 
 **7.5 Self-hosted runner + deploy job (Part 6)**
 - [x] GitHub → Settings → Actions → Runners → New self-hosted runner (Linux x64) → run the shown commands in the VM, with `--labels deploy`, then `sudo ./svc.sh install deploy && sudo ./svc.sh start`
-- [ ] Add the `deploy` job (`needs: test`, main push only, `concurrency`, `APP_VERSION: ${{ github.sha }}`, compose up `--build`, health-check loop, prune) → push → test → deploy green → the browser shows the SHA. 📸 CP6 (runner Idle, green run, SHA matches)
+- [x] Add the `deploy` job (`needs: test`, main push only, `concurrency`, `APP_VERSION: ${{ github.sha }}`, compose up `--build`, health-check loop, prune) → push → test → deploy green → the browser shows the SHA. 📸 CP6 (runner Idle, green run, SHA matches)
 - [ ] Phone check: the game connects to `ws://<laptop LAN IP>:8080`
 
 **7.6 End-to-end (Part 7)**
