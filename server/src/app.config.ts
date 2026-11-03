@@ -46,7 +46,7 @@ const server = defineServer({
     // Lab 6 Test A edits this text to prove a merge reaches the VM without touching it.
     app.get("/", (_req, res) => {
       res.type("html").send(
-        `<h1>Still Water server</h1><p>Something in the water is listening.</p><p>version ${version()}</p>`,
+        `<h1>Still Water server</h1><p style="color:red">DEBUG BUILD - DO NOT SHIP</p><p>Something in the water is listening.</p><p>version ${version()}</p>`,
       );
     });
 
