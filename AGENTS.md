@@ -6,9 +6,9 @@ offline solo, and an online 1v1 race on a **Colyseus (Node 24 + TypeScript)** se
 linted, tested and auto-deployed by GitHub Actions to an Ubuntu VM through a self-hosted runner. Budget ₱0.
 
 ## Current Status & Next Step
-- **Phase:** 0 (setup) 🟡. No code yet. Active plan: [planning/still-water/MAP.md](planning/still-water/MAP.md)
-- **Next:** `execute-phase Phase 0` ([SETUP.md](docs/SETUP.md) §2 onward has the step details)
-- **Latest session:** [docs/sessions/2026-11-02-setup.md](docs/sessions/2026-11-02-setup.md)
+- **Phase:** 0b (Lab 6 CI/CD) 🟡: server, tests, Docker image and the CI `test` job are green on GitHub. Phase 0 🟡: only the Third Person phone build + Checkpoint 1 (GDD + paper-prototype photo) left. Active plan: [planning/still-water/MAP.md](planning/still-water/MAP.md)
+- **Next:** `execute-phase Phase 0b` → SETUP §7.4: VirtualBox + Ubuntu Server 24.04 VM, Docker, manual dry run (📸 CP5), then the self-hosted runner and the `deploy` job.
+- **Latest session:** [docs/sessions/2026-11-03-server-and-ci.md](docs/sessions/2026-11-03-server-and-ci.md)
 
 ## Routing (one home per fact)
 | Need | File |
@@ -19,7 +19,7 @@ linted, tested and auto-deployed by GitHub Actions to an Ubuntu VM through a sel
 | Plan, phases, decisions | [planning/still-water/MAP.md](planning/still-water/MAP.md) + `decisions/` |
 | Grading checklists | [Lab 5](docs/LAB5_REQUIREMENTS.md) · [Lab 6](docs/LAB6_REQUIREMENTS.md) |
 | Machine setup steps | [docs/SETUP.md](docs/SETUP.md) |
-| Session history · my knowledge gaps · QA profile | [docs/sessions/](docs/sessions/) · `docs/learning/gaps.md` (created by wrap-up) · [docs/testing/QA-PROFILE.md](docs/testing/QA-PROFILE.md) |
+| Session history · my knowledge gaps · QA profile | [docs/sessions/](docs/sessions/) · [docs/learning/gaps.md](docs/learning/gaps.md) · [docs/testing/QA-PROFILE.md](docs/testing/QA-PROFILE.md) |
 | Ideas · asset credits | [docs/IDEAS.md](docs/IDEAS.md) · [docs/CREDITS.md](docs/CREDITS.md) |
 
 Conflicts: decision files win → DESIGN.md / SYSTEM_ATLAS.md → GDD.md. Fix the loser.

@@ -105,11 +105,11 @@ Then update the Phase table in the [MAP](../planning/still-water/MAP.md) and do 
 - [x] First pure logic function `isMovePlausible` in `server/src/logic/movement.ts` + tests in `server/test/movement.test.ts` (`node:test` + `tsx`, see the decision)
 - [x] ESLint (typescript-eslint), `typecheck`, `test` scripts in `server/package.json`; `package-lock.json` committed
 - [x] `server/Dockerfile`, `server/compose.yaml` (`8080:2567`, image tagged with `APP_VERSION`), `.dockerignore`
-- [ ] Locally: `npm run lint`, `npm run typecheck`, `npm test` all pass; `http://localhost:2567/` shows version `dev`. 📸 CP2
+- [x] Locally: `npm run lint`, `npm run typecheck`, `npm test` all pass; `http://localhost:2567/` shows version `dev`. 📸 CP2
 
 **7.3 GitHub (Parts 3–4)**
-- [ ] The repo is **public**; Settings → Actions → General → fork PR approval = *Require approval for all external contributors*. 📸 CP3
-- [ ] `.github/workflows/ci-cd.yml` with the `test` job (working directory `server`, written) → push → green in the Actions tab. 📸 CP4
+- [x] The repo is **public**; Settings → Actions → General → fork PR approval = *Require approval for all external contributors*. 📸 CP3
+- [x] `.github/workflows/ci-cd.yml` with the `test` job (working directory `server`) → push → green in the Actions tab. 📸 CP4
 
 **7.4 Ubuntu Server VM (Part 5)**
 - [ ] VirtualBox + Ubuntu Server 24.04 LTS ISO. VM: 2 vCPU, 2–4 GB RAM, 25 GB. Port forwards: **ssh 2222→22**, **game 8080→8080**
