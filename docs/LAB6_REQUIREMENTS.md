@@ -44,12 +44,21 @@ The registration token for the runner expires after about 1 hour.
 ## Results table (Part 7.5): fill in during testing
 | Test | Expected | Actual | Push-to-live (min:sec) | Screenshot |
 |---|---|---|---|---|
-| A – good change | test ✓, deploy ✓, new text + SHA live | | | |
-| B – broken change | test ✗, merge blocked, server unchanged | | n/a | |
-| C – rollback (Method 1) | old content + new SHA live | | | |
-| C – rollback (Method 2) | previous SHA live within seconds | | | |
+| A – good change (PR #3, `5bf732e`) | test ✓, deploy ✓, new text + SHA live | ✅ as expected | 1:13 | `cp-testA.png` |
+| B – broken change (PR #4, `999b4ea`: `<=` → `>=` in `isMovePlausible`) | test ✗, merge blocked, server unchanged | ✅ `npm test` failed (4/9 `isMovePlausible` tests), merge blocked, deploy skipped, server stayed on `5bf732e`; PR closed unmerged | n/a | `cp-testB.png` |
+| C – bad change shipped (PR #5, `0b946bb`: DEBUG banner, tests still green) | bad text live | ✅ banner live | 1:15 | `cp-testC-bad.png` |
+| C – rollback (Method 1: revert PR #6, `1fc7ded`) | old content + new SHA live | ✅ banner gone, `1fc7ded` live | 1:02 (time to restore) | `cp-testC-m1.png` |
+| C – rollback (Method 2: `--no-build` with `5bf732e`) | previous SHA live within seconds | ✅ `5bf732e` live, no CI involved | 0:00.48 (`time`) | `cp-testC-m2.png` |
 
-For the paper, record **at least 5 deploys'** push-to-live times.
+For the paper, record **at least 5 deploys'** push-to-live times (merge → health check confirmed the new SHA).
+
+| # | Commit | Change | Push-to-live |
+|---|---|---|---|
+| 1 | `1f9d0bf` | add deploy job (first deploy, cold Docker cache) | 4:22 (test start → deploy done) |
+| 2 | `5bf732e` | Test A | 1:13 |
+| 3 | `0b946bb` | Test C bad change | 1:15 |
+| 4 | `1fc7ded` | Test C revert | 1:02 |
+| 5 | this docs PR | results table | _fill in_ |
 
 ## Grading
 Final = **50% lab work + 40% paper + 10% submission/GitHub practice.**
