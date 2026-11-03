@@ -1,0 +1,41 @@
+# Lab 6 pipeline: test (GitHub cloud runner) -> deploy (self-hosted
+# runner in the Ubuntu VM, added later).
+# No workflow-level `paths:` filter on purpose: the protect-main ruleset
+# requires the `test` check, and a skipped workflow never reports it
+# (see planning/still-water/decisions/13-lab6-integration.md).
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      # Actions are pinned to commit SHAs: a tag can be moved to other
+      # code, and this pipeline will later run on our own VM.
+      # actions/checkout v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      # actions/setup-node v7.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: server/package-lock.json
+
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test

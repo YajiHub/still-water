@@ -36,11 +36,12 @@ The handout's commands (`npm ci`, `npm run lint`, `npm test`) must work in the `
 | `build` | `npm run clean && tsc -p tsconfig.build.json` (template, unchanged) |
 | `typecheck` | `tsc --noEmit` |
 | `lint` | `eslint .` (`eslint.config.js`: `@eslint/js` recommended + `typescript-eslint` recommended; ignore `build/`, `node_modules/`) |
-| `test` | `node --import tsx --test "test/**/*.test.ts"` (quoted so Node expands the glob the same way on Windows and Linux) |
+| `test` | `node --import tsx --test --test-concurrency=1 "test/**/*.test.ts"` (quoted so Node expands the glob the same way on Windows and Linux; one file at a time because `@colyseus/testing`'s `boot()` always uses port 2568, and parallel test files collided and hung) |
 
 - Convert `test/MyRoom.test.ts` to `node:test` + `node:assert/strict`; remove `mocha` and `@types/mocha`.
 - CI `test` job order: `npm ci` → `npm run lint` → `npm run typecheck` → `npm test`.
-- Check exact ESLint / typescript-eslint versions with `npm view` when installing; don't guess.
+- Installed 2026-11-03: eslint 10.14.0, @eslint/js 10.0.1, typescript-eslint 8.72.1, @types/node 24 (TypeScript 5.9.3). Verified on Linux in a `node:24` container: same results as Windows.
+- `npm audit --omit=dev`: 15 (12 low, 3 moderate), all via Colyseus's OAuth module (`grant` → `request-oauth` → `uuid` < 11.1.1). The only fix offered is downgrading to Colyseus 0.15. Accepted: auth is off and we never call `uuid` with `buf`. Re-check on each Colyseus update.
 
 ## Testable design rule
 Put game rules in **pure functions** under `server/src/logic/` (no Colyseus imports), e.g.:

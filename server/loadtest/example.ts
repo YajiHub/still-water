@@ -9,15 +9,15 @@ export async function main(options: Options) {
 
   console.log("joined successfully!");
 
-  room.onMessage("message-type", (payload: any) => {
+  room.onMessage("message-type", () => {
     // logic
   });
 
-  room.onStateChange((state: any) => {
+  room.onStateChange((state: unknown) => {
     console.log("state change:", state);
   });
 
-  room.onLeave((code: number) => {
+  room.onLeave(() => {
     console.log("left");
   });
 }

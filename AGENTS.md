@@ -25,7 +25,7 @@ linted, tested and auto-deployed by GitHub Actions to an Ubuntu VM through a sel
 Conflicts: decision files win → DESIGN.md / SYSTEM_ATLAS.md → GDD.md. Fix the loser.
 
 ## Commands
-- **Server** (`server/`, run on Windows Node 24): `npm start` (tsx watch, :2567) · `npm test` (mocha) · `npm run build`. `lint` / `typecheck` arrive in Phase 0b.
+- **Server** (`server/`, run on Windows Node 24): `npm start` (tsx watch, :2567) · `npm run lint` · `npm run typecheck` · `npm test` (`node:test`) · `npm run build`. Docker: `docker compose -p stillwater-local up -d --build` (:8080).
 - **Unity:** no CLI tests yet. Verify in the Editor (Play) and on the phone (Build And Run).
 
 ## Never

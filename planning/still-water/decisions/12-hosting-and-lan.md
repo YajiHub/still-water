@@ -1,7 +1,7 @@
 # Hosting and LAN Plan
 
-- **Status:** Locked (2026-11-03) (by: delegated: the user asked for the recommended option). ⚠️ Instructor confirmation of Option A still to get (message below).
-- **Type:** research (+ one question for the instructor)
+- **Status:** Locked (2026-11-03) (by: delegated: the user asked for the recommended option). The instructor is **not** being asked (by: me): we follow the handout and document the deviation below.
+- **Type:** research
 - **Blocks:** Phase 0 (server skeleton), Phase 4
 
 ## Question
@@ -22,7 +22,7 @@ Where does the Colyseus server run for development, for the "same Wi-Fi" require
 | Run the Colyseus server on an Android phone (e.g. Termux/Node) | Technically "phone hosts" | Fragile; not worth it |
 
 ## Plan
-1. **Ask the instructor this week:** "Our online mode uses a dedicated Colyseus server. For the same-Wi-Fi requirement, can we run it on a laptop in the room, plus a cloud deployment for internet play?"
+1. ~~Ask the instructor~~: dropped (by: me). See *Known deviation*.
 2. Dev: `npm run dev` on Windows (:2567); Unity Editor + phone connect via the laptop's LAN IP.
 3. Same-Wi-Fi demo: the pipeline-deployed server in the VM (`ws://<laptop LAN IP>:8080`).
 4. Internet (Option B, optional): the same Docker image on the Render free tier (wss). Before demos, open the app once to wake it.
@@ -44,5 +44,5 @@ Where does the Colyseus server run for development, for the "same Wi-Fi" require
 ## Why (portfolio + lab)
 One authoritative server for both options means one codebase and one set of tests, and the online rule that "the server decides the winner" applies to both. For a portfolio it's a real deployment story: Docker image → CI/CD to a self-hosted VM → the same image in the cloud. A phone-hosted mode (Netcode for GameObjects) would roughly double the online work for no extra rubric points.
 
-## If the instructor says a phone must host
-Fallback: run the server on the laptop's own hotspot (no external network at all), and argue it in the paper. Only if that is also refused, add a separate phone-host mode in Phase 4 (new decision).
+## Known deviation from the handout (write it in the Lab 5 paper)
+The handout's Option A says "one phone hosts, the other joins by IP, no server needed". Ours uses a server on a laptop on the same Wi-Fi (or the laptop's own hotspot, so no outside network is involved). Argue it in the paper: the handout also requires that "the host/server decides the winner", and a dedicated authoritative server meets that more strongly than a phone host. If grading turns out to require a literal phone host, add a phone-host mode in Phase 4 (new decision).

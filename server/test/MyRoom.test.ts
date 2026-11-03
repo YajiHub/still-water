@@ -1,4 +1,5 @@
-import assert from "assert";
+import { describe, it, before, after, beforeEach } from "node:test";
+import assert from "node:assert/strict";
 import { ColyseusTestServer, boot } from "@colyseus/testing";
 
 import appConfig from "../src/app.config.js";
@@ -7,8 +8,8 @@ import { MyRoomState } from "../src/rooms/schema/MyRoomState.js";
 describe("testing your Colyseus app", () => {
   let colyseus: ColyseusTestServer<typeof appConfig>;
 
-  before(async () => colyseus = await boot(appConfig));
-  after(async () => colyseus.shutdown());
+  before(async () => { colyseus = await boot(appConfig); });
+  after(async () => { await colyseus.shutdown(); });
 
   beforeEach(async () => {
     await colyseus.cleanup();
@@ -21,9 +22,7 @@ describe("testing your Colyseus app", () => {
     // `client1` is the client-side `Room` instance reference (same as JavaScript SDK)
     const client1 = await colyseus.connectTo(room);
 
-    // make your assertions
-    assert.strictEqual(client1.sessionId, room.clients[0].sessionId);
-
-    assert.deepStrictEqual(client1.state.toJSON(), { mySynchronizedProperty: "Hello world" });
+    assert.equal(client1.sessionId, room.clients[0].sessionId);
+    assert.deepEqual(client1.state.toJSON(), { mySynchronizedProperty: "Hello world" });
   });
 });

@@ -6,7 +6,7 @@ export class MyRoom extends Room<{ state: MyRoomState }> {
   state = new MyRoomState();
 
   messages = {
-    yourMessageType: (client: Client, message: any) => {
+    yourMessageType: (client: Client, message: unknown) => {
       /**
        * Handle "yourMessageType" message.
        */
@@ -14,13 +14,13 @@ export class MyRoom extends Room<{ state: MyRoomState }> {
     },
   };
 
-  onCreate(options: any) {
+  onCreate() {
     /**
      * Called when a new room is created.
      */
   }
 
-  onJoin(client: Client, options: any) {
+  onJoin(client: Client) {
     /**
      * Called when a client joins the room.
      */

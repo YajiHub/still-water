@@ -6,8 +6,8 @@
 
 | Phase | Scope | Blocking Decisions | Status |
 |---|---|---|---|
-| 0. Decide & set up | ✅ Unity + Android, repo on GitHub, Orientation locked, `client` project (Android, Player settings), Starter Assets touch controls on the phone (First Person Playground), Colyseus hello room joined from Editor + phone (LAN `ws://192.168.1.9:2567`). server lockfile on registry.npmjs.org, QA profile. Remaining: Company Name, Third Person Playground phone build, instructor message. Checklist: [SETUP.md](../../docs/SETUP.md). *(Lab checkpoints 1–2: GDD approved, repo runs)* | — | 🟡 In Progress |
-| 0b. CI/CD pipeline (Lab 6) | Server `/` + `/health`, first pure logic function + tests, ESLint/typecheck, Dockerfile + compose; Ubuntu Server VM + Docker + self-hosted runner; `ci-cd.yml` test → deploy; ruleset `protect-main`; Tests A/B/C. Checklist: [LAB6_REQUIREMENTS.md](../../docs/LAB6_REQUIREMENTS.md), [SETUP.md §7](../../docs/SETUP.md#7-cicd-pipeline-lab-6). *(Lab 6 checkpoints 1–6; Tests A/B/C can be repeated later with real features)* | — | [ ] Pending |
+| 0. Decide & set up | ✅ Unity + Android, repo on GitHub, Orientation locked, `client` project (Android, Player settings), Starter Assets touch controls on the phone (First Person Playground), Colyseus hello room joined from Editor + phone (LAN `ws://192.168.1.9:2567`). server lockfile on registry.npmjs.org, QA profile. Remaining: Company Name, Third Person Playground phone build, GDD + paper-prototype photo (Checkpoint 1). Checklist: [SETUP.md](../../docs/SETUP.md). *(Lab checkpoints 1–2: GDD approved, repo runs)* | — | 🟡 In Progress |
+| 0b. CI/CD pipeline (Lab 6) | ✅ `/` + `/health`, lint/typecheck/`node:test`, Dockerfile + compose (built + healthy locally), `ci-cd.yml` test job (actionlint clean, CI steps pass in a `node:24` container except the TODO). ✅ `isMovePlausible` (13/13 tests). Remaining: first green run on GitHub, VM + Docker, self-hosted runner, deploy job, ruleset `protect-main`, Tests A/B/C. Checklist: [LAB6_REQUIREMENTS.md](../../docs/LAB6_REQUIREMENTS.md), [SETUP.md §7](../../docs/SETUP.md#7-cicd-pipeline-lab-6). *(Lab 6 checkpoints 1–6; Tests A/B/C can be repeated later with real features)* | — | 🟡 In Progress |
 | 1. Feel prototype | Grey-box Level 1. Joystick + jump + feel helpers + swim/climb-out. Camera test. 1-day art spike. Must feel good before moving on. | [Camera Style](./decisions/05-camera-style.md), [Art Style](./decisions/08-art-style.md) | [ ] Pending |
 | 2. Core loop + progression | Reveal, safe/fake platforms, splash → Listener → catch, win/lose, stars, GameState, save, Level Select with locks, Result screen | [Core Loop Rules](./decisions/04-core-loop-rules.md), [Save Data](./decisions/11-save-data.md) | [ ] Pending |
 | 3. Levels 2–5 + offline | Moving / sinking platforms, fog and flicker, difficulty curve, optional Ghost rival; airplane-mode test. *(Checkpoints 3–4)* | [Offline Rival](./decisions/09-offline-rival.md) | [ ] Pending |
@@ -34,15 +34,15 @@
 - [x] 🧑 Windows Firewall rule for TCP 2567 (admin PowerShell) — SETUP §6
 - [x] 🤖 `NetTest` script (`client/Assets/_Project/Scripts/Net/NetTest.cs`, retagged from 🤝) joins the default room from the Editor, then from the phone — SETUP §6
 - [x] 🤖 Fill in `docs/testing/QA-PROFILE.md` (retagged from 🧑)
-- [ ] 🧑 Send the instructor the Lab 6 integration + Option A questions; submit GDD + paper-prototype photo
+- [ ] 🧑 Submit GDD + paper-prototype photo (Checkpoint 1). No instructor questions: we follow the handout and document deviations (by: me).
 
 ### Phase 0b — CI/CD pipeline (Lab 6) · tooling per [Server Test and Lint Tooling](./decisions/14-server-test-tooling.md)
 - [ ] 🧑 SSH already works (remote `yaji.github.com:YajiHub/still-water.git`); take the CP1 screenshot (`node -v`, `npm -v`, `git --version`, `ssh -T`) — SETUP §7.1 (📸 CP1)
-- [ ] 🤖 `GET /` status page + `GET /health` (`{status, version}` from `APP_VERSION`) — SETUP §7.2
-- [ ] 🤝 First pure logic function `isMovePlausible()` in `server/src/logic/`: agent writes the signature + tests, you write the body
-- [ ] 🤖 ESLint (typescript-eslint), `typecheck`, `test` = `node --import tsx --test` (port `MyRoom.test.ts`, drop mocha); lockfile committed (📸 CP2)
-- [ ] 🤖 `server/Dockerfile`, `server/compose.yaml` (`8080:2567`), `.dockerignore`
-- [ ] 🤖 `.github/workflows/ci-cd.yml` `test` job → green (📸 CP3–CP4)
+- [x] 🤖 `GET /` status page + `GET /health` (`{status, version}` from `APP_VERSION`) — SETUP §7.2. Playground moved to `/playground` (dev only).
+- [x] 🤝 First pure logic function `isMovePlausible()` in `server/src/logic/movement.ts`: agent wrote signature + 9 tests, you wrote the body (13/13 pass)
+- [x] 🤖 ESLint (typescript-eslint), `typecheck`, `test` = `node --import tsx --test --test-concurrency=1` (port `MyRoom.test.ts`, drop mocha); lockfile committed (📸 CP2 once the body is in)
+- [x] 🤖 `server/Dockerfile`, `server/compose.yaml` (`8080:2567`), `.dockerignore`
+- [ ] 🤖 `.github/workflows/ci-cd.yml` `test` job (written, SHA-pinned actions) → green on GitHub after push (📸 CP3–CP4)
 - [ ] 🧑 Ubuntu Server VM + Docker + manual dry run + firewall 8080 — SETUP §7.4 (📸 CP5)
 - [ ] 🧑 Register the self-hosted runner as a service (label `deploy`) — SETUP §7.5
 - [ ] 🤖 `deploy` job with the health-check loop → green, SHA visible (📸 CP6)

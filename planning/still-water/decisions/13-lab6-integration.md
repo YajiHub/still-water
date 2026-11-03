@@ -1,6 +1,6 @@
 # Lab 6 Integration
 
-- **Status:** Locked (2026-11-02) (by: me). ⚠️ Instructor confirmation still to get (expected yes).
+- **Status:** Locked (2026-11-02) (by: me). The instructor is not being asked (by: me, 2026-11-03); the README/paper explain the shared repo and the renamed tags.
 - **Type:** grill
 - **Affects:** Phase 0b (CI/CD), Phase 4 (online), repo name, tags, README, both papers
 
@@ -31,7 +31,6 @@ Details:
 ## Consequences
 - From Phase 0b on, changes reach `main` through pull requests with a green `test` check (the human merges their own PRs).
 - Game logic on the server must live in plain, decorator-free modules so it's easy to unit-test (see [Server Test and Lint Tooling](./14-server-test-tooling.md)).
-- If the instructor says no: either split `server/` into its own repo (the game only needs the server URL), or do the sample app and add the pipeline to the game server later.
+- If grading ever requires separate repos: either split `server/` into its own repo (the game only needs the server URL), or do the sample app and add the pipeline to the game server later.
 
-## Message to send the instructor
-> "Can I use my Lab 5 game's Node.js server (Colyseus, TypeScript) as the app for Lab 6, in one repository with separate tags `lab5-v1.0` and `lab6-v1.0`? The pipeline would lint, test and deploy the server folder to my VM through a self-hosted runner."
+

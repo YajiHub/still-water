@@ -1,0 +1,9 @@
+node_modules
+build
+test
+loadtest
+.env*
+!.env.production
+Dockerfile
+compose.yaml
+*.log

@@ -2,7 +2,7 @@
 
 > Condensed from the lab handout (dated Oct 20, 2026; 39 pages). Use this as the acceptance checklist.
 > The instructor allows other stacks than Godot, as long as there is a frontend + backend and the requirements are met.
-> Things to confirm with the instructor are marked ⚠️.
+> We follow the handout as written and don't ask the instructor for exceptions (by: me, 2026-11-03). Deviations are marked ⚠️ and argued in the paper.
 
 ## Minimum requirements (all ten must pass)
 
@@ -21,9 +21,9 @@
 
 ### Online options
 - **Option A (all teams must do it):** two phones on the **same Wi-Fi**, no external server (one phone hosts).
-  ⚠️ **Confirm with the instructor:** our plan is to run the Colyseus server on a laptop on the same Wi-Fi (the phones join by the laptop's IP or a room code). Ask whether this counts for Option A, or whether a phone must be the host.
+  ⚠️ **Deviation:** a Colyseus server on a laptop on the same Wi-Fi (the pipeline-deployed VM, `ws://<laptop IP>:8080`) instead of a phone host. Argued in the paper; see [Hosting and LAN Plan](../planning/still-water/decisions/12-hosting-and-lan.md#known-deviation-from-the-handout-write-it-in-the-lab-5-paper).
 - **Option B (higher grade + bonus):** internet matchmaking (the handout uses Nakama). Our equivalent is Colyseus deployed on Render.
-  ⚠️ Confirm it counts for the "working Nakama (Option B) deployment" bonus.
+  ⚠️ Deviation: Colyseus instead of Nakama for the "working Option B deployment" bonus; the paper explains the equivalence (internet matchmaking + an authoritative server).
 - **Online design rules:** decide whether online affects offline unlocks (ours: it doesn't). Handle disconnects with a message + return to the menu. The host/server, not each phone, decides the winner.
 
 ## Bonus (up to +10)

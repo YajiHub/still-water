@@ -29,7 +29,7 @@ const server = defineServer({
    *
    */
   routes: createRouter({
-    api_hello: createEndpoint("/api/hello", { method: "GET" }, async (ctx) => {
+    api_hello: createEndpoint("/api/hello", { method: "GET" }, async () => {
       return { message: "Hello World" };
     }),
   }),
@@ -40,8 +40,17 @@ const server = defineServer({
    */
   express: (app) => {
 
-    app.get("/hi", (req, res) => {
-      res.send("It's time to kick ass and chew bubblegum!");
+    // APP_VERSION is the commit SHA in deploys (set by CI/CD) and "dev" locally. Read per request so tests can set it.
+    const version = () => process.env.APP_VERSION ?? "dev";
+
+    // Lab 6 Test A edits this text to prove a merge reaches the VM without touching it.
+    app.get("/", (_req, res) => {
+      res.type("html").send(`<h1>Still Water server</h1><p>version ${version()}</p>`);
+    });
+
+    // The deploy job's health-check loop waits until this returns the new commit SHA.
+    app.get("/health", (_req, res) => {
+      res.json({ status: "ok", version: version() });
     });
 
     /**
@@ -58,7 +67,7 @@ const server = defineServer({
      * (It is not recommended to expose this route in a production environment)
      */
     if (process.env.NODE_ENV !== "production") {
-      app.use("/", playground());
+      app.use("/playground", playground());
     }
   }
 });

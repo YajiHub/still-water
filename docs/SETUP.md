@@ -97,18 +97,19 @@ Then update the Phase table in the [MAP](../planning/still-water/MAP.md) and do 
 > Take the checkpoint screenshots (CP1–CP6) as you go and save them to `docs/screenshots/`.
 
 **7.1 Local (Lab 6 Part 1)**
-- [ ] Git identity + SSH key: `ssh-keygen -t ed25519`, add the public key on GitHub, then `ssh -T git@github.com` → switch the remote to `git@github.com:<you>/<repo>.git`. 📸 CP1 (`node -v`, `npm -v`, `git --version`, ssh -T)
+- [x] Git identity + SSH key on GitHub; remote is SSH via the host alias (`yaji.github.com:YajiHub/still-water.git`, `~/.ssh/config`).
+- [ ] 📸 CP1 in PowerShell: `node -v`, `npm -v`, `git --version`, `ssh -T yaji.github.com` (the alias, so the right key is used)
 
 **7.2 Server ready for CI (Part 2)**, which the AI agent can do (see [Server Test and Lint Tooling](../planning/still-water/decisions/14-server-test-tooling.md))
-- [ ] `GET /` status page + `GET /health` → `{status, version}` from `APP_VERSION`
-- [ ] First pure logic function in `server/src/logic/` + tests in `server/test/` (`node:test` + `tsx`, see the decision)
-- [ ] ESLint (typescript-eslint), `typecheck`, `test` scripts in `server/package.json`; `package-lock.json` committed
-- [ ] `server/Dockerfile`, `server/compose.yaml` (`8080:2567`, image tagged with `APP_VERSION`), `.dockerignore`
+- [x] `GET /` status page + `GET /health` → `{status, version}` from `APP_VERSION`
+- [x] First pure logic function `isMovePlausible` in `server/src/logic/movement.ts` + tests in `server/test/movement.test.ts` (`node:test` + `tsx`, see the decision)
+- [x] ESLint (typescript-eslint), `typecheck`, `test` scripts in `server/package.json`; `package-lock.json` committed
+- [x] `server/Dockerfile`, `server/compose.yaml` (`8080:2567`, image tagged with `APP_VERSION`), `.dockerignore`
 - [ ] Locally: `npm run lint`, `npm run typecheck`, `npm test` all pass; `http://localhost:2567/` shows version `dev`. 📸 CP2
 
 **7.3 GitHub (Parts 3–4)**
 - [ ] The repo is **public**; Settings → Actions → General → fork PR approval = *Require approval for all external contributors*. 📸 CP3
-- [ ] `.github/workflows/ci-cd.yml` with the `test` job (working directory `server`) → push → green in the Actions tab. 📸 CP4
+- [ ] `.github/workflows/ci-cd.yml` with the `test` job (working directory `server`, written) → push → green in the Actions tab. 📸 CP4
 
 **7.4 Ubuntu Server VM (Part 5)**
 - [ ] VirtualBox + Ubuntu Server 24.04 LTS ISO. VM: 2 vCPU, 2–4 GB RAM, 25 GB. Port forwards: **ssh 2222→22**, **game 8080→8080**

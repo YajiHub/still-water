@@ -12,8 +12,9 @@ Game rules live in [DESIGN.md](../DESIGN.md); lab acceptance checks in [LAB5](..
 
 ## How to run
 All Node commands run on **Windows Node 24** (from WSL: `cmd.exe /c` / `powershell.exe`), never a Linux Node.
-- **Server (dev):** `cd server && npm start` → `http://localhost:2567`. Routes: `/hi` (text), `/api/hello` (`{"message":"Hello World"}`), `/` (Colyseus playground, dev only), `/monitor` (dev only). Room: `my_room` (until `RaceRoom` exists).
-- **Server tests:** `cd server && npm test`. Check the **exit code**, not only the summary; see [Server Test and Lint Tooling](../../planning/still-water/decisions/14-server-test-tooling.md) for the Windows mocha crash.
+- **Server (dev):** `cd server && npm start` → `http://localhost:2567`. Routes: `/` (status page: `Still Water server` + version), `/health` (`{"status":"ok","version":"dev"}`), `/api/hello`, `/playground` and `/monitor` (dev only; 404 in the Docker image). Room: `my_room` (until `RaceRoom` exists).
+- **Server checks:** `cd server && npm run lint && npm run typecheck && npm test` (all must exit 0). Test files run one at a time (port 2568).
+- **Docker image (local):** `cd server && APP_VERSION=manual docker compose -p stillwater-local up -d --build` → `http://localhost:8080/health` shows `manual` → `docker compose -p stillwater-local down`. Use `-p stillwater-local`, never `-p stillwater` (that's the VM's project name).
 - **Server (deployed, after Phase 0b):** `http://localhost:8080/health` → `{"status":"ok","version":"<commit sha>"}`.
 - **Unity Editor:** open `client/` in Unity 6000.3.27f2. Smoke scene `Assets/_Project/Scenes/NetTest.unity` → Play → Console `[NetTest] Joined room …`. Player test scene `Assets/Starter Assets/Sample/ThirdPersonController/Playground`.
 - **Phone:** Android over USB, Build And Run → `Builds/Still Water.apk`. LAN server address `ws://<laptop Wi-Fi IP>:2567` (2026-11-03: `192.168.1.9`; ignore the VMware/WSL/ZeroTier adapters).

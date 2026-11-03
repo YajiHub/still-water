@@ -1,0 +1,18 @@
+# Run from server/:
+#   APP_VERSION=<commit sha> docker compose -p stillwater up -d --build
+# Rollback (Lab 6 Test C, Method 2):
+#   APP_VERSION=<old sha> docker compose -p stillwater up -d --no-build
+services:
+  server:
+    build:
+      context: .
+      args:
+        APP_VERSION: ${APP_VERSION:-dev}
+    # One image tag per commit, so an old SHA can start again
+    # without rebuilding.
+    image: stillwater-server:${APP_VERSION:-dev}
+    environment:
+      APP_VERSION: ${APP_VERSION:-dev}
+    ports:
+      - "8080:2567"
+    restart: unless-stopped

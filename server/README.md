@@ -20,12 +20,12 @@ Then open http://localhost:2567 for the playground, or /monitor for the monitor.
 - `src/rooms/schema/MyRoomState.ts`: the state synchronized to every client in the room
 - `test/MyRoom.test.ts`: boots the real server and connects a real client
 - `loadtest/example.ts`: scriptable client for `npm run loadtest`
-- `ecosystem.config.cjs`: pm2 configuration, used when deploying to Colyseus Cloud
 
 ## Scripts
 
 - `npm start`: run the server in watch mode (`tsx watch src/index.ts`)
-- `npm test`: run the mocha test suite
+- `npm test`: run the tests (`node:test` + `tsx`)
+- `npm run lint` / `npm run typecheck`: ESLint (typescript-eslint) / `tsc --noEmit`
 - `npm run build`: compile to `build/`
 - `npm run loadtest`: connect N simulated clients with [`@colyseus/loadtest`](https://github.com/colyseus/colyseus-loadtest/)
 

@@ -3,7 +3,7 @@
 > Condensed from the lab handout (dated Oct 20, 2026; 31 pages). Use this as the acceptance checklist.
 > **In this project, the app that goes through the pipeline is the game's Colyseus server (`server/`),
 > not the handout's sample Express app.** See [Lab 6 Integration](../planning/still-water/decisions/13-lab6-integration.md).
-> ⚠️ Instructor approval expected (he is flexible) but not yet confirmed in writing. Get it confirmed.
+> We follow the handout as written and don't ask for exceptions (by: me, 2026-11-03). The shared repo and the `lab6-v1.0` tag are explained in the README and the paper.
 
 ## What the handout asks you to build
 - A small Node.js web API **with automated tests** → ours: the game server + tests on its game logic
