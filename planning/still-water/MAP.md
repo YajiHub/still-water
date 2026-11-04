@@ -8,7 +8,7 @@
 |---|---|---|---|
 | 0. Decide & set up | ✅ Unity + Android, repo on GitHub, Orientation locked, `client` project (Android, Player settings), Starter Assets touch controls on the phone (First Person Playground), Colyseus hello room joined from Editor + phone (LAN `ws://192.168.1.9:2567`). server lockfile on registry.npmjs.org, QA profile. Third Person Playground on the phone (Colyseus SDK embedded in `client/Packages/io.colyseus.sdk` to drop a broken upstream symlink). Remaining: GDD + paper-prototype photo (Checkpoint 1). Checklist: [SETUP.md](../../docs/SETUP.md). *(Lab checkpoints 1–2: GDD approved, repo runs)* | — | 🟡 In Progress |
 | 0b. CI/CD pipeline (Lab 6) | ✅ Server `/` + `/health`, lint/typecheck/`node:test` (13 tests), Docker image, `ci-cd.yml` test → deploy on the self-hosted VM runner (VMware, Ubuntu 26.04.1), ruleset `protect-main`, Tests A/B/C, 5 deploy timings ([results](../../docs/LAB6_REQUIREMENTS.md#results-table-part-75-fill-in-during-testing)), phone reaches `:8080`. Screenshots in `docs/screenshots/` (CP2, CP5, Test B, C-M1, C-M2); CP1, CP3, CP4, CP6, Test A, C-bad still to take (any time, from the Actions history). README + paper: Phase 6. | — | ✅ Done |
-| 1. Feel prototype | Grey-box Level 1 built from `level01.json`; own `PlayerMotor` (jump aids, deep-water swim, climb-out); touch UI (floating stick, drag-to-look, Jump/Climb); first vs third person rigs; 1-day art spike. **Exit bar:** on the phone, 10 jumps in a row with ≤1 miss; misses feel like the player's fault; 1 new tester clears L1 in ≤3 tries unaided; steady 30+ fps; Camera Style + Art Style locked. | [Camera Style](./decisions/05-camera-style.md), [Art Style](./decisions/08-art-style.md) (both resolved inside this phase) | [ ] Pending |
+| 1. Feel prototype | Grey-box Level 1 built from `level01.json`; own `PlayerMotor` (jump aids, deep-water swim, climb-out); touch UI (floating stick, drag-to-look, Jump/Climb); first vs third person rigs; 1-day art spike. **Exit bar:** on the phone, 10 jumps in a row with ≤1 miss; misses feel like the player's fault; 1 new tester clears L1 in ≤3 tries unaided; steady 30+ fps; Camera Style + Art Style locked. | ~~[Camera Style](./decisions/05-camera-style.md)~~ ✅ first person, ~~[Art Style](./decisions/08-art-style.md)~~ ✅ C. Hybrid | [ ] Pending |
 | 2. Core loop + progression | Reveal, safe/fake platforms, splash → Listener → catch, win/lose, stars, GameState, save, Level Select with locks, Result screen | [Core Loop Rules](./decisions/04-core-loop-rules.md), [Save Data](./decisions/11-save-data.md) | [ ] Pending |
 | 3. Levels 2–5 + offline | Moving / sinking platforms, fog and flicker, difficulty curve, optional Ghost rival; airplane-mode test. *(Checkpoints 3–4)* | [Offline Rival](./decisions/09-offline-rival.md) | [ ] Pending |
 | 4. Online | Colyseus RaceRoom, NetClient, lobby (quick match + room code), interpolation, server-decided result, error/disconnect handling, logic tests for every server rule, deployed by the pipeline to the VM (LAN), optional Render for internet play. *(Checkpoint 5)* | [Online Match Format](./decisions/07-online-match-format.md), [Netcode Model](./decisions/10-netcode-model.md) | [ ] Pending |
@@ -50,18 +50,18 @@
 
 ### Phase 1 — Feel prototype · per [Player Controller Architecture](./decisions/15-player-controller-architecture.md), [Grey-box Level Build Method](./decisions/16-grey-box-level-build-method.md), [Control Scheme](./decisions/02-control-scheme.md) touch layout
 Branch `feat/phase1-feel`. Unity checks: EditMode tests in the Test Runner + play on the phone. Server checks: `npm run lint && npm run typecheck && npm test`.
-- [ ] 🤖 Assemblies: `_Project/Scripts/StillWater.asmdef` (+ `Editor/` asmdef) and `_Project/Tests/EditMode/StillWater.Tests.EditMode.asmdef`; one placeholder test green in the Test Runner; `NetTest` still compiles
-- [ ] 🤝 `JumpRules` (pure C#): coyote time, jump buffer, variable jump height. Agent writes signatures + EditMode tests (RED); you write the bodies
-- [ ] 🤖 `MovementConfig` ScriptableObject (DESIGN §3.2–3.3 values, swim speed, look sensitivity); 🧑 create `Configs/MovementConfig.asset` from the Create menu
-- [ ] 🤖 Server: `server/src/levels/level01.json` + `server/src/logic/layout.ts` (parse + validate: unique ids, sizes > 0, every gap ≤ max jump) + `node:test`; CI stays green
-- [ ] 🤖 C# `LevelLayout` + Editor menu *Still Water → Build Level* (pool, water plane, platforms with edge-glow strips, start, tall exit edge + door; copies the JSON to `Configs/Levels/`); 🧑 run it and save `Scenes/Levels/Level01.unity`
-- [ ] 🤖 `PlayerMotor`: walk, jump via `JumpRules`, air control, gravity, deep-water swim at the surface, Climb at a safe edge (not the exit), blob-shadow landing marker
-- [ ] 🤖 Touch UI on `StarterAssetsInputs`: floating move stick (left), drag-to-look (right half), Jump/Climb button, pause; no look stick, no Sprint
-- [ ] 🤖 Camera rigs: `FirstPersonLook` (FOV ~80°, mid-air down-tilt, landing dip) and a third-person Cinemachine rig; an on-screen debug toggle to switch them on the phone
-- [ ] 🧑 Assemble the Player prefab + scene wiring from numbered Editor steps → Build And Run on the phone
-- [ ] 🧑 Tune `MovementConfig` on the phone until the 10-jump bar passes
-- [ ] 🧑 Camera comparison (5 min each) → lock [Camera Style](./decisions/05-camera-style.md) with wayfinder
-- [ ] 🤝 Art spike (≤1 day): URP Volume profiles for options A and C on the grey box, phone screenshots + fps → lock [Art Style](./decisions/08-art-style.md)
+- [x] 🤖 Assemblies: `_Project/Scripts/StillWater.asmdef` (+ `Editor/` asmdef) and `_Project/Tests/EditMode/StillWater.Tests.EditMode.asmdef`; one placeholder test green in the Test Runner; `NetTest` still compiles
+- [x] 🤝 `JumpRules` (pure C#): coyote time, jump buffer, variable jump height. Agent wrote signatures + 15 EditMode tests (RED 15/16); bodies by human (autocomplete) + agent fix of `CanJump`; 16/16 green
+- [x] 🤖 `MovementConfig` ScriptableObject (DESIGN §3.2–3.3 values + Draft extras: `lowJumpMultiplier` 2.5, `swimDepth`, `climbReach`, look/camera numbers); the asset is created by *Build Level* (Editor-verified)
+- [x] 🤖 Server: `server/src/levels/level01.json` + `server/src/logic/layout.ts` (parse + validate: unique ids, sizes > 0, every gap ≤ max jump) + `node:test`; CI stays green (23/23 local, lint + typecheck 0)
+- [x] 🤖 C# `LevelLayout` + Editor menu *Still Water → Build Level* (pool, water plane, platforms with edge-glow strips, start, tall exit edge + door; copies the JSON to `Configs/Levels/`); 🧑 run it and save `Scenes/Levels/Level01.unity`
+- [x] 🤖 `PlayerMotor`: walk, jump via `JumpRules`, air control, gravity, deep-water swim at the surface, Climb at a safe edge (not the exit: raised `exitTopY`, button shows TOO HIGH), blob-shadow landing marker. Editor-verified
+- [x] 🤖 Touch UI on `StarterAssetsInputs` (laptop + phone verified; `FrameRate` caps at 60, stable on the phone): floating move stick (left), drag-to-look (right half), Jump/Climb button; no look stick, no Sprint. IMGUI for the prototype (`shortcut:` → UI Toolkit in Phase 5); pause button moved to Phase 2 with the pause menu
+- [x] 🤖 Camera rigs: `FirstPersonLook` (FOV ~80°, mid-air down-tilt, landing dip) and a third-person orbit rig (own script, not Cinemachine, so both cameras read input the same way); an on-screen debug toggle to switch them on the phone
+- [x] 🧑 New scene → *Still Water → Build Level* → *Still Water → Create Player Rig* → save `Scenes/Levels/Level01.unity` → Build And Run on the phone (the rig menu replaces manual prefab wiring)
+- [ ] 🧑 Tune `MovementConfig` on the phone until the 10-jump bar passes (so far: `lowJumpMultiplier` 2.5 → 1.5 fixed the "ceiling bump" on quick taps)
+- [x] 🧑 Camera comparison (5 min each) → lock [Camera Style](./decisions/05-camera-style.md): **first person** won (immersive; misses felt like the player's fault)
+- [x] 🤝 Art spike (≤1 day): URP Volume profiles for options A and C on the grey box, phone screenshots + fps → lock [Art Style](./decisions/08-art-style.md). Agent built: ceiling + 4 hall lights in *Build Level*, *Still Water → Art Spike → Set Up Looks* (`LookProfile` A/C + Volume profiles in `Art/Looks/`), `LookSwitch` + on-phone **Look** toggle; human: compared on the phone (55–60 fps both), screenshots in `docs/screenshots/` → **C. Hybrid** locked, brightened
 - [ ] 🧑 Exit bar: 1 outside tester clears L1 in ≤3 tries unaided; 30+ fps; note results in the session log
 
 ## Destination
@@ -88,10 +88,10 @@ A submitted lab build: an Android APK of a 3D poolrooms horror platformer with 5
 - [Server Test and Lint Tooling](./decisions/14-server-test-tooling.md) (by: delegated): `node:test` + `tsx` (mocha crashes on Windows), ESLint + typescript-eslint, `tsc --noEmit`; CI: `npm ci` → lint → typecheck → test.
 - [Player Controller Architecture](./decisions/15-player-controller-architecture.md) (by: me): own `PlayerMotor` + pure `JumpRules` (EditMode-tested) + `MovementConfig` SO; swappable first/third-person camera rigs; Starter Assets for input and art only.
 - [Grey-box Level Build Method](./decisions/16-grey-box-level-build-method.md) (by: me): layouts as JSON in `server/src/levels/`; Editor menu *Still Water → Build Level* builds the grey box and copies the JSON into the client; server `node:test` validates every layout.
+- [Camera Style](./decisions/05-camera-style.md) (by: me): first person + jump aids, from the Phase 1 phone test; third person stays as a debug toggle until Phase 5.
+- [Art Style](./decisions/08-art-style.md) (by: me): C. Hybrid horror (fog, cold dim lights, grain), from the Phase 1 phone spike; values in `Art/Looks/Look_C`.
 
 ## Active Frontier (Open & Unblocked)
-- [ ] [Camera Style](./decisions/05-camera-style.md) — prototype (leading: first person + jump aids; third person fallback)
-- [ ] [Art Style](./decisions/08-art-style.md) — prototype
 - [ ] [Core Loop Rules](./decisions/04-core-loop-rules.md) — domain-model
 - [ ] [Save Data](./decisions/11-save-data.md) — domain-model
 - [ ] [Online Match Format](./decisions/07-online-match-format.md) — grill
@@ -102,7 +102,7 @@ A submitted lab build: an Android APK of a 3D poolrooms horror platformer with 5
 - [ ] [Netcode Model](./decisions/10-netcode-model.md) — domain-model (Blocked by: [Online Match Format](./decisions/07-online-match-format.md))
 
 ## Fog of War (Not Yet Specified)
-- Ledge grab and visible first-person legs (only if first person wins the Camera Style test; Phase 1 polish or Phase 2)
+- Ledge grab and visible first-person shoes/legs (first person won Camera Style; Phase 2 or 5)
 - Exact layouts and tuning for Levels 2–5 (needs the Level 1 feel prototype first)
 - Tutorial / first-time hints design for Level 1
 - Audio details: which sounds, sources, mixing

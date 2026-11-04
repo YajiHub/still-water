@@ -52,7 +52,7 @@ Optional pressure: a level timer. *(Open: does every level have a timer, or only
 ### 3.1 Scheme (Locked — [Control Scheme](../planning/still-water/decisions/02-control-scheme.md))
 - **Left thumb:** a floating virtual joystick that appears where the thumb touches the left half of the screen.
 - **Right thumb:** drag anywhere on the right half to **look** (free drag, not a joystick), and one **action button** bottom-right: **Jump** on platforms, **Climb** at a safe platform edge in the water. No Sprint button.
-- **Camera:** third-person follow camera *(Open: fixed angle vs player-rotatable. See [Camera Style](../planning/still-water/decisions/05-camera-style.md))*.
+- **Camera:** first person, drag-to-look, with jump aids: landing shadow, edge glow, FOV 80°, mid-air down-tilt, landing dip (Locked — [Camera Style](../planning/still-water/decisions/05-camera-style.md)).
 - **Orientation:** landscape, auto-rotating between Left and Right (Locked — [Orientation](../planning/still-water/decisions/03-orientation.md)).
 - **Base:** our own `PlayerMotor` with swappable first/third-person camera rigs; Unity **Starter Assets** v2.0.2 supplies only touch input, the robot model and prefabs (Locked — [Player Controller Architecture](../planning/still-water/decisions/15-player-controller-architecture.md)).
 
@@ -188,10 +188,10 @@ Android back gesture = Back on every screen.
 
 ---
 
-## 10. Art direction (Draft — [Art Style](../planning/still-water/decisions/08-art-style.md) is Open)
+## 10. Art direction (Locked — [Art Style](../planning/still-water/decisions/08-art-style.md): C. Hybrid)
 
 - **Mood:** liminal and clinical. Endless pale-tiled pool halls, still green-turquoise water, harsh overhead light, haze in the distance. Scary because it is empty and quiet.
-- **Fidelity:** low-to-mid poly with good lighting. Not HD realism. Options: *clean liminal* (smooth, soft light) or *PSX-style* (low-res textures, vertex jitter, dithering). Pick after a 1-day prototype.
+- **Fidelity:** low-to-mid poly, clean geometry, dark teal fog, cold dim lights, film grain, render scale 0.6 (hybrid look, chosen in the Phase 1 phone spike). Not HD realism.
 - **The look comes from (URP):** fog, bloom on the lights, vignette, film grain, slight chromatic aberration when alerted, flickering lights in L4, caustics projected on the tiles.
 - **Water:** a simple URP Shader Graph water (scrolling normals, depth tint, foam at edges), plus splash particles and ripples.
 - **Player:** a plain, unbranded figure (e.g. a Mixamo character, or a simple low-poly person in a swimsuit or hoodie).

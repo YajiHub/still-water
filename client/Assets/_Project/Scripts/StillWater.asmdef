@@ -1,0 +1,21 @@
+{
+    "name": "StillWater",
+    "rootNamespace": "StillWater",
+    "references": [
+        "ColyseusSDK",
+        "Unity.InputSystem",
+        "Unity.Cinemachine",
+        "Unity.StarterAssets",
+        "Unity.RenderPipelines.Core.Runtime",
+        "Unity.RenderPipelines.Universal.Runtime"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -12,7 +12,7 @@ Memorize the safe path, jump across a flooded nightmare pool, and never make a s
 3D horror platformer + memory challenge. Casual-to-mid-core mobile players aged roughly 13+ who enjoy short horror and skill-based platformers. Atmospheric scares, no gore.
 
 ## 3. Core mechanic and touch controls
-Watch the safe platforms glow in sequence, then cross the water by **running and jumping** between them. Left thumb: floating virtual joystick (move). Right thumb: Jump button. Third-person camera. Fake platforms look the same but sink. Falling in causes a splash that attracts the monster, and you must climb back out before it reaches you.
+Watch the safe platforms glow in sequence, then cross the water by **running and jumping** between them. Left thumb: floating virtual joystick (move). Right thumb: drag to look, Jump/Climb button. First-person camera. Fake platforms look the same but sink. Falling in causes a splash that attracts the monster, and you must climb back out before it reaches you.
 
 ## 4. Goal, win condition, lose condition
 - **Goal:** reach the Exit door on the far side of the pool.

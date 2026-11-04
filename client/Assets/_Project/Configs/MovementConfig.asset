@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa783d1a7eeaa2d408db79d2f770a5a8, type: 3}
+  m_Name: MovementConfig
+  m_EditorClassIdentifier: StillWater::StillWater.Player.MovementConfig
+  runSpeed: 4.5
+  groundAcceleration: 40
+  airControl: 0.6
+  jumpHeight: 1.2
+  gravity: -20
+  lowJumpMultiplier: 1.5
+  coyoteTime: 0.1
+  jumpBuffer: 0.1
+  maxFallSpeed: 20
+  edgeForgiveness: 0.1
+  swimSpeed: 2
+  swimDepth: 1.4
+  climbReach: 0.9
+  climbDuration: 0.35
+  lookDegreesPerScreen: 180
+  firstPersonFov: 80
+  airTiltDegrees: 12
+  landingDip: 0.12
+  thirdPersonFov: 65
+  thirdPersonDistance: 4

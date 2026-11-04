@@ -1,6 +1,6 @@
 # Camera Style
 
-- **Status:** Open. Leading option: **first person** (user's lean, 2026-11-03); settled by the Phase 1 phone test.
+- **Status:** Locked (2026-11-04) (by: me): **C. first person + jump aids**, after the Phase 1 phone test.
 - **Type:** prototype
 - **Blocks:** Phase 1
 - **May reopen:** [Control Scheme](./02-control-scheme.md) (its base is Starter Assets *Third Person*; first person would switch the base to the *First Person* controller from the same v2.0.2 package, already imported)
@@ -40,4 +40,17 @@ In the grey-box Level 1, build **C** (with marker + edge glow; ledge grab can co
 Prototype **C first**; keep **A** as the fallback. Lock C only if missed jumps still feel fair on the phone.
 
 ## Decision
-_(fill in after the prototype)_
+**First person with jump aids (option C).**
+
+**Evidence (Phase 1 phone test, 2026-11-04, mid-range Android, 60 fps):** both rigs on identical movement, 10 jumps each, first person played first. First person felt more immersive, and its misses felt like the player's fault, not the camera's (the "skill, not luck" bar). Exact miss counts weren't recorded; one outside tester re-checks the feel at the Phase 1 exit bar.
+
+**Built and kept:** blob-shadow landing marker, edge glow strips, FOV 80°, mid-air down-tilt, landing dip, coyote time, jump buffer, forgiving colliders (all in `MovementConfig`).
+
+## Consequences
+- `ThirdPersonLook` and the 1st/3rd toggle stay as a **debug tool** until Phase 5, then the toggle is removed from release builds. A third-person shot may come back only for the catch animation (hybrid, above).
+- Still to do for first person, in the phase that needs it:
+  - **Phase 2:** reveal from eye level (raised start or a short high pan during the Reveal); the Listener behind you (3D positional audio + heartbeat).
+  - **Phase 2 or 5:** visible shoes/legs when looking down; ledge grab for barely missed jumps.
+  - **Phase 5:** head-bob with a Settings toggle (motion sickness).
+- [Control Scheme](./02-control-scheme.md) needs no reopen: decision 15 already moved the base to our own `PlayerMotor`.
+- Online (Phase 4): the rival is seen from outside, so remote players need a visible body model (robot from Starter Assets).
