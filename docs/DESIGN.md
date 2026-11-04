@@ -38,7 +38,7 @@ Level start ─► Goal text shown ─► REVEAL: safe platforms glow in sequenc
           ├─ land on a fake platform ─► it sinks after a short delay ─► you fall in
           └─ miss a jump ─► you fall in
      ─► SPLASH: the Listener hears it and swims toward you
-          ├─ climb back onto the last safe platform in time ─► keep going (splash counted)
+          ├─ climb onto any safe platform in time ──────► keep going (splash counted)
           └─ caught ─► LOSE ─► Result screen (Retry / Menu)
      ─► reach the exit door ─► WIN ─► stars ─► unlock next level ─► Result screen (Next / Retry / Menu)
 ```
@@ -51,10 +51,10 @@ Optional pressure: a level timer. *(Open: does every level have a timer, or only
 
 ### 3.1 Scheme (Locked — [Control Scheme](../planning/still-water/decisions/02-control-scheme.md))
 - **Left thumb:** a floating virtual joystick that appears where the thumb touches the left half of the screen.
-- **Right thumb:** a **Jump** button (bottom-right). Possibly a small **Look** drag area on the right half later.
+- **Right thumb:** drag anywhere on the right half to **look** (free drag, not a joystick), and one **action button** bottom-right: **Jump** on platforms, **Climb** at a safe platform edge in the water. No Sprint button.
 - **Camera:** third-person follow camera *(Open: fixed angle vs player-rotatable. See [Camera Style](../planning/still-water/decisions/05-camera-style.md))*.
 - **Orientation:** landscape, auto-rotating between Left and Right (Locked — [Orientation](../planning/still-water/decisions/03-orientation.md)).
-- **Base:** Unity **Starter Assets – Third Person** (free, official), adapted.
+- **Base:** our own `PlayerMotor` with swappable first/third-person camera rigs; Unity **Starter Assets** v2.0.2 supplies only touch input, the robot model and prefabs (Locked — [Player Controller Architecture](../planning/still-water/decisions/15-player-controller-architecture.md)).
 
 ### 3.2 Feel helpers (Draft, required in some form)
 These make jumping on a phone feel fair. Players don't notice them, but they notice when they're missing.
@@ -77,7 +77,8 @@ These make jumping on a phone feel fair. Players don't notice them, but they not
 | Platform size | 2 × 2 m (smaller in later levels) |
 | Gap between platforms | 1.5–2.5 m (L1) → up to 3.2 m (L5) |
 | Swim speed | 2.0 m/s |
-| Climb-out | swim to the edge of the last safe platform and press Jump |
+| Water | deep: swim at the surface, can't touch the bottom, no diving (Locked — [Core Loop Rules](../planning/still-water/decisions/04-core-loop-rules.md#resolved-early-2026-11-04-by-me)) |
+| Climb-out | swim to the edge of **any** safe platform and press Jump; the Exit edge can't be climbed from the water |
 
 All values live in a tunable config (ScriptableObject), never hard-coded.
 
