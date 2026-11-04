@@ -14,7 +14,17 @@ Tap-to-hop between tiles, or free movement with a virtual joystick and a jump bu
 | **Virtual joystick + Jump** | The player controls timing and failure; real platforming skill; closer to the inspiration | Harder to make feel fair on touch; online needs position sync + interpolation |
 
 ## Decision
-**Floating virtual joystick (left half of the screen) + Jump button (bottom-right)**, free 3D movement, third-person camera. Built on **Unity Starter Assets – Third Person** (free, official, includes on-screen mobile controls and the new Input System).
+**Floating virtual joystick (left half of the screen) + Jump button (bottom-right)**, free 3D movement, third-person camera. Starter Assets supplies the on-screen mobile controls and Input System wiring; the movement itself is our own `PlayerMotor` (see [Player Controller Architecture](./15-player-controller-architecture.md)). The camera (first vs third person) is decided in [Camera Style](./05-camera-style.md).
+
+## Touch layout (Locked 2026-11-04, by: me)
+| Control | Where | Behavior |
+|---|---|---|
+| Floating move joystick | left half (appears under the thumb) | walk/run; swims in water |
+| Drag-to-look | anywhere on the right half (not a joystick, like CODM) | camera look; sensitivity is a setting |
+| Action button | bottom-right | **Jump** on platforms; becomes **Climb** next to a safe platform edge in water; disabled in open water |
+| Pause | top-left | pause menu |
+
+No Sprint button: one fixed run speed keeps jump distances predictable. Starter Assets' look joystick and Sprint button are replaced by our own touch UI on top of its input component.
 
 ## Required to make it fair (see [DESIGN.md §3.2](../../../docs/DESIGN.md#32-feel-helpers-draft-required-in-some-form))
 Blob shadow under the player · coyote time · jump buffer · partial air control · slightly forgiving platform colliders · variable jump height. All values tunable.

@@ -1,6 +1,6 @@
 # Core Loop Rules
 
-- **Status:** Open
+- **Status:** Open (water model + climb-out resolved early for Phase 1, see below)
 - **Type:** domain-model
 - **Blocks:** Phase 2
 
@@ -36,6 +36,10 @@ Intro(goal text) → Reveal → Crossing ⇄ InWater → Won | Lost
 5. Can you swim the whole way to the exit? *(Must be prevented: swim speed < monster speed, and the exit has a tall edge you can't climb from the water.)*
 6. Does landing on a fake platform reveal it permanently (so a retry is easier)? *(Proposed: retry uses the same layout; the player's memory improves, which is fine.)*
 7. Does the safe path reshuffle between attempts? Options: never (fixed per level) / on every retry / only when you leave and come back. *(Proposed: fixed per level for the lab. That makes difficulty predictable for playtests. Reshuffling is a post-lab idea.)*
+
+## Resolved early (2026-11-04) (by: me)
+- **Water is deep.** You can't touch the bottom; you swim **at the surface** (head above water), no wading and no diving. Swim speed from `MovementConfig` (Draft 2.0 m/s). Diving is a post-lab idea.
+- **Edge case 4, climb-out:** swim to the edge of **any safe platform** you reach and press Jump to climb up. Sunk fake platforms can't be climbed. The Exit edge is too tall to climb from the water (blocks swimming to the exit, edge case 5).
 
 ## Recommendation
 Accept the proposed answers above unless the user prefers otherwise, then reflect them in DESIGN.md §2, §4 and §6.

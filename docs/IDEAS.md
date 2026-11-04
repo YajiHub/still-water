@@ -27,4 +27,5 @@
 - [tech] A second deploy job that pushes the same server image to Render for internet play.
 
 ## New ideas
+- [gameplay] Diving under the surface (post-lab): see the Listener's shape below you; needs underwater rendering, breath and 3D swim controls.
 - 

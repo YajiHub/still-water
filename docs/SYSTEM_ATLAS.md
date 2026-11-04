@@ -48,12 +48,13 @@
 │   │   │   │   └── Levels/  Level01 … Level05, OnlineArena (if separate)
 │   │   │   ├── Scripts/
 │   │   │   │   ├── Core/       GameState, SaveSystem, SceneLoader, AudioManager, Settings
-│   │   │   │   ├── Player/     PlayerMovement (from Starter Assets), FeelHelpers, Swim, BlobShadow
+│   │   │   │   ├── Player/     PlayerMotor, JumpRules (pure), MovementConfig (SO), FirstPersonLook, BlobShadow
 │   │   │   │   ├── Level/      LevelController, LevelConfig (ScriptableObject), Platform, PatternRevealer, ExitDoor
 │   │   │   │   ├── Monster/    ListenerAI, ListenerConfig (SO)
 │   │   │   │   ├── Offline/    GhostRival (if built)
 │   │   │   │   ├── Net/        NetClient, NetSchema (generated), RemotePlayerView, OnlineLevelController
 │   │   │   │   └── UI/         per-screen controllers, TouchControls, PauseMenu
+│   │   │   ├── Tests/EditMode/ JumpRules tests (Unity Test Framework)
 │   │   │   ├── Configs/        LevelConfig_01 … 05.asset, MovementConfig.asset, ListenerConfig.asset
 │   │   │   ├── Prefabs/  Art/  Audio/  Materials/  Shaders/  Fonts/
 │   │   ├── Starter Assets/                 imported package v2.0.2 (keep separate, edit minimally)
@@ -83,7 +84,7 @@
 
 **Shared level data:** layouts are stored as JSON (`server/src/levels/*.json`) and copied into the client
 (`client/Assets/_Project/Configs/Levels/`) by a small script, so client and server always agree
-on platform positions. *(Draft — confirm in the [Netcode Model](../planning/still-water/decisions/10-netcode-model.md) decision.)*
+on platform positions. *(Locked — [Grey-box Level Build Method](../planning/still-water/decisions/16-grey-box-level-build-method.md): the Editor menu *Still Water → Build Level* builds the scene and copies the JSON.)*
 
 ---
 
@@ -98,7 +99,7 @@ on platform positions. *(Draft — confirm in the [Netcode Model](../planning/st
 | `LevelController` | Runs one level: reveal → cross → win/lose, timer, splash count, stars | Reads a `LevelConfig` ScriptableObject. One reusable script for every level. |
 | `PatternRevealer` | Glows the safe platforms in order | Uses the level's seed |
 | `Platform` | Type (safe/fake/moving/sinking), sink behavior, glow | |
-| `PlayerMovement` | Starter Assets controller + feel helpers + swim state | Values come from `MovementConfig` |
+| `PlayerMotor` | Our movement (one copy for both cameras): move, jump aids via pure `JumpRules`, air control, gravity, swim | Values from `MovementConfig`; input from Starter Assets' `StarterAssetsInputs`. See [Player Controller Architecture](../planning/still-water/decisions/15-player-controller-architecture.md) |
 | `ListenerAI` | Dormant → Alerted → Hunting → Catch/Returning | Offline only. Online, the server drives it and the client just displays it. |
 | `TouchControls` | Floating joystick + jump button + pause | Starter Assets v2 ships `TouchscreenInput` (UI Toolkit `UIDocument`: move + look sticks, jump, sprint, safe-area aware). Adapt it to a floating move stick in Phase 1. |
 | `NetClient` | Connect, matchmake, join by code, send position, receive state, handle errors | Every failure → event → error screen |
