@@ -8,7 +8,7 @@ linted, tested and auto-deployed by GitHub Actions to an Ubuntu VM through a sel
 ## Current Status & Next Step
 - **Phase:** 1 (Feel prototype) next. Phase 0b (Lab 6 CI/CD) ✅: test → deploy to the VM, ruleset, Tests A/B/C done. Phase 0 🟡: only Checkpoint 1 (GDD + paper-prototype photo). Active plan: [planning/still-water/MAP.md](planning/still-water/MAP.md)
 - **Next:** `execute-phase Phase 1`: grey-box Level 1, movement feel, first vs third person test on the phone ([Camera Style](planning/still-water/decisions/05-camera-style.md)).
-- **Latest session:** [docs/sessions/2026-11-03-server-and-ci.md](docs/sessions/2026-11-03-server-and-ci.md)
+- **Latest session:** [docs/sessions/2026-11-04-lab6-pipeline.md](docs/sessions/2026-11-04-lab6-pipeline.md)
 
 ## Routing (one home per fact)
 | Need | File |
