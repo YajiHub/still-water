@@ -6,8 +6,8 @@ offline solo, and an online 1v1 race on a **Colyseus (Node 24 + TypeScript)** se
 linted, tested and auto-deployed by GitHub Actions to an Ubuntu VM through a self-hosted runner. Budget ₱0.
 
 ## Current Status & Next Step
-- **Phase:** 0b (Lab 6 CI/CD) 🟡: server, tests, Docker image and the CI `test` job are green on GitHub. Phase 0 🟡: only the Third Person phone build + Checkpoint 1 (GDD + paper-prototype photo) left. Active plan: [planning/still-water/MAP.md](planning/still-water/MAP.md)
-- **Next:** `execute-phase Phase 0b` → SETUP §7.4: VMware Workstation + Ubuntu Server 24.04 VM, Docker, manual dry run (📸 CP5), then the self-hosted runner and the `deploy` job.
+- **Phase:** 1 (Feel prototype) next. Phase 0b (Lab 6 CI/CD) ✅: test → deploy to the VM, ruleset, Tests A/B/C done. Phase 0 🟡: only Checkpoint 1 (GDD + paper-prototype photo). Active plan: [planning/still-water/MAP.md](planning/still-water/MAP.md)
+- **Next:** `execute-phase Phase 1`: grey-box Level 1, movement feel, first vs third person test on the phone ([Camera Style](planning/still-water/decisions/05-camera-style.md)).
 - **Latest session:** [docs/sessions/2026-11-03-server-and-ci.md](docs/sessions/2026-11-03-server-and-ci.md)
 
 ## Routing (one home per fact)

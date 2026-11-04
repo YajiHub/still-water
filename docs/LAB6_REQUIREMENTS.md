@@ -44,11 +44,11 @@ The registration token for the runner expires after about 1 hour.
 ## Results table (Part 7.5): fill in during testing
 | Test | Expected | Actual | Push-to-live (min:sec) | Screenshot |
 |---|---|---|---|---|
-| A – good change (PR #3, `5bf732e`) | test ✓, deploy ✓, new text + SHA live | ✅ as expected | 1:13 | `cp-testA.png` |
-| B – broken change (PR #4, `999b4ea`: `<=` → `>=` in `isMovePlausible`) | test ✗, merge blocked, server unchanged | ✅ `npm test` failed (4/9 `isMovePlausible` tests), merge blocked, deploy skipped, server stayed on `5bf732e`; PR closed unmerged | n/a | `cp-testB.png` |
-| C – bad change shipped (PR #5, `0b946bb`: DEBUG banner, tests still green) | bad text live | ✅ banner live | 1:15 | `cp-testC-bad.png` |
-| C – rollback (Method 1: revert PR #6, `1fc7ded`) | old content + new SHA live | ✅ banner gone, `1fc7ded` live | 1:02 (time to restore) | `cp-testC-m1.png` |
-| C – rollback (Method 2: `--no-build` with `5bf732e`) | previous SHA live within seconds | ✅ `5bf732e` live, no CI involved | 0:00.48 (`time`) | `cp-testC-m2.png` |
+| A – good change (PR #3, `5bf732e`) | test ✓, deploy ✓, new text + SHA live | ✅ as expected | 1:13 | `cp-testA.png` _(to take)_ |
+| B – broken change (PR #4, `999b4ea`: `<=` → `>=` in `isMovePlausible`) | test ✗, merge blocked, server unchanged | ✅ `npm test` failed (4/9 `isMovePlausible` tests), merge blocked, deploy skipped, server stayed on `5bf732e`; PR closed unmerged | n/a | [`cp-testB.png`](screenshots/cp-testB.png) |
+| C – bad change shipped (PR #5, `0b946bb`: DEBUG banner, tests still green) | bad text live | ✅ banner live | 1:15 | `cp-testC-bad.png` _(to take)_ |
+| C – rollback (Method 1: revert PR #6, `1fc7ded`) | old content + new SHA live | ✅ banner gone, `1fc7ded` live | 1:02 (time to restore) | [`cp-testC-m1.png`](screenshots/cp-testC-m1.png) |
+| C – rollback (Method 2: `--no-build` with `5bf732e`) | previous SHA live within seconds | ✅ `5bf732e` live, no CI involved | 0:00.48 (`time`) | [`cp-testC-m2.png`](screenshots/cp-testC-m2.png) |
 
 For the paper, record **at least 5 deploys'** push-to-live times (merge → health check confirmed the new SHA).
 
@@ -58,7 +58,9 @@ For the paper, record **at least 5 deploys'** push-to-live times (merge → heal
 | 2 | `5bf732e` | Test A | 1:13 |
 | 3 | `0b946bb` | Test C bad change | 1:15 |
 | 4 | `1fc7ded` | Test C revert | 1:02 |
-| 5 | this docs PR | results table | _fill in_ |
+| 5 | `58dbae7` | results table (docs PR #7) | 1:11 |
+
+Median 1:13 for warm deploys (2–5); the cold first deploy (4:22) rebuilt every Docker layer. Restore: Method 1 1:02, Method 2 0.48 s.
 
 ## Grading
 Final = **50% lab work + 40% paper + 10% submission/GitHub practice.**

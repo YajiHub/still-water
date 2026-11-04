@@ -116,16 +116,16 @@ Then update the Phase table in the [MAP](../planning/still-water/MAP.md) and do 
 - [x] Install with user `deploy` + OpenSSH; then `ssh -p 2222 deploy@localhost`
 - [x] `sudo apt install -y docker.io docker-compose-v2 git curl`, enable docker, `usermod -aG docker deploy`, log in again, `docker run --rm hello-world`
 - [x] Manual dry run: clone, `APP_VERSION=manual docker compose -p stillwater up -d --build` (in `server/`), then open `http://localhost:8080/health` in the Windows browser. 📸 CP5. Then `down` and delete the clone.
-- [ ] Windows Firewall: allow inbound TCP **8080** (Private), so phones can reach the deployed server
+- [x] Windows Firewall: allow inbound TCP **8080** (Private), so phones can reach the deployed server
 
 **7.5 Self-hosted runner + deploy job (Part 6)**
 - [x] GitHub → Settings → Actions → Runners → New self-hosted runner (Linux x64) → run the shown commands in the VM, with `--labels deploy`, then `sudo ./svc.sh install deploy && sudo ./svc.sh start`
 - [x] Add the `deploy` job (`needs: test`, main push only, `concurrency`, `APP_VERSION: ${{ github.sha }}`, compose up `--build`, health-check loop, prune) → push → test → deploy green → the browser shows the SHA. 📸 CP6 (runner Idle, green run, SHA matches)
-- [ ] Phone check: the game connects to `ws://<laptop LAN IP>:8080`
+- [x] Phone check: the game connects to `ws://<laptop LAN IP>:8080`
 
 **7.6 End-to-end (Part 7)**
 - [x] Ruleset `protect-main` (PR required, status check `test`, block force pushes)
 - [x] **Test A:** branch → change the status-page text → PR → merge → deployed (record the time)
 - [x] **Test B:** branch → break a logic function (e.g. the winner decision) → PR → `test` red, merge blocked → close the PR
 - [x] **Test C:** merge an obvious bad text change → roll back via revert PR (Method 1) and via `--no-build` with an old SHA (Method 2)
-- [ ] Fill in the results table in [LAB6_REQUIREMENTS.md](LAB6_REQUIREMENTS.md); collect ≥ 5 deploy timings for the paper
+- [x] Fill in the results table in [LAB6_REQUIREMENTS.md](LAB6_REQUIREMENTS.md); collect ≥ 5 deploy timings for the paper
