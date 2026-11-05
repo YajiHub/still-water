@@ -15,23 +15,24 @@ What is each level, and in what order do new mechanics arrive?
 - Mechanics not yet scheduled (assign them when the user plans a level): glowing path Reveal, fake platforms, moving platforms, timed sinking platforms, fog/flicker "lights out".
 
 ## Level 1 — Shallow End (built, Phase 2)
-30 × 33 m · 24 platforms (6 route + 18 dead ends) · gaps 1.5–2.25 m · no Reveal, no fakes · Listener 3.5 m/s, alert 1.5 s, roams as a **Fin** (no glimpses) · timer 120 s, par 60 s.
+30 × 33 m · 24 platforms (6 route + 18 dead ends) · gaps 1.5–2.25 m · no Reveal, no fakes · Listener **8 m/s, alert 0.6 s** (user-tuned in the Editor), roams as a **Fin** (no glimpses) · timer 120 s, par 60 s.
 
-## Level 2 — Deep End (locked 2026-11-05, by: me)
+## Level 2 — Deep End (locked 2026-11-05, retuned after the first playtest, by: me)
 **User's idea:** bigger, larger, wider and harder to complete; no sinking, no glowing path.
+**Playtest 1 (developer, 2026-11-05):** L1 2–4 tries, L2 2–3 tries, L2 well under par (70 s), Listener never threatening → L2 wasn't clearly harder than L1 (lab R1). The Listener was already at 11 m/s / 0 s during that playtest, so it didn't threaten because falls were rare: the difficulty has to come from the layout and the clock. Retuned: harder layout **and** tighter timer/par.
 
-| Setting | Value |
+| Setting | Value (first build → retuned) |
 |---|---|
 | Hall | **40 × 50 m** (L1: 30 × 33) |
-| Platforms | **~40**: one dry route of **~10 jumps** + dead ends (same rule as L1: skipping any route platform makes the exit unreachable, server-tested) |
-| Platform sizes | mostly 2 m, some **1.6 m** |
-| Gaps | **2.0–2.6 m** (L1: 1.5–2.25) |
+| Platforms | 40 → **50**: one dry route of **9 tiles (10 jumps)** + dead ends (skipping any route platform makes the exit unreachable, server-tested) |
+| Platform sizes | 2 m, small **1.6 m**: 25% → **40%** |
+| Gaps | 2.0–2.6 → **2.2–2.7 m** (max allowed 2.8) |
 | Mechanics | same as L1: no Reveal (`revealPath` off), no fakes (`fakePlatforms` off) |
-| Listener | 3.8 m/s, alert 1.2 s, roams as a **Wake** with a glimpse every ~15 s |
-| Timer / par | 150 s / 70 s |
+| Listener | **11 m/s, alert 0 s** (user-tuned in the Editor before playtest 1; you swim at 2.0, so falling far from an edge is nearly always a catch); roams as a **Wake** with a glimpse every ~15 s |
+| Timer / par | 150 / 70 → **110 / 55 s** |
 | Goal text | "Deeper and wider. Find the way across." |
 
-**Built (Phase 3):** `npm run level:gen -- --id level02 --name "Deep End" --width 40 --length 42 --platforms 40 --route 8-10 --gaps 2.0-2.6 --sizes 2,1.6 --small 0.25 --seed 5` → 42 m of water between 4 m decks, 40 platforms (14 × 1.6 m), route `1 → 6 → 10 → 16 → 18 → 23 → 26 → 32 → 37 → 40` (11 jumps, gaps 2.05–2.55 m). At 2.6 m max gap, 42 m only fits ~11 jumps, so the route runs nearly straight; the challenge is the dead ends branching on both sides.
+**Built:** `npm run level:gen -- --id level02 --name "Deep End" --width 40 --length 42 --platforms 50 --route 8-10 --gaps 2.2-2.7 --sizes 2,1.6 --small 0.4 --seed 1 --force` → 42 m of water between 4 m decks, 50 platforms (19 × 1.6 m), route `1 → 5 → 10 → 16 → 24 → 29 → 35 → 42 → 50` (gaps 2.20–2.70 m), dead ends on both sides. At ≤ 2.7 m gaps, 42 m only fits ~10 jumps, so the route runs nearly straight; the challenge is the dead ends and small tiles.
 
 ## Level 3+
 _(plan with the user when Level 2 is playable)_
