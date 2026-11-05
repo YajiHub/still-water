@@ -29,6 +29,10 @@ namespace StillWater.Player
         public bool NearTooHighEdge { get; private set; }
         /// <summary>Third person turns the body toward the move direction; first person lets the camera turn it.</summary>
         public bool FaceMoveDirection { get; set; }
+        /// <summary>Off during the Reveal and after the level ends: no moving or jumping, gravity still works.</summary>
+        public bool InputEnabled { get; set; } = true;
+        /// <summary>The platform under your feet this frame (null in the air, in the water, or on non-platform ground).</summary>
+        public Platform GroundPlatform { get; private set; }
         /// <summary>Fired when the player falls into the water (the Listener hears this in Phase 2).</summary>
         public event Action Splashed;
         /// <summary>The landing disc (not part of the body, so first person keeps it visible).</summary>
@@ -46,6 +50,7 @@ namespace StillWater.Player
         private Vector3 climbFrom, climbTo;
         private float climbTime;
         private readonly Collider[] overlapHits = new Collider[8];
+        private Collider groundHit;
 
         private void Awake()
         {
@@ -59,7 +64,7 @@ namespace StillWater.Player
             float now = Time.time;
             float dt = Time.deltaTime;
 
-            bool jumpHeld = input.jump;
+            bool jumpHeld = InputEnabled && input.jump;
             bool jumpPressed = jumpHeld && !jumpWasHeld;
             jumpWasHeld = jumpHeld;
             if (jumpPressed) lastJumpPressedTime = now;
@@ -108,11 +113,14 @@ namespace StillWater.Player
             verticalVelocity += config.gravity * JumpRules.GravityScale(verticalVelocity, jumpHeld, config.lowJumpMultiplier) * dt;
             verticalVelocity = Mathf.Max(verticalVelocity, -config.maxFallSpeed);
 
+            groundHit = null;
             controller.Move((horizontalVelocity + Vector3.up * verticalVelocity) * dt);
+            GroundPlatform = groundHit != null ? groundHit.GetComponentInParent<Platform>() : null;
             State = grounded || controller.isGrounded ? MotorState.Grounded : MotorState.Airborne;
 
             if (water != null && transform.position.y < water.SurfaceY)
             {
+                GroundPlatform = null;
                 State = MotorState.Swimming;
                 verticalVelocity *= 0.3f; // the water brakes the fall
                 Splashed?.Invoke();
@@ -203,10 +211,17 @@ namespace StillWater.Player
         /// <summary>Stick input turned into a world direction, relative to where the camera looks.</summary>
         private Vector3 WishDirection()
         {
+            if (!InputEnabled) return Vector3.zero;
             Transform view = Camera.main != null ? Camera.main.transform : transform;
             Vector3 forward = Vector3.ProjectOnPlane(view.forward, Vector3.up).normalized;
             Vector3 right = Vector3.ProjectOnPlane(view.right, Vector3.up).normalized;
             return Vector3.ClampMagnitude(forward * input.move.y + right * input.move.x, 1f);
+        }
+
+        // Unity calls this during controller.Move for everything the capsule touches.
+        private void OnControllerColliderHit(ControllerColliderHit hit)
+        {
+            if (hit.normal.y > 0.5f) groundHit = hit.collider; // mostly upward = something we stand on
         }
 
         private void LateUpdate()

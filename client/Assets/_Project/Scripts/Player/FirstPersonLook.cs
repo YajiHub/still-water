@@ -37,7 +37,8 @@ namespace StillWater.Player
         private void OnDisable()
         {
             if (body == null) return;
-            foreach (var r in body) r.shadowCastingMode = ShadowCastingMode.On;
+            foreach (var r in body)
+                if (r != null) r.shadowCastingMode = ShadowCastingMode.On; // null when Play stops: renderers die first
         }
 
         private void LateUpdate()
