@@ -6,9 +6,9 @@ offline solo, and an online 1v1 race on a **Colyseus (Node 24 + TypeScript)** se
 linted, tested and auto-deployed by GitHub Actions to an Ubuntu VM through a self-hosted runner. Budget ₱0.
 
 ## Current Status & Next Step
-- **Phase:** 1 (Feel prototype) 🟡: built + phone-verified on `feat/phase1-feel` (no PR yet); Camera Style = first person, Art Style = C. Hybrid. Left: 10-jump bar + 1 outside tester (deferred). Phase 0 🟡: only Checkpoint 1 (GDD + paper-prototype photo). Active plan: [planning/still-water/MAP.md](planning/still-water/MAP.md)
-- **Next:** `/skill:wayfinder` → plan Phase 2 (core loop) from [Core Loop Rules](planning/still-water/decisions/04-core-loop-rules.md). Unity verification: Test Runner (EditMode, 18) + `Editor.log`; level/player via menus *Still Water → Build Level / Create Player Rig*.
-- **Latest session:** [docs/sessions/2026-11-04-phase1-feel.md](docs/sessions/2026-11-04-phase1-feel.md)
+- **Phase:** 2 (Core loop) 🟡: merged to `main` (PR #13, deployed `532b6d9`), Editor-verified; left: phone playtest. Phase 3 (Levels) next: Level 2 locked in [Level Roster](planning/still-water/decisions/18-level-roster.md). Deferred: Phase 1 10-jump bar + outside tester; Phase 0 Checkpoint 1 (GDD + paper-prototype photo). Active plan: [planning/still-water/MAP.md](planning/still-water/MAP.md)
+- **Next:** `git switch -c feat/phase3-levels` → `/skill:execute-phase Phase 3`. Unity verification: Test Runner (EditMode, 40) + `Editor.log`; menus *Still Water → Build Level / Create Player Rig / Set Up Level Loop*.
+- **Latest session:** [docs/sessions/2026-11-05-phase2-core-loop.md](docs/sessions/2026-11-05-phase2-core-loop.md)
 
 ## Routing (one home per fact)
 | Need | File |
