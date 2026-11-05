@@ -131,23 +131,9 @@ Clients move themselves instantly. Remote players are drawn with interpolation (
 
 ---
 
-## 5. Save data (Draft — [Save Data](../planning/still-water/decisions/11-save-data.md))
+## 5. Save data (Locked — [Save Data](../planning/still-water/decisions/11-save-data.md))
 
-JSON at `Application.persistentDataPath/save.json`. Survives force-close (lab R5).
-
-```json
-{
-  "version": 1,
-  "unlockedLevel": 1,
-  "bestStars": { "1": 3, "2": 1 },
-  "bestTimes": { "1": 42.3 },
-  "settings": { "musicVol": 0.8, "sfxVol": 1.0, "vibration": true, "soundOn": true, "camSensitivity": 1.0, "textScale": 1.0 },
-  "seenTutorial": false,
-  "playerName": ""
-}
-```
-
-Rules: write to a temp file, then replace the real file (so a crash mid-save can't corrupt it). Keep a hidden debug "Reset progress" button for testing.
+JSON at `Application.persistentDataPath/save.json`, a list of per-level records (`JsonUtility` can't do dictionaries). A level is open if it's the first or the previous one is `cleared`. Best stars/time only go up. Written atomically (temp file → replace) **before** the Result screen; corrupt/missing → defaults. Schema and rules: see the decision.
 
 ---
 

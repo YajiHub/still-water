@@ -13,7 +13,7 @@ It decides what the server must simulate and what gets synced. Every extra inter
 ## Sub-questions with proposals
 | # | Question | Options | Proposal |
 |---|---|---|---|
-| 1 | Mode | Race / co-op / sabotage | **Race (1v1)**, same layout + same seed |
+| 1 | Mode | Race / co-op (same map, wait for each other at the door: user idea 2026-11-05) / sabotage | **Race (1v1)**, same layout + same seed; co-op to be weighed when this is grilled |
 | 2 | Which level? | Fixed arena / host picks from levels they've unlocked / random from 1–3 | **Random from a pool of online-only layouts (start with 1)** |
 | 3 | Caught online | Out of the match / time penalty + respawn | **3 s penalty, respawn on the last safe platform** |
 | 4 | One Listener or one per player? | Shared / each player has their own | **One per player** (simpler and fair; each player's monster only sees its owner) |
