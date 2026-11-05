@@ -12,3 +12,7 @@
 - [ ] VM off during a merge: deploy stays queued (~1 day), container restarts with the old SHA, runner then deploys the new one — `compose.yaml` `restart: unless-stopped`, runner service (2026-11-04)
 - [ ] Symlinks in a Git package become plain files on Windows → Unity "no meta file … immutable folder" build error — `client/Packages/io.colyseus.sdk` (2026-11-04)
 - [ ] Rollback Method 1 (revert PR: new SHA, full pipeline, ~1 min) vs Method 2 (`--no-build` old image: seconds, temporary) — SYSTEM_ATLAS §8 (2026-11-04)
+- [ ] Input → jump data flow: `TouchControls` → `StarterAssetsInputs` (mailbox) → `PlayerMotor` + `JumpRules` → `CharacterController.Move` — `client/Assets/_Project/Scripts/` (2026-11-04)
+- [ ] Unity scene links break silently when the linked object is deleted and rebuilt (`water: {fileID: 0}`); find again at runtime — `PlayerMotor.Awake`, `LevelBuilder.BuildLevel` (2026-11-04)
+- [ ] C#: an `if` needs a body; a bool function can `return <condition>;` directly — `JumpRules.CanJump` (2026-11-04)
+- [ ] Builder menus reuse existing assets: new code defaults don't reach an existing `.asset`/`.mat` (change it in the Inspector or delete + rebuild) — `LevelBuilder.GetOrCreateLook`, `GetMaterial` (2026-11-04)

@@ -6,9 +6,9 @@ offline solo, and an online 1v1 race on a **Colyseus (Node 24 + TypeScript)** se
 linted, tested and auto-deployed by GitHub Actions to an Ubuntu VM through a self-hosted runner. Budget ₱0.
 
 ## Current Status & Next Step
-- **Phase:** 1 (Feel prototype) next. Phase 0b (Lab 6 CI/CD) ✅: test → deploy to the VM, ruleset, Tests A/B/C done. Phase 0 🟡: only Checkpoint 1 (GDD + paper-prototype photo). Active plan: [planning/still-water/MAP.md](planning/still-water/MAP.md)
-- **Next:** `execute-phase Phase 1`: grey-box Level 1, movement feel, first vs third person test on the phone ([Camera Style](planning/still-water/decisions/05-camera-style.md)).
-- **Latest session:** [docs/sessions/2026-11-04-lab6-pipeline.md](docs/sessions/2026-11-04-lab6-pipeline.md)
+- **Phase:** 1 (Feel prototype) 🟡: built + phone-verified on `feat/phase1-feel` (no PR yet); Camera Style = first person, Art Style = C. Hybrid. Left: 10-jump bar + 1 outside tester (deferred). Phase 0 🟡: only Checkpoint 1 (GDD + paper-prototype photo). Active plan: [planning/still-water/MAP.md](planning/still-water/MAP.md)
+- **Next:** `/skill:wayfinder` → plan Phase 2 (core loop) from [Core Loop Rules](planning/still-water/decisions/04-core-loop-rules.md). Unity verification: Test Runner (EditMode, 18) + `Editor.log`; level/player via menus *Still Water → Build Level / Create Player Rig*.
+- **Latest session:** [docs/sessions/2026-11-04-phase1-feel.md](docs/sessions/2026-11-04-phase1-feel.md)
 
 ## Routing (one home per fact)
 | Need | File |
@@ -26,7 +26,7 @@ Conflicts: decision files win → DESIGN.md / SYSTEM_ATLAS.md → GDD.md. Fix th
 
 ## Commands
 - **Server** (`server/`, run on Windows Node 24): `npm start` (tsx watch, :2567) · `npm run lint` · `npm run typecheck` · `npm test` (`node:test`) · `npm run build`. Docker: `docker compose -p stillwater-local up -d --build` (:8080).
-- **Unity:** no CLI tests yet. Verify in the Editor (Play) and on the phone (Build And Run).
+- **Unity:** EditMode tests in Window → General → Test Runner (results: `%USERPROFILE%\AppData\LocalLow\YajiHub\Still Water\TestResults.xml`); Play in the Editor; phone via Build And Run.
 
 ## Never
 - Create, edit, move or delete `.meta` files, or hand-edit `.unity`/`.prefab`/`.asset` YAML. Give Editor steps instead.

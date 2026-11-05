@@ -47,15 +47,16 @@
 │   │   │   │   ├── UI/  Title, MainMenu, ModeSelect, LevelSelect, Result, Lobby, OnlineResult, Settings, Credits
 │   │   │   │   └── Levels/  Level01 … Level05, OnlineArena (if separate)
 │   │   │   ├── Scripts/
-│   │   │   │   ├── Core/       GameState, SaveSystem, SceneLoader, AudioManager, Settings
-│   │   │   │   ├── Player/     PlayerMotor, JumpRules (pure), MovementConfig (SO), FirstPersonLook, BlobShadow
-│   │   │   │   ├── Level/      LevelController, LevelConfig (ScriptableObject), Platform, PatternRevealer, ExitDoor
+│   │   │   │   ├── Core/       FrameRate (60 fps cap) · later GameState, SaveSystem, SceneLoader, AudioManager, Settings
+│   │   │   │   ├── Player/     PlayerMotor, JumpRules (pure), MovementConfig (SO), FirstPersonLook, ThirdPersonLook + CameraModeSwitch (debug)
+│   │   │   │   ├── Level/      LevelLayout (JSON), Platform, PoolWater, LookProfile (SO) + LookSwitch (spike) · later LevelController, PatternRevealer, ExitDoor
 │   │   │   │   ├── Monster/    ListenerAI, ListenerConfig (SO)
 │   │   │   │   ├── Offline/    GhostRival (if built)
 │   │   │   │   ├── Net/        NetClient, NetSchema (generated), RemotePlayerView, OnlineLevelController
-│   │   │   │   └── UI/         per-screen controllers, TouchControls, PauseMenu
-│   │   │   ├── Tests/EditMode/ JumpRules tests (Unity Test Framework)
-│   │   │   ├── Configs/        LevelConfig_01 … 05.asset, MovementConfig.asset, ListenerConfig.asset
+│   │   │   │   ├── UI/         TouchControls (IMGUI prototype) · later per-screen controllers, PauseMenu
+│   │   │   │   └── Editor/     LevelBuilder: menus Build Level, Create Player Rig, Art Spike → Set Up Looks
+│   │   │   ├── Tests/EditMode/ JumpRules + LevelLayout tests (Unity Test Framework, 18)
+│   │   │   ├── Configs/        MovementConfig.asset, Levels/*.json (copied by Build Level) · later LevelConfig_01 … 05, ListenerConfig
 │   │   │   ├── Prefabs/  Art/  Audio/  Materials/  Shaders/  Fonts/
 │   │   ├── Starter Assets/                 imported package v2.0.2 (keep separate, edit minimally)
 │   │   └── ThirdParty/                     other imported assets
@@ -99,9 +100,9 @@ on platform positions. *(Locked — [Grey-box Level Build Method](../planning/st
 | `LevelController` | Runs one level: reveal → cross → win/lose, timer, splash count, stars | Reads a `LevelConfig` ScriptableObject. One reusable script for every level. |
 | `PatternRevealer` | Glows the safe platforms in order | Uses the level's seed |
 | `Platform` | Type (safe/fake/moving/sinking), sink behavior, glow | |
-| `PlayerMotor` | Our movement (one copy for both cameras): move, jump aids via pure `JumpRules`, air control, gravity, swim | Values from `MovementConfig`; input from Starter Assets' `StarterAssetsInputs`. See [Player Controller Architecture](../planning/still-water/decisions/15-player-controller-architecture.md) |
+| `PlayerMotor` | Our movement (one copy for both cameras): Grounded/Airborne/Swimming/Climbing; jump aids via pure `JumpRules`, air control, gravity, deep-water swim, Climb when facing a safe edge (≤ `climbMaxAngle`), `Splashed` event, blob shadow | Finds `PoolWater` at runtime if its link is empty (level rebuilds).  Values from `MovementConfig`; input from Starter Assets' `StarterAssetsInputs`. See [Player Controller Architecture](../planning/still-water/decisions/15-player-controller-architecture.md) |
 | `ListenerAI` | Dormant → Alerted → Hunting → Catch/Returning | Offline only. Online, the server drives it and the client just displays it. |
-| `TouchControls` | Floating joystick + jump button + pause | Starter Assets v2 ships `TouchscreenInput` (UI Toolkit `UIDocument`: move + look sticks, jump, sprint, safe-area aware). Adapt it to a floating move stick in Phase 1. |
+| `TouchControls` | Floating move stick (left half), drag-to-look (right half), Jump/Climb/TOO HIGH button, debug camera + look toggles with fps; laptop WASD/Space/right-mouse/C/L | Writes `StarterAssetsInputs`. IMGUI prototype (`shortcut:` → UI Toolkit in Phase 5). Pause comes with the pause menu (Phase 2). |
 | `NetClient` | Connect, matchmake, join by code, send position, receive state, handle errors | Every failure → event → error screen |
 
 ## 4. Server systems (planned)
