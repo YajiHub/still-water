@@ -2,7 +2,7 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";
 
-import { edgeGap, validateLayout, type LevelLayout } from "../src/logic/layout.js";
+import { edgeGap, PLAYER_REACH_M, reachesExit, validateLayout, type LevelLayout } from "../src/logic/layout.js";
 
 const levelsDir = new URL("../src/levels/", import.meta.url);
 
@@ -15,8 +15,9 @@ function tiny(): LevelLayout {
     platformTopY: 0.5,
     exitTopY: 1.1,
     start: { x: 0, z: -2, width: 6, depth: 4 },
-    exit: { x: 0, z: 10, width: 6, depth: 4 },
-    platforms: [{ id: 1, x: 0, z: 4, size: 2 }],
+    exit: { x: 0, z: 8, width: 6, depth: 4 },
+    platforms: [{ id: 1, x: 0, z: 3, size: 2 }],
+    safePath: [1],
   };
 }
 
@@ -64,11 +65,57 @@ describe("validateLayout", () => {
     assert.match(validateLayout(l).join("\n"), /exitTopY must be above platformTopY/);
   });
 
+  it("rejects an empty safe path", () => {
+    const l = tiny();
+    l.safePath = [];
+    assert.match(validateLayout(l).join("\n"), /safePath is empty/);
+  });
+
+  it("rejects a safe path with an unknown platform id", () => {
+    const l = tiny();
+    l.safePath = [1, 9];
+    assert.match(validateLayout(l).join("\n"), /safePath: no platform 9/);
+  });
+
+  it("rejects a safe path with a step too far to jump", () => {
+    const l = tiny();
+    l.platforms.push({ id: 2, x: 0, z: 8, size: 2 }); // 3 m past platform 1
+    l.safePath = [1, 2];
+    assert.match(validateLayout(l).join("\n"), /safePath: 1 → 2 is 3\.00 m/);
+  });
+
+  it("rejects a safe path that doesn't start next to the start deck", () => {
+    const l = tiny();
+    l.platforms.push({ id: 2, x: 0, z: 8, size: 2 });
+    l.safePath = [2];
+    assert.match(validateLayout(l).join("\n"), /safePath: start → 2/);
+  });
+
   it("rejects a platform outside the water", () => {
     const l = tiny();
     l.platforms[0].x = 10;
     assert.match(validateLayout(l).join("\n"), /platform 1: outside the water/);
   });
+});
+
+describe("reachesExit", () => {
+  it("is true when the platforms form a chain", () => {
+    assert.equal(reachesExit(tiny(), [], PLAYER_REACH_M), true);
+  });
+
+  it("is false when the only platform is skipped", () => {
+    assert.equal(reachesExit(tiny(), [1], PLAYER_REACH_M), false);
+  });
+});
+
+describe("level01 (tutorial: no fakes, so the other platforms must be dead ends)", () => {
+  const layout = JSON.parse(readFileSync(new URL("level01.json", levelsDir), "utf8")) as LevelLayout;
+
+  for (const id of layout.safePath) {
+    it(`can't reach the exit without path platform ${id}, even with a ${PLAYER_REACH_M} m jump`, () => {
+      assert.equal(reachesExit(layout, [id], PLAYER_REACH_M), false);
+    });
+  }
 });
 
 describe("level files", () => {

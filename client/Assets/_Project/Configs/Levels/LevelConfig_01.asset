@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a63a23067d1b2fb4394233ad895b3190, type: 3}
+  m_Name: LevelConfig_01
+  m_EditorClassIdentifier: StillWater::StillWater.Level.LevelConfig
+  id: level01
+  displayName: Shallow End
+  sceneName: Level01
+  goalText: Get to the door without falling into the water.
+  layout: {fileID: 4900000, guid: 2aae5dd2e489db1488ebb2392a9e01e1, type: 3}
+  fakePlatforms: 0
+  fakeSinkDelay: 0.4
+  timeLimit: 120
+  parTime: 60
+  revealPath: 0
+  introSeconds: 2
+  glowSecondsPerTile: 0.8
+  revealHeight: 8
+  revealGlideSeconds: 1.5
+  revealFogMultiplier: 0.35
+  listenerAlertDelay: 1.5
+  listenerHuntSpeed: 3.5
+  listenerSpeedPerSplash: 0.1
+  listenerLingerSeconds: 2
+  listenerCatchDistance: 0.9

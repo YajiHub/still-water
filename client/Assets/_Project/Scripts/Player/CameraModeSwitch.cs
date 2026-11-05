@@ -15,6 +15,16 @@ namespace StillWater.Player
 
         public void Toggle() => Apply(!IsFirstPerson);
 
+        /// <summary>Both rigs off, so another script (the Reveal) can drive the camera.</summary>
+        public void DisableAll()
+        {
+            firstPerson.enabled = false;
+            thirdPerson.enabled = false;
+        }
+
+        /// <summary>Hand the camera back to the current rig.</summary>
+        public void Restore() => Apply(IsFirstPerson);
+
         private void Apply(bool firstPersonOn)
         {
             IsFirstPerson = firstPersonOn;

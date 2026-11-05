@@ -52,7 +52,7 @@ Paused from any state: freezes everything, timer included
 ### Rules
 | # | Rule | Locked answer |
 |---|---|---|
-| — | Which platforms hold you | **Only the safe path**, on levels with fakes switched on: every other platform is fake. **Level 1 has no fakes** (amended 2026-11-05, by: me): it introduces the reveal, jumping, splash and Listener; the glow is a guide there. Fakes start in Level 2. Per-level switch `fakePlatforms` in `LevelConfig`. The path is a list of platform ids in the level JSON (`safePath`); the server checks each step is jumpable. |
+| — | Which platforms hold you | **Only the safe path**, on levels with fakes switched on: every other platform is fake. **Level 1 has no fakes** (amended 2026-11-05, by: me): it introduces the reveal, jumping, splash and Listener. It also has **no Reveal** (amended again 2026-11-05 after the Editor test: a fly-along reveal felt messy): goal text only, *"Get to the door without falling into the water."* The level that first uses the glowing path and fakes is chosen in the [Level Roster](./18-level-roster.md) (`revealPath` + `fakePlatforms` in `LevelConfig`). Level 1's other platforms are **dead ends**: one dry route to the exit (server test: skipping any path platform makes the exit unreachable, even with a generous 3.4 m jump). A wrong turn means swimming back (splash → Listener). Fakes start in Level 2. Per-level switch `fakePlatforms` in `LevelConfig`. The path is a list of platform ids in the level JSON (`safePath`); the server checks each step is jumpable. |
 | — | Pattern length | **= the path's length** (not a separate number), so the layout and the reveal can't disagree. |
 | 1 | Move during the Reveal | Frozen: controls off until the pattern ends. |
 | — | How the Reveal is seen (first person) | The camera lifts to an **overhead view** behind the start (~8 m, in config), the path glows tile by tile with the rising chime, then the camera glides back into the player's eyes and controls unlock. |
@@ -67,7 +67,7 @@ Paused from any state: freezes everything, timer included
 | — | Win | Touch the exit door trigger → **save** → Result screen. |
 
 ### Level scale (for Phase 3)
-Level 1 stays as built (30 × 33 m, 25 platforms, gaps 1.5–2.25 m: the teaching level). Each later level is **bigger, sparser and longer** (hall size, path length and gap sizes all grow). **Hard limit:** with the current jump (4.5 m/s, 1.2 m) the reach is ~3 m, so no gap over **2.8 m**. DESIGN §3.3's old "up to 3.2 m" is unreachable; `server/src/logic/layout.ts` `MAX_GAP_M` must drop to 2.8 when Phase 3 starts.
+Level 1 stays as built (30 × 33 m, 25 platforms, gaps 1.5–2.25 m: the teaching level). Each later level is **bigger, sparser and longer** (hall size, path length and gap sizes all grow). **Hard limit:** with the current jump (4.5 m/s, 1.2 m) the reach is ~3 m, so no gap over **2.8 m**. DESIGN §3.3's old "up to 3.2 m" is unreachable; `server/src/logic/layout.ts` `MAX_GAP_M` is 2.8 (lowered 2026-11-05 with `safePath`).
 
 ## Consequences
 - Level JSON gains `safePath` (ids, start → exit order); the layout validation adds: path ids exist, start → first, each step, and last → exit are ≤ max gap.

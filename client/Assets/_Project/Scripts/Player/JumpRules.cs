@@ -38,14 +38,7 @@ namespace StillWater.Player
         /// </summary>
         public static float GravityScale(float verticalVelocity, bool jumpHeld, float lowJumpMultiplier)
         {
-            if (verticalVelocity > 0 && !jumpHeld)
-            {
-                return lowJumpMultiplier;
-            }
-            else
-            {
-                return 1f;
-            }
+            return verticalVelocity > 0 && !jumpHeld ? lowJumpMultiplier : 1f;
         }
     }
 }

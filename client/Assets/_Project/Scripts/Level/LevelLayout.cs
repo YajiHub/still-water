@@ -17,6 +17,8 @@ namespace StillWater.Level
         public RectArea start;
         public RectArea exit;
         public PlatformSpot[] platforms;
+        /// <summary>Platform ids from start to exit: the glowing pattern.</summary>
+        public int[] safePath;
 
         public static LevelLayout FromJson(string json) => JsonUtility.FromJson<LevelLayout>(json);
     }

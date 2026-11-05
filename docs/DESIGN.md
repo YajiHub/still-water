@@ -119,7 +119,7 @@ Working concept: a pale, eyeless, long-limbed thing that lives under the water. 
 | Alerted | player splashes | Surfaces at the spawn point farthest from the player, lets out a sting sound, starts swimming toward the splash. |
 | Hunting | after alert | Swims toward the player's current position at hunt speed. Can't leave the water. |
 | Catch | reaches a player who is in the water | Short catch animation and camera jolt, then LOSE (offline) or a penalty (online, see §8). |
-| Returning | player climbed out before the catch | Lingers ~2 s near the platform, then sinks back to Dormant. |
+| Returning | player climbed out before the catch | Lingers ~2 s near the platform, then sinks back to Dormant **where it is**: the next splash brings it up there (only the first alert starts at the far corner). A splash while it lingers = it keeps hunting at once. |
 
 - Splashes **stack**: each extra splash in a level makes the next alert faster (e.g. +10% hunt speed). This rewards clean runs.
 - Pathfinding: straight-line chase on the water plane, with simple steering around platform pillars (NavMesh on the water plane if needed).
@@ -127,8 +127,8 @@ Working concept: a pale, eyeless, long-limbed thing that lives under the water. 
 ### 5.3 Monster numbers (Draft)
 | Level | Hunt speed | Alert delay (sound → start swimming) |
 |---|---|---|
-| 1 | 2.5 m/s | 1.5 s |
-| 2 | 3.0 m/s | 1.2 s |
+| 1 | 3.5 m/s (raised after the first Editor test; you swim at 2.0) | 1.5 s |
+| 2 | 3.8 m/s | 1.2 s |
 | 3 | 3.3 m/s | 1.0 s |
 | 4 | 3.6 m/s | 0.8 s |
 | 5 | 4.0 m/s | 0.6 s |
@@ -137,12 +137,12 @@ Working concept: a pale, eyeless, long-limbed thing that lives under the water. 
 
 ## 6. Levels (Draft; meets lab R1 "each harder or different")
 
-Lab guidance: L1 teaches, L2 tightens, L3 adds something new, L4 combines it with pressure, L5 uses everything.
+At least 5 levels (the lab's minimum, not a maximum), each planned with the user from their own idea in the [Level Roster](../planning/still-water/decisions/18-level-roster.md). Rows 3–5 below are the **old draft**: ideas only, not decided.
 
 | # | Name (working) | Goal text shown at start | What's new or harder | Pattern length / glow time per tile | Timer |
 |---|---|---|---|---|---|
-| 1 | Shallow End | "Remember the glowing path. Reach the door." | Teaches the basics. Wide platforms, short gaps, first-time hints. | path length (~7) / 0.8 s | 120 s (generous) |
-| 2 | Deep End | "Only trust what glowed." | **New:** fake platforms (memory test begins). Bigger hall, longer path, wider gaps, faster monster | 7 / 0.7 s | 120 s |
+| 1 | Shallow End | "Get to the door without falling into the water." | Teaches moving, jumping and the water danger only: **no Reveal, no fakes**. Most platforms are dead ends; one dry route. Short gaps. | none (no Reveal) | 120 s (generous) |
+| 2 | Deep End | "Deeper and wider. Find the way across." | **Harder, same rules:** 40 × 50 m hall, ~40 platforms (some 1.6 m), ~10-jump route through dead ends, gaps 2.0–2.6 m. No Reveal, no fakes (Locked — [Level Roster](../planning/still-water/decisions/18-level-roster.md)). Bigger hall, longer path, wider gaps, faster monster | 7 / 0.7 s | 120 s |
 | 3 | Current | "Time your jumps. Some platforms drift." | **New:** moving platforms | 7 / 0.6 s | 120 s |
 | 4 | Lights Out | "The lights are failing. Trust your memory." | **New:** fog and flickering lights, timed sinking platforms | 8 / 0.5 s, shown once | 100 s |
 | 5 | The Drain | "Everything you've learned. Get out." | Long path with every mechanic, smaller platforms, fastest monster | 10 / 0.45 s | 120 s |

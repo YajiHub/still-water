@@ -24,12 +24,33 @@ export interface LevelLayout {
   start: Rect;
   exit: Rect;
   platforms: PlatformSpot[];
+  safePath: number[]; // platform ids, start → exit: the glowing pattern
 }
 
-// Longest gap a layout may ask for: DESIGN §3.3 says gaps grow to 3.2 m by Level 5.
-export const MAX_GAP_M = 3.2;
+// Longest gap a layout may ask for: the jump (4.5 m/s, 1.2 m) reaches ~3 m (Core Loop Rules).
+export const MAX_GAP_M = 2.8;
 
 const toRect = (p: PlatformSpot): Rect => ({ x: p.x, z: p.z, width: p.size, depth: p.size });
+
+// Generous reach for "can a player get there at all": a strong jump (~3.1 m) plus edge forgiveness.
+export const PLAYER_REACH_M = 3.4;
+
+/** Can you get from the start to the exit by jumps of ≤ `reach` metres, without using the platforms in `skipIds`? */
+export function reachesExit(layout: LevelLayout, skipIds: number[], reach: number): boolean {
+  const nodes = [layout.start, ...layout.platforms.filter((p) => !skipIds.includes(p.id)).map(toRect), layout.exit];
+  const reached = new Set<number>([0]);
+  const queue = [0];
+  while (queue.length > 0) {
+    const i = queue.shift()!;
+    nodes.forEach((n, j) => {
+      if (!reached.has(j) && edgeGap(nodes[i], n) <= reach) {
+        reached.add(j);
+        queue.push(j);
+      }
+    });
+  }
+  return reached.has(nodes.length - 1);
+}
 
 /** Shortest distance of open water between two rectangles (0 if they touch or overlap). */
 export function edgeGap(a: Rect, b: Rect): number {
@@ -58,20 +79,25 @@ export function validateLayout(layout: LevelLayout): string[] {
     if (!(r.width > 0 && r.depth > 0)) errors.push(`${name}: width and depth must be > 0`);
   }
 
-  // Walk from the start over every jumpable gap; the exit must be reached.
-  const nodes = [layout.start, ...layout.platforms.map(toRect), layout.exit];
-  const reached = new Set<number>([0]);
-  const queue = [0];
-  while (queue.length > 0) {
-    const i = queue.shift()!;
-    nodes.forEach((n, j) => {
-      if (!reached.has(j) && edgeGap(nodes[i], n) <= MAX_GAP_M) {
-        reached.add(j);
-        queue.push(j);
-      }
-    });
+  // The safe path must be a chain of jumps: start → first → … → last → exit.
+  if (layout.safePath.length === 0) errors.push("safePath is empty");
+  const byId = new Map(layout.platforms.map((p) => [p.id, toRect(p)]));
+  const missing = layout.safePath.filter((id) => !byId.has(id));
+  for (const id of missing) errors.push(`safePath: no platform ${id}`);
+  if (layout.safePath.length > 0 && missing.length === 0) {
+    const steps: [string, Rect][] = [
+      ["start", layout.start],
+      ...layout.safePath.map((id): [string, Rect] => [String(id), byId.get(id)!]),
+      ["exit", layout.exit],
+    ];
+    for (let i = 1; i < steps.length; i++) {
+      const gap = edgeGap(steps[i - 1][1], steps[i][1]);
+      if (gap > MAX_GAP_M) errors.push(`safePath: ${steps[i - 1][0]} → ${steps[i][0]} is ${gap.toFixed(2)} m (max ${MAX_GAP_M})`);
+    }
   }
-  if (!reached.has(nodes.length - 1)) errors.push(`exit is not reachable with jumps of ≤ ${MAX_GAP_M} m`);
+
+  // Walk from the start over every jumpable gap; the exit must be reached.
+  if (!reachesExit(layout, [], MAX_GAP_M)) errors.push(`exit is not reachable with jumps of ≤ ${MAX_GAP_M} m`);
 
   return errors;
 }

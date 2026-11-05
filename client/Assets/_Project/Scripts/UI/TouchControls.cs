@@ -11,7 +11,7 @@ namespace StillWater.UI
 {
     /// <summary>
     /// Phase 1 touch layout (Control Scheme decision): left half = floating move stick, right half = drag to look,
-    /// bottom-right = Jump (becomes Climb next to a safe edge in the water), top-right = camera toggle + FPS.
+    /// bottom-right = Jump (becomes Climb next to a safe edge in the water), top-left = pause, top-right = camera toggle + FPS.
     /// Writes into StarterAssetsInputs, which PlayerMotor and the camera rigs read.
     /// Laptop: WASD move, Space jump, hold right mouse (or arrow keys) to look, C switches camera, L switches look.
     /// In the Editor a left-click also acts as a finger.
@@ -31,6 +31,9 @@ namespace StillWater.UI
         private const float ButtonRadiusOfScreen = 0.09f;
         private const float DeadZone = 0.1f;
         private const float KeyLookDegreesPerSecond = 120f; // Editor arrow keys only
+
+        /// <summary>The pause button (top-left) or Esc was pressed.</summary>
+        public event System.Action PausePressed;
 
         private int moveId = None, lookId = None, jumpId = None;
         private Vector2 moveOrigin, moveCurrent, lookLast;
@@ -61,6 +64,16 @@ namespace StillWater.UI
             }
         }
 
+        private Rect PauseRect
+        {
+            get
+            {
+                Rect safe = Screen.safeArea;
+                float s = Screen.height * 0.1f;
+                return new Rect(safe.xMin + 16f, safe.yMax - s - 16f, s, s);
+            }
+        }
+
         // Just below the camera toggle.
         private Rect LookRect
         {
@@ -81,6 +94,13 @@ namespace StillWater.UI
 
         private void OnDisable()
         {
+            moveId = lookId = jumpId = None;
+            if (input != null)
+            {
+                input.MoveInput(Vector2.zero);
+                input.LookInput(Vector2.zero);
+                input.JumpInput(false);
+            }
 #if UNITY_EDITOR
             TouchSimulation.Disable();
 #endif
@@ -99,7 +119,8 @@ namespace StillWater.UI
 
                 if (touch.phase == TouchPhase.Began)
                 {
-                    if (jumpId == None && Vector2.Distance(p, ButtonCenter) <= ButtonRadius) jumpId = id;
+                    if (PauseRect.Contains(p)) PausePressed?.Invoke();
+                    else if (jumpId == None && Vector2.Distance(p, ButtonCenter) <= ButtonRadius) jumpId = id;
                     else if (ToggleRect.Contains(p)) { if (cameraSwitch != null) cameraSwitch.Toggle(); }
                     else if (lookSwitch != null && LookRect.Contains(p)) lookSwitch.Next();
                     else if (p.x < Screen.width * 0.5f && moveId == None) { moveId = id; moveOrigin = p; moveCurrent = p; }
@@ -147,6 +168,7 @@ namespace StillWater.UI
                 jump |= keyboard.spaceKey.isPressed;
                 if (keyboard.cKey.wasPressedThisFrame && cameraSwitch != null) cameraSwitch.Toggle();
                 if (keyboard.lKey.wasPressedThisFrame && lookSwitch != null) lookSwitch.Next();
+                if (keyboard.escapeKey.wasPressedThisFrame) PausePressed?.Invoke();
                 Vector2 arrows = new Vector2(
                     (keyboard.rightArrowKey.isPressed ? 1f : 0f) - (keyboard.leftArrowKey.isPressed ? 1f : 0f),
                     (keyboard.upArrowKey.isPressed ? 1f : 0f) - (keyboard.downArrowKey.isPressed ? 1f : 0f));
@@ -184,6 +206,11 @@ namespace StillWater.UI
             float alpha = swimming && !canClimb ? 0.15f : (jumpId != None ? 0.7f : 0.4f);
             DrawCircle(ButtonCenter, ButtonRadius, new Color(1f, 1f, 1f, alpha));
             GUI.Label(ToGui(ButtonCenter, ButtonRadius), label, labelStyle);
+
+            Rect pr = PauseRect;
+            var pauseGui = new Rect(pr.x, Screen.height - pr.yMax, pr.width, pr.height);
+            GUI.Box(pauseGui, GUIContent.none);
+            GUI.Label(pauseGui, "II", labelStyle);
 
             // Debug: camera toggle + FPS (Phase 1 exit bar needs 30+).
             Rect r = ToggleRect;

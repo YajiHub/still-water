@@ -19,12 +19,13 @@ namespace StillWater.Tests
         {
             var layout = LoadLevel01();
             Assert.AreEqual("level01", layout.id);
-            Assert.AreEqual(25, layout.platforms.Length);
+            Assert.AreEqual(24, layout.platforms.Length);
             Assert.AreEqual(25.5f, layout.water.maxZ);
             Assert.AreEqual(0.5f, layout.platformTopY);
             Assert.AreEqual(1.1f, layout.exitTopY);
             Assert.AreEqual(30f, layout.start.width);
             Assert.AreEqual(27.5f, layout.exit.z);
+            CollectionAssert.AreEqual(new[] { 2, 6, 11, 15, 20, 24 }, layout.safePath);
         }
 
         [Test]
