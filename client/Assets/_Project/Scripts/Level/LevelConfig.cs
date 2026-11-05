@@ -1,3 +1,4 @@
+using StillWater.Monster;
 using UnityEngine;
 
 namespace StillWater.Level
@@ -28,10 +29,15 @@ namespace StillWater.Level
         [Tooltip("fog thickness during the Reveal, as a share of the normal fog (lower = clearer view)")] [Range(0f, 1f)] public float revealFogMultiplier = 0.35f;
 
         [Header("Listener")]
+        [Tooltip("How it shows itself while roaming: Fin = back ridge above the water, Wake = ripples only, Hidden = only its sound")] public ListenerRoamMode listenerRoamMode = ListenerRoamMode.Fin;
+        [Tooltip("m/s while roaming (nothing heard)")] public float listenerRoamSpeed = 1f;
+        [Tooltip("seconds it pauses at each roam point")] public float listenerRoamPause = 1.5f;
+        [Tooltip("Wake/Hidden: seconds between glimpses of its back (0 = never)")] public float listenerGlimpseEvery = 0f;
+        [Tooltip("seconds each glimpse lasts")] public float listenerGlimpseSeconds = 2.5f;
         [Tooltip("seconds from a splash until it starts swimming")] public float listenerAlertDelay = 1.5f;
         [Tooltip("m/s (you swim at 2.0)")] public float listenerHuntSpeed = 3.5f;
         [Tooltip("extra speed per splash after the first (0.1 = +10%)")] public float listenerSpeedPerSplash = 0.1f;
-        [Tooltip("seconds it lingers after you climb out, before sinking back")] public float listenerLingerSeconds = 2f;
+        [Tooltip("seconds it lingers where it last heard you, before roaming again")] public float listenerLingerSeconds = 2f;
         [Tooltip("metres: this close to a swimming player = caught")] public float listenerCatchDistance = 0.9f;
     }
 }

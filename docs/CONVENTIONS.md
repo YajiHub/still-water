@@ -79,6 +79,8 @@ globally linked in `~/.pi/agent/skills/` for pi):
 **Ownership tags** on every plan task: 🧑 human writes · 🤝 together (agent writes skeleton + test, human writes the body) ·
 🤖 agent writes. Default is 🤖, with 1–2 small core-logic tasks per phase as 🧑/🤝. The human can retag anything.
 Unity Editor work (scenes, Inspector wiring, project settings, builds) is 🧑 by nature: the agent gives numbered steps.
+**Steps are never vague** (user rule, 2026-11-05): every step names the exact window/menu path, the asset path, the
+field and the value, which scene must be open, and what you should see when it worked. No "switch X to Y" shorthand.
 
 For 🤖 work:
 - Small, single-feature steps from the MAP. Before a change: one or two lines on what and why.

@@ -31,5 +31,6 @@ Probably **C (hybrid)**: the easiest to make scary at low cost, and it runs well
 ## Consequences
 - Values live in `Assets/_Project/Art/Looks/Look_C.asset` + `Volume_C.asset`; tune there, not in code. Look A stays only as the spike's comparison until Phase 5, then the Look toggle is removed.
 - Assets must suit low light + fog: mid-poly, simple textures; the edge glow stays the main readability cue (also L4 "Lights Out").
+- **Dark-look readability (Phase 3, by: me, 2026-11-05):** C was too dark to read the Listener and big halls, so the user tested in A. Added: hall lamps every ~12 m (Build Level, needs the **Forward+** renderer on Mobile), a cold **headlamp** spot light from the player's eyes, and a faint **glow on the Listener** skin/wake. Values on `Look_C` (A: headlamp off, no glow).
 - Brightness on different phones varies: a **Brightness/Gamma** slider in Settings (Phase 5).
 - Water shader, caustics and splash particles (DESIGN §10) are built for this look in Phase 5.

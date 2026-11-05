@@ -31,7 +31,7 @@ namespace StillWater.Editor
         private const string LevelScenesDir = "Assets/_Project/Scenes/Levels";
 
         // Grey-box geometry only (looks, not gameplay): pool depth, wall height, slab thickness.
-        private const float PoolDepth = 3f, WallHeight = 10f, LightHeight = 3.1f, WallThickness = 0.5f, SlabBelowWater = 0.3f, GlowWidth = 0.08f;
+        private const float PoolDepth = 3f, WallHeight = 10f, LightHeight = 3.1f, WallThickness = 0.5f, SlabBelowWater = 0.3f, GlowWidth = 0.08f, LampSpacing = 12f;
 
         [MenuItem("Still Water/Build Level...")]
         private static void BuildLevelMenu()
@@ -78,13 +78,16 @@ namespace StillWater.Editor
             Box("Ceiling", root, new Vector3(midX, top + WallHeight + 0.1f, (minZ + maxZ) / 2f), new Vector3(widthX + 2f * WallThickness, 0.2f, maxZ - minZ + 2f * WallThickness), wall, true);
             var lights = new GameObject("HallLights");
             lights.transform.SetParent(root.transform, false);
-            // 2 × 2 grid: URP Mobile lights each object with at most 4 extra lights, so big walls get all of them.
-            foreach (float fx in new[] { 0.25f, 0.75f })
-            foreach (float fz in new[] { 0.25f, 0.75f })
+            // A lamp about every LampSpacing metres, so big halls have no black zones. Needs the Forward+ renderer:
+            // plain Forward lights each object (the one big water plane too) with only 4 extra lights.
+            int lampsX = Mathf.Max(2, Mathf.RoundToInt(widthX / LampSpacing));
+            int lampsZ = Mathf.Max(2, Mathf.RoundToInt((maxZ - minZ) / LampSpacing));
+            for (int ix = 0; ix < lampsX; ix++)
+            for (int iz = 0; iz < lampsZ; iz++)
             {
                 var go = new GameObject("HallLight");
                 go.transform.SetParent(lights.transform, false);
-                go.transform.position = new Vector3(w.minX + widthX * fx, top + LightHeight, minZ + (maxZ - minZ) * fz); // hanging lamps; the tall hall leaves room for the Reveal camera
+                go.transform.position = new Vector3(w.minX + widthX * (ix + 0.5f) / lampsX, top + LightHeight, minZ + (maxZ - minZ) * (iz + 0.5f) / lampsZ); // hanging lamps; the tall hall leaves room for the Reveal camera
                 var l = go.AddComponent<Light>();
                 l.type = LightType.Point;
                 l.shadows = LightShadows.None;
@@ -243,10 +246,16 @@ namespace StillWater.Editor
                 look.ambientColor = new Color(0.13f, 0.16f, 0.18f);
                 look.reflectionIntensity = 0.3f;
                 look.lightColor = new Color(0.75f, 0.90f, 1f);
-                look.lightIntensity = 3f;
-                look.lightRange = 20f;
                 look.renderScale = 0.6f;
+                DarkLookReadability(look);
             });
+            // Look_C made before the headlamp existed: give it the readability values once.
+            if (c.headlampIntensity <= 0f)
+            {
+                DarkLookReadability(c);
+                EditorUtility.SetDirty(c);
+                AssetDatabase.SaveAssets();
+            }
 
             var lookGo = GameObject.Find("Look");
             if (lookGo == null)
@@ -359,7 +368,7 @@ namespace StillWater.Editor
 
             EditorSceneManager.MarkSceneDirty(scene);
             Selection.activeObject = config;
-            Debug.Log($"Level loop set up for {scene.name} (config {configPath}). Save the scene, then run Create Menu Scene once.");
+            Debug.Log($"Level loop set up for {scene.name} (config {configPath}). Save the scene, then run Update Build List (or Create Menu Scene if there is no Menu yet).");
         }
 
         [MenuItem("Still Water/Create Menu Scene")]
@@ -373,13 +382,27 @@ namespace StillWater.Editor
             new GameObject("Menu").AddComponent<MainMenu>();
             EnsureFolder(Path.GetDirectoryName(MenuScenePath).Replace('\\', '/'));
             EditorSceneManager.SaveScene(scene, MenuScenePath);
+            UpdateBuildList();
+        }
 
-            // Build list: Menu first (the app opens on it), then every level scene.
-            var scenes = new List<EditorBuildSettingsScene> { new EditorBuildSettingsScene(MenuScenePath, true) };
+        // Run after saving a new level scene. Leaves the Menu scene itself alone.
+        [MenuItem("Still Water/Update Build List")]
+        private static void UpdateBuildList()
+        {
+            if (AssetDatabase.LoadAssetAtPath<SceneAsset>(MenuScenePath) == null)
+            {
+                Debug.LogError($"No {MenuScenePath}: run Create Menu Scene first.");
+                return;
+            }
+            // Menu first (the app opens on it), then every level scene in name order (Level01, Level02, …).
+            var levels = new List<string>();
             foreach (string guid in AssetDatabase.FindAssets("t:Scene", new[] { LevelScenesDir }))
-                scenes.Add(new EditorBuildSettingsScene(AssetDatabase.GUIDToAssetPath(guid), true));
+                levels.Add(AssetDatabase.GUIDToAssetPath(guid));
+            levels.Sort(string.CompareOrdinal);
+            var scenes = new List<EditorBuildSettingsScene> { new EditorBuildSettingsScene(MenuScenePath, true) };
+            foreach (string path in levels) scenes.Add(new EditorBuildSettingsScene(path, true));
             EditorBuildSettings.scenes = scenes.ToArray();
-            Debug.Log($"Menu scene saved; build list = Menu + {scenes.Count - 1} level scene(s).");
+            Debug.Log($"Build list = Menu + {levels.Count} level scene(s): {string.Join(", ", levels.ConvertAll(p => Path.GetFileNameWithoutExtension(p)))}.");
         }
 
         // Existing assets are reused, so your tuning in the Inspector survives running this again.
@@ -406,6 +429,19 @@ namespace StillWater.Editor
             AssetDatabase.CreateAsset(look, lookPath);
             AssetDatabase.SaveAssets();
             return look;
+        }
+
+        // Readability in the dark look (Phase 3): more, smaller lamp pools (the grid in Build Level), a headlamp where
+        // you look, and a faint glow on the Listener. All tunable on Look_C afterwards.
+        private static void DarkLookReadability(LookProfile look)
+        {
+            look.lightIntensity = 2.5f;
+            look.lightRange = 13f;
+            look.headlampIntensity = 4f;
+            look.headlampColor = new Color(0.8f, 0.92f, 1f);
+            look.headlampRange = 16f;
+            look.headlampAngle = 60f;
+            look.listenerGlow = new Color(0.30f, 0.36f, 0.38f);
         }
 
         // ---------- helpers ----------

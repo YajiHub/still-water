@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: StillWater::StillWater.Level.LevelCatalog
   levels:
   - {fileID: 11400000, guid: 2974a3f9624437c44bbb78876a42ce1d, type: 2}
+  - {fileID: 11400000, guid: 52eb1f41b95618b46b2cb451243bd798, type: 2}

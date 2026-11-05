@@ -101,7 +101,7 @@ on platform positions. *(Locked — [Grey-box Level Build Method](../planning/st
 | `PatternRevealer` | Glows the safe platforms in order | Uses the level's seed |
 | `Platform` | Type (safe/fake/moving/sinking), sink behavior, glow | |
 | `PlayerMotor` | Our movement (one copy for both cameras): Grounded/Airborne/Swimming/Climbing; jump aids via pure `JumpRules`, air control, gravity, deep-water swim, Climb when facing a safe edge (≤ `climbMaxAngle`), `Splashed` event, blob shadow | Finds `PoolWater` at runtime if its link is empty (level rebuilds).  Values from `MovementConfig`; input from Starter Assets' `StarterAssetsInputs`. See [Player Controller Architecture](../planning/still-water/decisions/15-player-controller-architecture.md) |
-| `ListenerAI` | Dormant → Alerted → Hunting → Catch/Returning | Offline only. Online, the server drives it and the client just displays it. |
+| `ListenerAI` + `ListenerRules` | Roaming → Alerted → Hunting → Catch / Lingering → Roaming (pure rules, EditMode-tested); roam mode Fin/Wake/Hidden per `LevelConfig` | Offline only. Online, the server drives it and the client just displays it. |
 | `TouchControls` | Floating move stick (left half), drag-to-look (right half), Jump/Climb/TOO HIGH button, debug camera + look toggles with fps; laptop WASD/Space/right-mouse/C/L | Writes `StarterAssetsInputs`. IMGUI prototype (`shortcut:` → UI Toolkit in Phase 5). Pause comes with the pause menu (Phase 2). |
 | `NetClient` | Connect, matchmake, join by code, send position, receive state, handle errors | Every failure → event → error screen |
 

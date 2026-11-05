@@ -16,3 +16,6 @@
 - [ ] Unity scene links break silently when the linked object is deleted and rebuilt (`water: {fileID: 0}`); find again at runtime — `PlayerMotor.Awake`, `LevelBuilder.BuildLevel` (2026-11-04)
 - [ ] C#: an `if` needs a body; a bool function can `return <condition>;` directly — `JumpRules.CanJump` (2026-11-04)
 - [ ] Builder menus reuse existing assets: new code defaults don't reach an existing `.asset`/`.mat` (change it in the Inspector or delete + rebuild) — `LevelBuilder.GetOrCreateLook`, `GetMaterial` (2026-11-04)
+- [ ] C#: find an index with a loop, then `prev != null && prev.cleared` (`&&` stops early, no null crash) — `ProgressRules.IsUnlocked` (2026-11-05)
+- [ ] Why save atomically (write temp → replace) and save *before* the Result screen — `SaveSystem.Save`, `LevelController` (2026-11-05)
+- [ ] GitHub billing: public-repo Actions show a metered amount that is 100% discounted; a billing lock (e.g. Student plan lapsing) fails jobs in seconds and the ruleset then blocks merges — Settings → Billing, `protect-main` (2026-11-05)
