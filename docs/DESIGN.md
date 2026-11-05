@@ -134,8 +134,8 @@ Working concept: a pale, eyeless, long-limbed thing that lives under the water. 
 ### 5.3 Monster numbers (Draft)
 | Level | Hunt speed | Alert delay (sound → start swimming) |
 |---|---|---|
-| 1 | 3.5 m/s (raised after the first Editor test; you swim at 2.0) | 1.5 s |
-| 2 | 3.8 m/s | 1.2 s |
+| 1 | 8 m/s (user-tuned in the Editor; you swim at 2.0) | 0.6 s |
+| 2 | 11 m/s (user-tuned) | 0 s |
 | 3 | 3.3 m/s | 1.0 s |
 | 4 | 3.6 m/s | 0.8 s |
 | 5 | 4.0 m/s | 0.6 s |
