@@ -25,6 +25,7 @@ export interface LevelLayout {
   exit: Rect;
   platforms: PlatformSpot[];
   safePath: number[]; // platform ids, start → exit: the glowing pattern
+  oneDryRoute?: boolean; // no fakes: every non-path platform must be a dead end (tested per level)
 }
 
 // Longest gap a layout may ask for: the jump (4.5 m/s, 1.2 m) reaches ~3 m (Core Loop Rules).

@@ -21,6 +21,16 @@ namespace StillWater.Level
         public float lightIntensity = 2f;
         public float lightRange = 16f;
 
+        [Header("Headlamp (a spot light from the player's eyes)")]
+        [Tooltip("0 = off")] public float headlampIntensity;
+        public Color headlampColor = new Color(0.8f, 0.92f, 1f);
+        public float headlampRange = 16f;
+        [Range(10f, 120f)] public float headlampAngle = 60f;
+
+        [Header("Listener")]
+        [Tooltip("Faint glow of its skin and wake, so it reads in the dark (keep below the bloom threshold, ~0.8)")]
+        public Color listenerGlow = Color.black;
+
         [Header("Cost")]
         [Tooltip("Share of screen resolution rendered (lower = faster, softer)")]
         [Range(0.3f, 1f)] public float renderScale = 0.8f;

@@ -1,3 +1,4 @@
+using StillWater.Monster;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -13,6 +14,8 @@ namespace StillWater.Level
     {
         [SerializeField] private LookProfile[] looks;
         private Light[] hallLights;
+        private Light headlamp;
+        private ListenerAI listener;
 
         private int index;
         private float originalRenderScale = -1f;
@@ -24,7 +27,12 @@ namespace StillWater.Level
             // Found at runtime: rebuilding the level replaces the lights, so a saved link would go stale.
             hallLights = System.Array.FindAll(FindObjectsByType<Light>(FindObjectsSortMode.None), l => l.type == LightType.Point);
             var cam = Camera.main;
-            if (cam != null) cam.GetUniversalAdditionalCameraData().renderPostProcessing = true;
+            if (cam != null)
+            {
+                cam.GetUniversalAdditionalCameraData().renderPostProcessing = true;
+                headlamp = CreateHeadlamp(cam.transform);
+            }
+            listener = FindFirstObjectByType<ListenerAI>();
             Apply(0);
         }
 
@@ -53,6 +61,17 @@ namespace StillWater.Level
                 hallLight.range = look.lightRange;
             }
 
+            if (headlamp != null)
+            {
+                headlamp.enabled = look.headlampIntensity > 0f;
+                headlamp.color = look.headlampColor;
+                headlamp.intensity = look.headlampIntensity;
+                headlamp.range = look.headlampRange;
+                headlamp.spotAngle = look.headlampAngle;
+                headlamp.innerSpotAngle = look.headlampAngle * 0.6f; // soft edge
+            }
+            if (listener != null) listener.SetGlow(look.listenerGlow);
+
             var cam = Camera.main;
             if (cam != null)
             {
@@ -65,6 +84,18 @@ namespace StillWater.Level
                 if (originalRenderScale < 0f) originalRenderScale = urp.renderScale;
                 urp.renderScale = look.renderScale;
             }
+        }
+
+        // Made at runtime (not by a menu), so every existing level scene gets it. It follows the camera, so it
+        // also lights the Reveal's overhead view. No shadows: too costly on phones.
+        private static Light CreateHeadlamp(Transform cam)
+        {
+            var go = new GameObject("Headlamp");
+            go.transform.SetParent(cam, false);
+            var light = go.AddComponent<Light>();
+            light.type = LightType.Spot;
+            light.shadows = LightShadows.None;
+            return light;
         }
 
         // In the Editor the pipeline asset is a real file: put its render scale back after Play.

@@ -27,8 +27,8 @@ MonoBehaviour:
   revealHeight: 8
   revealGlideSeconds: 1.5
   revealFogMultiplier: 0.35
-  listenerAlertDelay: 1.5
-  listenerHuntSpeed: 3.5
+  listenerAlertDelay: 0.6
+  listenerHuntSpeed: 8
   listenerSpeedPerSplash: 0.1
   listenerLingerSeconds: 2
   listenerCatchDistance: 0.9

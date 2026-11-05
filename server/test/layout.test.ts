@@ -108,27 +108,32 @@ describe("reachesExit", () => {
   });
 });
 
-describe("level01 (tutorial: no fakes, so the other platforms must be dead ends)", () => {
-  const layout = JSON.parse(readFileSync(new URL("level01.json", levelsDir), "utf8")) as LevelLayout;
-
-  for (const id of layout.safePath) {
-    it(`can't reach the exit without path platform ${id}, even with a ${PLAYER_REACH_M} m jump`, () => {
-      assert.equal(reachesExit(layout, [id], PLAYER_REACH_M), false);
-    });
-  }
-});
-
 describe("level files", () => {
   const files = readdirSync(levelsDir).filter((f) => f.endsWith(".json"));
+  const load = (file: string) => JSON.parse(readFileSync(new URL(file, levelsDir), "utf8")) as LevelLayout;
 
   it("includes level01.json", () => {
     assert.ok(files.includes("level01.json"));
   });
 
+  it("level01 is a one-dry-route level (tutorial: no fakes, so the rest are dead ends)", () => {
+    assert.equal(load("level01.json").oneDryRoute, true);
+  });
+
   for (const file of files) {
+    const layout = load(file);
+
     it(`${file} is valid`, () => {
-      const layout = JSON.parse(readFileSync(new URL(file, levelsDir), "utf8")) as LevelLayout;
       assert.deepEqual(validateLayout(layout), []);
     });
+
+    // No fakes: the other platforms must be dead ends, or the route could be skipped.
+    if (layout.oneDryRoute) {
+      for (const id of layout.safePath) {
+        it(`${file}: can't reach the exit without path platform ${id}, even with a ${PLAYER_REACH_M} m jump`, () => {
+          assert.equal(reachesExit(layout, [id], PLAYER_REACH_M), false);
+        });
+      }
+    }
   }
 });

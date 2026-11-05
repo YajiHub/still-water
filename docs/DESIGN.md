@@ -112,17 +112,24 @@ Hand-built layouts per level (not procedural) for the lab. The same layout plus 
 ### 5.1 Identity (Open — [Title and Monster Identity](../planning/still-water/decisions/06-title-and-monster.md))
 Working concept: a pale, eyeless, long-limbed thing that lives under the water. Usually only a ripple, a dorsal ridge or a head breaking the surface can be seen. It hunts **by sound**. Must be original and not resemble the Roblox creature.
 
-### 5.2 Behavior (Draft)
+### 5.2 Behavior (locked 2026-11-05, by: me: always in the pool, never teleports)
 | State | Trigger | Behavior |
 |---|---|---|
-| Dormant | level start | Out of sight. Occasional distant ripple or sound for atmosphere. |
-| Alerted | player splashes | Surfaces at the spawn point farthest from the player, lets out a sting sound, starts swimming toward the splash. |
-| Hunting | after alert | Swims toward the player's current position at hunt speed. Can't leave the water. |
-| Catch | reaches a player who is in the water | Short catch animation and camera jolt, then LOSE (offline) or a penalty (online, see §8). |
-| Returning | player climbed out before the catch | Lingers ~2 s near the platform, then sinks back to Dormant **where it is**: the next splash brings it up there (only the first alert starts at the far corner). A splash while it lingers = it keeps hunting at once. |
+| Roaming | level start, or after Lingering | Swims slowly (`listenerRoamSpeed`, ~1 m/s) between random points, pausing at each. Starts in the pool corner farthest from the player. How it shows itself depends on the level's **roam mode** (below). |
+| Alerted | a splash while Roaming (or you're swimming) | Stops, turns toward the sound and rises toward the surface for the level's alert delay. |
+| Hunting | after the delay; at once if it hears you while Hunting/Lingering | Swims at hunt speed to where it **last heard you**: the splash, then your position while you swim (swimming is noisy). Can't leave the water. |
+| Catch | reaches a player who is swimming | LOSE (offline) or a penalty (online, see §8). Safe once CLIMB starts. |
+| Lingering | you climbed out and it reached the last spot it heard you | Waits there (`listenerLingerSeconds`), then roams on **from that spot**. Back in the water = it hunts again at once. |
+
+**Roam mode** (per level, `LevelConfig.listenerRoamMode`; the water is opaque, so only what breaks the surface is seen):
+- **Fin:** its pale back ridge cuts the surface while it roams. Learnable (Level 1).
+- **Wake:** only ripples trail behind it; fog hides them unless it's near (Level 2).
+- **Hidden:** nothing, only its low 3D drone.
+- **Glimpses** (Wake/Hidden): every `listenerGlimpseEvery` s (±25%, 0 = never) it shows its back for `listenerGlimpseSeconds`.
+- In every mode it rises (shows its back) as soon as it hears you, and moves up/down smoothly: no blinking or teleporting.
 
 - Splashes **stack**: each extra splash in a level makes the next alert faster (e.g. +10% hunt speed). This rewards clean runs.
-- Pathfinding: straight-line chase on the water plane, with simple steering around platform pillars (NavMesh on the water plane if needed).
+- Pathfinding: straight lines on the water plane (`shortcut:` passes through platform pillars; steering if playtests notice).
 
 ### 5.3 Monster numbers (Draft)
 | Level | Hunt speed | Alert delay (sound → start swimming) |

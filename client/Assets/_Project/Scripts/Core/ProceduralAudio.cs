@@ -25,6 +25,11 @@ namespace StillWater.Core
         public static AudioClip Heartbeat(float seconds = 0.8f) =>
             Make("heartbeat", seconds, t => Thump(t) + 0.7f * Thump(t - 0.22f));
 
+        /// <summary>A low underwater drone that swells and fades (the Listener's 3D loop). Whole cycles in 2 s, so it loops without a click.</summary>
+        public static AudioClip Rumble(float seconds = 2f) =>
+            Make("rumble", seconds, t => (Mathf.Sin(2f * Mathf.PI * 35f * t) + 0.6f * Mathf.Sin(2f * Mathf.PI * 47f * t))
+                * (0.6f + 0.4f * Mathf.Sin(2f * Mathf.PI * 0.5f * t)) * 0.35f);
+
         private static float Thump(float t) => t < 0f ? 0f : Mathf.Sin(2f * Mathf.PI * 50f * t) * Mathf.Exp(-18f * t) * 0.9f;
 
         private static AudioClip Make(string name, float seconds, System.Func<float, float> wave)
