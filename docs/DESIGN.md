@@ -43,7 +43,7 @@ Level start ─► Goal text shown ─► REVEAL: safe platforms glow in sequenc
      ─► reach the exit door ─► WIN ─► stars ─► unlock next level ─► Result screen (Next / Retry / Menu)
 ```
 
-Optional pressure: a level timer. *(Open: does every level have a timer, or only some? See [Core Loop Rules](../planning/still-water/decisions/04-core-loop-rules.md).)*
+Timer on every level; it starts when the Reveal ends, and 0 = lose (Locked — [Core Loop Rules](../planning/still-water/decisions/04-core-loop-rules.md)).
 
 ---
 
@@ -52,7 +52,7 @@ Optional pressure: a level timer. *(Open: does every level have a timer, or only
 ### 3.1 Scheme (Locked — [Control Scheme](../planning/still-water/decisions/02-control-scheme.md))
 - **Left thumb:** a floating virtual joystick that appears where the thumb touches the left half of the screen.
 - **Right thumb:** drag anywhere on the right half to **look** (free drag, not a joystick), and one **action button** bottom-right: **Jump** on platforms, **Climb** at a safe platform edge in the water. No Sprint button.
-- **Camera:** third-person follow camera *(Open: fixed angle vs player-rotatable. See [Camera Style](../planning/still-water/decisions/05-camera-style.md))*.
+- **Camera:** first person, drag-to-look, with jump aids: landing shadow, edge glow, FOV 80°, mid-air down-tilt, landing dip (Locked — [Camera Style](../planning/still-water/decisions/05-camera-style.md)).
 - **Orientation:** landscape, auto-rotating between Left and Right (Locked — [Orientation](../planning/still-water/decisions/03-orientation.md)).
 - **Base:** our own `PlayerMotor` with swappable first/third-person camera rigs; Unity **Starter Assets** v2.0.2 supplies only touch input, the robot model and prefabs (Locked — [Player Controller Architecture](../planning/still-water/decisions/15-player-controller-architecture.md)).
 
@@ -75,7 +75,7 @@ These make jumping on a phone feel fair. Players don't notice them, but they not
 | Jump height | 1.2 m |
 | Gravity | −20 m/s² (snappier than real gravity) |
 | Platform size | 2 × 2 m (smaller in later levels) |
-| Gap between platforms | 1.5–2.5 m (L1) → up to 3.2 m (L5) |
+| Gap between platforms | 1.5–2.25 m (L1) → up to **2.8 m** (L5; the jump reaches ~3 m) |
 | Swim speed | 2.0 m/s |
 | Water | deep: swim at the surface, can't touch the bottom, no diving (Locked — [Core Loop Rules](../planning/still-water/decisions/04-core-loop-rules.md#resolved-early-2026-11-04-by-me)) |
 | Climb-out | swim to the edge of **any** safe platform and press Jump; the Exit edge can't be climbed from the water |
@@ -90,14 +90,15 @@ All values live in a tunable config (ScriptableObject), never hard-coded.
 | Type | Behavior | First appears |
 |---|---|---|
 | **Safe** | Solid. Part of the memorized path. | L1 |
-| **Fake** | Looks identical to Safe. Sinks ~0.4 s after you land. | L1 |
+| **Fake** | Looks identical to Safe. Sinks ~0.4 s after you land. | **L2** (L1 has none: it introduces the system) |
 | **Moving** | Safe platform that slides back and forth on a fixed path. | L3 |
 | **Sinking (timed)** | Safe, but sinks if you stand on it longer than N seconds. | L4 |
 | **Start / Exit** | Large solid areas at both ends. The Exit has a door. | L1 |
 
 ### 4.2 Pattern reveal (Draft)
 - At level start, the player stands on the Start platform. Safe platforms **glow one by one in path order**, with a soft chime that rises in pitch per step. Then all glows fade.
-- Pattern length and how long each glow lasts are set per level (see §6).
+- The pattern is the level's **safe path** (platform ids in the level JSON); every other platform is fake. Pattern length = path length. Glow time per tile is set per level (see §6). The Reveal is watched from an **overhead camera** that then glides into the player's eyes (Locked — [Core Loop Rules](../planning/still-water/decisions/04-core-loop-rules.md)).
+- Levels grow **bigger, sparser and longer** from Level 1 (30 × 33 m) onward.
 - **Open:** can the player see the pattern again (e.g. once per level, costing a star)? See [Core Loop Rules](../planning/still-water/decisions/04-core-loop-rules.md).
 - **Open:** is the path always one tile wide, or are there branches and decoys next to it? (Branches make memory harder without making the path longer.)
 
@@ -140,8 +141,8 @@ Lab guidance: L1 teaches, L2 tightens, L3 adds something new, L4 combines it wit
 
 | # | Name (working) | Goal text shown at start | What's new or harder | Pattern length / glow time per tile | Timer |
 |---|---|---|---|---|---|
-| 1 | Shallow End | "Remember the glowing path. Reach the door." | Teaches the basics. Wide platforms, short gaps, first-time hints. | 5 / 0.8 s | 120 s (generous) |
-| 2 | Deep End | "Cross without a single splash for 3 stars." | Longer path, wider gaps, faster monster | 7 / 0.7 s | 120 s |
+| 1 | Shallow End | "Remember the glowing path. Reach the door." | Teaches the basics. Wide platforms, short gaps, first-time hints. | path length (~7) / 0.8 s | 120 s (generous) |
+| 2 | Deep End | "Only trust what glowed." | **New:** fake platforms (memory test begins). Bigger hall, longer path, wider gaps, faster monster | 7 / 0.7 s | 120 s |
 | 3 | Current | "Time your jumps. Some platforms drift." | **New:** moving platforms | 7 / 0.6 s | 120 s |
 | 4 | Lights Out | "The lights are failing. Trust your memory." | **New:** fog and flickering lights, timed sinking platforms | 8 / 0.5 s, shown once | 100 s |
 | 5 | The Drain | "Everything you've learned. Get out." | Long path with every mechanic, smaller platforms, fastest monster | 10 / 0.45 s | 120 s |
@@ -188,10 +189,10 @@ Android back gesture = Back on every screen.
 
 ---
 
-## 10. Art direction (Draft — [Art Style](../planning/still-water/decisions/08-art-style.md) is Open)
+## 10. Art direction (Locked — [Art Style](../planning/still-water/decisions/08-art-style.md): C. Hybrid)
 
 - **Mood:** liminal and clinical. Endless pale-tiled pool halls, still green-turquoise water, harsh overhead light, haze in the distance. Scary because it is empty and quiet.
-- **Fidelity:** low-to-mid poly with good lighting. Not HD realism. Options: *clean liminal* (smooth, soft light) or *PSX-style* (low-res textures, vertex jitter, dithering). Pick after a 1-day prototype.
+- **Fidelity:** low-to-mid poly, clean geometry, dark teal fog, cold dim lights, film grain, render scale 0.6 (hybrid look, chosen in the Phase 1 phone spike). Not HD realism.
 - **The look comes from (URP):** fog, bloom on the lights, vignette, film grain, slight chromatic aberration when alerted, flickering lights in L4, caustics projected on the tiles.
 - **Water:** a simple URP Shader Graph water (scrolling normals, depth tint, foam at edges), plus splash particles and ripples.
 - **Player:** a plain, unbranded figure (e.g. a Mixamo character, or a simple low-poly person in a swimsuit or hoodie).

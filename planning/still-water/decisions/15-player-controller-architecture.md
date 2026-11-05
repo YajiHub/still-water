@@ -30,7 +30,7 @@ How do we build movement so first person and third person can be tested with the
 | `MovementConfig` (ScriptableObject) | `_Project/Scripts/Player/`, asset in `_Project/Configs/` | Every DESIGN §3.2–3.3 number (speeds, jump height, gravity, coyote, buffer, air control, swim) |
 | `JumpRules` (plain C#, no `MonoBehaviour`) | `_Project/Scripts/Player/` | Coyote time, jump buffer, variable jump height: pure functions of time + inputs, so EditMode tests can call them |
 | `PlayerMotor` (`MonoBehaviour`, `CharacterController`) | `_Project/Scripts/Player/` | Reads `StarterAssetsInputs`, applies `JumpRules`, air control, gravity; states Grounded / Airborne / Swimming |
-| `FirstPersonLook` / third-person Cinemachine rig | `_Project/Scripts/Player/` + prefabs | Swappable; the motor moves relative to whichever camera is active |
+| `FirstPersonLook` / `ThirdPersonLook` (own orbit script; Cinemachine dropped 2026-11-04 so both rigs read input identically) | `_Project/Scripts/Player/` + prefabs | Swappable; the motor moves relative to whichever camera is active |
 | Assemblies | `_Project/Scripts/StillWater.asmdef` (refs `Unity.StarterAssets`, `Unity.InputSystem`, `ColyseusSDK`, `Unity.Cinemachine`); `_Project/Tests/EditMode/StillWater.Tests.EditMode.asmdef` | Needed for EditMode tests; `NetTest.cs` moves into this assembly too |
 
 - Starter Assets files are **not edited**. Our prefab reuses its input component, touch UI and robot model.

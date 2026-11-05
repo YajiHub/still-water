@@ -1,6 +1,6 @@
 # Art Style
 
-- **Status:** Open
+- **Status:** Locked (2026-11-04) (by: me): **C. Hybrid**, after the Phase 1 phone spike
 - **Type:** prototype
 - **Blocks:** Phase 1 end (before making real assets)
 
@@ -24,4 +24,12 @@ One small grey-box room: tiled floor and walls, a water plane, 3 lights, fog. Ma
 Probably **C (hybrid)**: the easiest to make scary at low cost, and it runs well on mid-range phones.
 
 ## Decision
-_(fill in after the prototype)_
+**C. Hybrid horror:** clean grey-box geometry, dark teal exponential fog, cold dim ceiling lights, ACES tonemapping, bloom on the edge glow, vignette, film grain, render scale 0.6.
+
+**Evidence (Phase 1 phone spike, 2026-11-04, mid-range Android):** A and C built as `LookProfile` assets and switched live in one build; both 55–60 fps while moving. C read as scary; A as too bright and safe. First C values were too dark (only the glow strips visible), so C was brightened (ambient 0.05→0.13, light 1.5→3 / range 14→20, fog 0.07→0.045, exposure −0.2→+0.3). Screenshots: `docs/screenshots/clean-minimal.jpg` (A), `docs/screenshots/hybrid-horror.jpg` (C, before brightening). B (PSX) not built: C covers its mood at lower asset cost.
+
+## Consequences
+- Values live in `Assets/_Project/Art/Looks/Look_C.asset` + `Volume_C.asset`; tune there, not in code. Look A stays only as the spike's comparison until Phase 5, then the Look toggle is removed.
+- Assets must suit low light + fog: mid-poly, simple textures; the edge glow stays the main readability cue (also L4 "Lights Out").
+- Brightness on different phones varies: a **Brightness/Gamma** slider in Settings (Phase 5).
+- Water shader, caustics and splash particles (DESIGN §10) are built for this look in Phase 5.

@@ -27,5 +27,7 @@
 - [tech] A second deploy job that pushes the same server image to Render for internet play.
 
 ## New ideas
+- [gameplay] **Continuous mode** (user, 2026-11-05): levels joined by doors: the exit door opens onto a corridor into the next, bigger hall, without leaving to the menu; you can walk back. Lab R3 still needs a result (per hall, or one at the end of the run). Cheap version for Phase 5: door-open animation + fade straight into the next level, with a short result toast. Full version (connected halls, walking back) is post-lab.
+- [online] **Co-op on the same map** (user, 2026-11-05): two players cross the same hall together and wait for each other at the door. Weigh it against the 1v1 race in [Online Match Format](../planning/still-water/decisions/07-online-match-format.md).
 - [gameplay] Diving under the surface (post-lab): see the Listener's shape below you; needs underwater rendering, breath and 3D swim controls.
 - 
