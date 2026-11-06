@@ -23,4 +23,7 @@
 - [ ] Carrying the player on a moving platform: the platform moves first (execution order), then the motor adds its `Delta` — `PlatformMover`, `PlayerMotor.UpdateLand` (2026-11-05; ownership check 2026-11-06: explained by the agent, not yet answered by me)
 - [ ] Why Build Level erases scene edits: it deletes the `Level` object and rebuilds from the server JSON (the source of truth); export first — `LevelBuilder.BuildLevel`, *Export Level to JSON* (2026-11-06)
 - [ ] Why gaps stop at 2.8 m (3.1 max): the jump's reach (run speed × air time) sets the limit, so harder levels need other levers — `MAX_GAP_M`, `JUMP_LIMIT_M`, `MovementConfig` (2026-11-06)
+- [ ] Commit-on-shake state machine: a crumbling tile resets if you leave before it shakes, but once Shaking it ignores `standing` and sinks — `SinkRules.StepCrumble` (2026-11-06; ownership check: explained by the agent, not yet answered by me)
+- [ ] Float noise in exported positions: Unity writes 3.6 as 3.5999999, so a jump generated at exactly the limit can measure just over it; round when tidying — `route-level.ts`, `edgeGap` (2026-11-06; ownership check skipped)
+- [ ] Scenes must be in the build list to exist on the phone: the menu reads the catalog, the APK only packs `EditorBuildSettings` scenes — *Update Build List* (2026-11-06)
 - [ ] URP Forward vs Forward+: Forward lights each object with ≤ 4 extra lights, so many lamps need Forward+ — `Mobile_Renderer` (2026-11-06)
