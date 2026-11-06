@@ -6,9 +6,9 @@ offline solo, and an online 1v1 race on a **Colyseus (Node 24 + TypeScript)** se
 linted, tested and auto-deployed by GitHub Actions to an Ubuntu VM through a self-hosted runner. Budget ₱0.
 
 ## Current Status & Next Step
-- **Phase:** 3 (Levels) 🟡: Levels 1–3 merged (L3 "Current" hand-tuned: ferries, decoys, maxGap 3.1); roaming Listener, dark-look readability (Forward+). Phase 2 phone loop + Phase 1 outside tester deferred; Phase 0 Checkpoint 1 (GDD + paper photo) open. Active plan: [planning/still-water/MAP.md](planning/still-water/MAP.md)
-- **Next:** `/skill:wayfinder continue planning/still-water/MAP.md` → plan Level 4 ([Level Roster](planning/still-water/decisions/18-level-roster.md)). Unity verification: Test Runner (EditMode, 69) + `Editor.log`; hand-edited levels: *Export Level to JSON* → `npm run level:route` → *Build Level*.
-- **Latest session:** [docs/sessions/2026-11-06-phase3-levels.md](docs/sessions/2026-11-06-phase3-levels.md)
+- **Phase:** 3 (Levels) 🟡: Levels 1–4 merged (L3 "Current" hand-tuned: ferries, decoys, maxGap 3.1; L4 "Undertow": crumbling + one-way tiles, PR #18); roaming Listener, dark-look readability (Forward+). Phase 2 phone loop + Phase 1 outside tester deferred; Phase 0 Checkpoint 1 (GDD + paper photo) open. Active plan: [planning/still-water/MAP.md](planning/still-water/MAP.md)
+- **Next:** Level 4 phone run (fps, tries, time vs par 120, yellow/red readable), then `/skill:wayfinder continue planning/still-water/MAP.md` → plan Level 5 ([Level Roster](planning/still-water/decisions/18-level-roster.md)). Unity verification: Test Runner (EditMode, 88) + `Editor.log`; hand-edited levels: *Export Level to JSON* → `npm run level:route` → *Build Level*.
+- **Latest session:** [docs/sessions/2026-11-06-level4-undertow.md](docs/sessions/2026-11-06-level4-undertow.md)
 
 ## Routing (one home per fact)
 | Need | File |
