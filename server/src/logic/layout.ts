@@ -23,7 +23,13 @@ export interface PlatformSpot {
   z: number;
   size: number; // square, edge length
   move?: PlatformMove;
+  // Level 4 (Level Roster): "crumble" = sinks if you stand on it too long, rises again; "oneway" = sinks after you
+  // leave it and stays down. Every tile exists at the start, so reach and dead-end checks ignore this.
+  sink?: SinkKind;
 }
+
+export type SinkKind = "crumble" | "oneway";
+const SINK_KINDS: readonly string[] = ["crumble", "oneway"];
 
 export interface LevelLayout {
   id: string;
@@ -94,6 +100,7 @@ export function validateLayout(layout: LevelLayout): string[] {
     if (r.x - r.width / 2 < water.minX || r.x + r.width / 2 > water.maxX || r.z - r.depth / 2 < water.minZ || r.z + r.depth / 2 > water.maxZ) {
       errors.push(`platform ${p.id}: outside the water`);
     }
+    if (p.sink !== undefined && !SINK_KINDS.includes(p.sink)) errors.push(`platform ${p.id}: sink must be "crumble" or "oneway"`);
     if (p.move) {
       // On one-dry-route levels a moving decoy would break the dead-end proof; hand-tuned levels may have them.
       if (layout.oneDryRoute && !layout.safePath.includes(p.id)) errors.push(`platform ${p.id}: only route platforms may move`);

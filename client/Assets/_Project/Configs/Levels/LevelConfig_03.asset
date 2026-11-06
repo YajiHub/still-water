@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: LevelConfig_03
   m_EditorClassIdentifier: StillWater::StillWater.Level.LevelConfig
   id: level03
-  displayName: Shallow End
+  displayName: Current
   sceneName: Level03
   goalText: Some paths lead nowhere. Ride the ferries across.
   layout: {fileID: 4900000, guid: f2fb4ab464d7ee445864a02e82ae7ca6, type: 3}
@@ -27,10 +27,15 @@ MonoBehaviour:
   revealHeight: 8
   revealGlideSeconds: 1.5
   revealFogMultiplier: 0.35
+  crumbleStandSeconds: 1.5
+  crumbleShakeSeconds: 0.6
+  sinkSeconds: 0.5
+  crumbleRiseAfter: 3
+  onewayDelay: 0.3
   listenerRoamMode: 2
   listenerRoamSpeed: 3
   listenerRoamPause: 1.5
-  listenerGlimpseEvery: 15
+  listenerGlimpseEvery: 5
   listenerGlimpseSeconds: 2.5
   listenerAlertDelay: 0
   listenerHuntSpeed: 14

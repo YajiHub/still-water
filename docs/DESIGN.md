@@ -86,13 +86,14 @@ All values live in a tunable config (ScriptableObject), never hard-coded.
 
 ## 4. Platforms and the pattern
 
-### 4.1 Platform types (Draft)
+### 4.1 Platform types (L1–L4 locked in the [Level Roster](../planning/still-water/decisions/18-level-roster.md))
 | Type | Behavior | First appears |
 |---|---|---|
-| **Safe** | Solid. Part of the memorized path. | L1 |
-| **Fake** | Looks identical to Safe. Sinks ~0.4 s after you land. | **L2** (L1 has none: it introduces the system) |
-| **Moving** | Safe platform that slides back and forth on a fixed path. | L3 |
-| **Sinking (timed)** | Safe, but sinks if you stand on it longer than N seconds. | L4 |
+| **Safe** | Solid. Blue edge glow. | L1 |
+| **Fake** | Looks identical to Safe. Sinks ~0.4 s after you land. Only makes sense with the glowing-path Reveal. | Built, not used yet (L5+) |
+| **Ferry (moving)** | Slides A → B → A across a channel too wide to jump; carries you. Warm orange glow. | L3 |
+| **Crumbling** | Stand on it 1.5 s → shakes → sinks (0.5 s); rises again 3 s later. Pale yellow glow. On the route. | L4 |
+| **One-way** | Sinks 0.3 s after you jump off it and stays down. Red glow. On decoys: a wrong turn = the way back is gone. | L4 |
 | **Start / Exit** | Large solid areas at both ends. The Exit has a door. | L1 |
 
 ### 4.2 Pattern reveal (Draft)
@@ -144,14 +145,14 @@ Working concept: a pale, eyeless, long-limbed thing that lives under the water. 
 
 ## 6. Levels (Draft; meets lab R1 "each harder or different")
 
-At least 5 levels (the lab's minimum, not a maximum), each planned with the user from their own idea in the [Level Roster](../planning/still-water/decisions/18-level-roster.md). Rows 4–5 below are the **old draft**: ideas only, not decided.
+At least 5 levels (the lab's minimum, not a maximum), each planned with the user from their own idea in the [Level Roster](../planning/still-water/decisions/18-level-roster.md). Row 5 below is the **old draft** (the user's idea: everything mixed, incl. moving + sinking): ideas only, not decided.
 
 | # | Name (working) | Goal text shown at start | What's new or harder | Pattern length / glow time per tile | Timer |
 |---|---|---|---|---|---|
 | 1 | Shallow End | "Get to the door without falling into the water." | Teaches moving, jumping and the water danger only: **no Reveal, no fakes**. Most platforms are dead ends; one dry route. Short gaps. | none (no Reveal) | 120 s (generous) |
 | 2 | Deep End | "Deeper and wider. Find the way across." | **Harder, same rules:** 40 × 50 m hall, 50 platforms (40% small 1.6 m), ~10-jump route through dead ends, gaps 2.2–2.7 m; Listener roams as a Wake. No Reveal, no fakes (Locked — [Level Roster](../planning/still-water/decisions/18-level-roster.md)) | none (no Reveal) | 110 s, par 55 |
 | 3 | Current | "Some paths lead nowhere. Ride the ferries across." | **New:** 70 × 100 m, 19-jump winding route, gaps 2.6–2.8 m, ~50% small tiles, long **decoy branches** hidden in the fog (wrong turn = long detour), 4 fast **ferries** carry you across unjumpable channels; Listener roams **Hidden** (Locked — [Level Roster](../planning/still-water/decisions/18-level-roster.md)) | none (no Reveal) | 200 s, par 120 (provisional) |
-| 4 | Lights Out | "The lights are failing. Trust your memory." | **New:** fog and flickering lights, timed sinking platforms | 8 / 0.5 s, shown once | 100 s |
+| 4 | Undertow | "Don't stand still. Some paths close behind you." | **New:** crumbling tiles on the route, one-way tiles on decoys; 70 × 100 m filled left, centre and right (Locked — [Level Roster](../planning/still-water/decisions/18-level-roster.md)) | none (no Reveal) | 200 s, par 120 (provisional) |
 | 5 | The Drain | "Everything you've learned. Get out." | Long path with every mechanic, smaller platforms, fastest monster | 10 / 0.45 s | 120 s |
 
 Extra levels (6+) are post-lab ideas. See [IDEAS.md](IDEAS.md).

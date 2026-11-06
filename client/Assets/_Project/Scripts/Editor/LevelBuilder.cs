@@ -57,6 +57,8 @@ namespace StillWater.Editor
             // Faint on purpose: below the bloom threshold, so the Phase 2 pattern reveal can be the bright one.
             var glow = GetMaterial("Glow", new Color(0.6f, 0.9f, 1f), 0.5f, new Color(0.6f, 0.9f, 1f) * 0.7f);
             var door = GetMaterial("Door", new Color(0.12f, 0.10f, 0.09f), 0.2f);
+            var crumbleGlow = GetMaterial("GlowCrumble", new Color(1f, 0.95f, 0.6f), 0.5f, new Color(1f, 0.92f, 0.5f) * 0.7f); // pale yellow: don't stand still
+            var onewayGlow = GetMaterial("GlowOneway", new Color(0.9f, 0.25f, 0.2f), 0.5f, new Color(0.9f, 0.2f, 0.15f) * 0.7f); // red: no way back
             var ferryGlow = GetMaterial("GlowFerry", new Color(1f, 0.75f, 0.4f), 0.5f, new Color(1f, 0.7f, 0.35f) * 0.7f); // warm: "this one moves"
 
             var w = layout.water;
@@ -114,7 +116,10 @@ namespace StillWater.Editor
                 var p = Box($"Platform_{spot.id:00}", root, new Vector3(spot.x, top - h / 2f, spot.z), new Vector3(spot.size, h, spot.size), tile, true);
                 Widen(p, spot.size, spot.size, config.edgeForgiveness);
                 SetFields(p.AddComponent<Platform>(), ("id", spot.id), ("climbable", true), ("onSafePath", System.Array.IndexOf(layout.safePath, spot.id) >= 0));
-                AddGlowStrips(p, spot.size, top, spot.Moves ? ferryGlow : glow);
+                var edge = spot.Moves ? ferryGlow : spot.sink == "crumble" ? crumbleGlow : spot.sink == "oneway" ? onewayGlow : glow;
+                AddGlowStrips(p, spot.size, top, edge);
+                if (spot.sink == "crumble" || spot.sink == "oneway")
+                    SetFields(p.AddComponent<SinkingPlatform>(), ("oneway", spot.sink == "oneway"));
                 if (spot.Moves)
                     SetFields(p.AddComponent<PlatformMover>(), ("pointA", p.transform.position), ("travel", new Vector3(spot.move.dx, 0f, spot.move.dz)),
                         ("seconds", spot.move.seconds), ("pause", spot.move.pause), ("offset", spot.move.offset));
@@ -175,6 +180,7 @@ namespace StillWater.Editor
                     z = Round(t.position.z),
                     size = Round(t.localScale.x),
                     move = p.GetComponent<PlatformMover>() != null && src != null && src.Moves ? src.move : null,
+                    sink = src != null ? src.sink : null, // a copy keeps its original's kind
                 });
             }
             layout.platforms = spots.ToArray();

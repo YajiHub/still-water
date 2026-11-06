@@ -46,6 +46,8 @@ namespace StillWater.Level
         public float x, z, size;
         /// <summary>Only on ferries. JsonUtility fills a missing one with zeros, so check <see cref="Moves"/>.</summary>
         public PlatformMove move;
+        /// <summary>"crumble", "oneway", or empty (Level 4).</summary>
+        public string sink;
 
         public bool Moves => move != null && (move.dx != 0f || move.dz != 0f) && move.seconds > 0f;
     }
