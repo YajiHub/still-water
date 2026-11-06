@@ -15,6 +15,17 @@ namespace StillWater.Tests
         }
 
         [Test]
+        public void Level04_SinkingTilesParse()
+        {
+            string path = Path.Combine(Application.dataPath, "../../server/src/levels/level04.json");
+            var layout = LevelLayout.FromJson(File.ReadAllText(path));
+            // Counts change with hand edits: just check both kinds come through.
+            Assert.IsTrue(System.Array.Exists(layout.platforms, p => p.sink == "crumble"));
+            Assert.IsTrue(System.Array.Exists(layout.platforms, p => p.sink == "oneway"));
+            Assert.IsFalse(System.Array.Exists(LoadLevel01().platforms, p => !string.IsNullOrEmpty(p.sink)), "a missing sink means a normal tile");
+        }
+
+        [Test]
         public void Level03_FerriesParse_OthersDontMove()
         {
             string path = Path.Combine(Application.dataPath, "../../server/src/levels/level03.json");

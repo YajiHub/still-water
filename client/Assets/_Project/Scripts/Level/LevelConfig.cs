@@ -28,6 +28,13 @@ namespace StillWater.Level
         [Tooltip("seconds the camera takes to glide back into the player's eyes")] public float revealGlideSeconds = 1.5f;
         [Tooltip("fog thickness during the Reveal, as a share of the normal fog (lower = clearer view)")] [Range(0f, 1f)] public float revealFogMultiplier = 0.35f;
 
+        [Header("Sinking tiles (Level 4: which tiles is in the layout JSON)")]
+        [Tooltip("crumbling: seconds of standing on it before it sinks")] public float crumbleStandSeconds = 1.5f;
+        [Tooltip("crumbling: the last part of the stand time, when it shakes; once it shakes it will sink")] public float crumbleShakeSeconds = 0.6f;
+        [Tooltip("seconds a tile takes to go under (and to come back up)")] public float sinkSeconds = 0.5f;
+        [Tooltip("crumbling: seconds under water before it rises again")] public float crumbleRiseAfter = 3f;
+        [Tooltip("one-way: seconds after you jump off before it sinks for good")] public float onewayDelay = 0.3f;
+
         [Header("Listener")]
         [Tooltip("How it shows itself while roaming: Fin = back ridge above the water, Wake = ripples only, Hidden = only its sound")] public ListenerRoamMode listenerRoamMode = ListenerRoamMode.Fin;
         [Tooltip("m/s while roaming (nothing heard)")] public float listenerRoamSpeed = 1f;

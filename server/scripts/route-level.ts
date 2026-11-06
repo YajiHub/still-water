@@ -17,13 +17,18 @@ const arg = (k: string) => {
 try {
   const id = arg("id");
   if (!id || !/^[a-z0-9]+$/.test(id)) throw new Error("--id must be like level03");
+  const cm = (v: number) => Math.round(v * 100) / 100;
   const file = new URL(`../src/levels/${id}.json`, import.meta.url);
   const raw = JSON.parse(readFileSync(file, "utf8")) as LevelLayout & { oneDryRoute?: boolean; maxGap?: number };
 
   // Unity's JSON writer fills every field: drop the empty ones so the file reads like the generated levels.
   const platforms: PlatformSpot[] = raw.platforms.map((p) => {
     const moves = p.move && Math.hypot(p.move.dx, p.move.dz) > 0 && p.move.seconds > 0;
-    return moves ? { id: p.id, x: p.x, z: p.z, size: p.size, move: p.move } : { id: p.id, x: p.x, z: p.z, size: p.size };
+    // Round to 1 cm: Unity saves 3.6 as 3.5999999…, which can push a jump generated at exactly 2.8 m just over.
+    const spot: PlatformSpot = { id: p.id, x: cm(p.x), z: cm(p.z), size: cm(p.size) };
+    if (moves) spot.move = p.move;
+    if (p.sink) spot.sink = p.sink; // Unity writes "" for none
+    return spot;
   });
   const maxGapArg = arg("max-gap");
   const maxGap = maxGapArg !== undefined ? Number(maxGapArg) : raw.maxGap;

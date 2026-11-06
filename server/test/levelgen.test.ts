@@ -136,3 +136,67 @@ describe("generateLevel with decoys and ferries", () => {
     for (const p of layout.platforms) if (p.move) assert.ok(layout.safePath.includes(p.id));
   });
 });
+
+describe("generateLevel with spread and sinking tiles (Level 4)", () => {
+  const sinky: GenOptions = {
+    ...opts,
+    width: 42,
+    length: 48,
+    platforms: 50,
+    routeMin: 9,
+    routeMax: 18,
+    gapMin: 2.6,
+    gapMax: 2.8,
+    maxTurnDeg: 70,
+    decoys: [2, 3],
+    decoyLength: [4, 6],
+    spread: true,
+    crumble: 0.5,
+    onewayDecoys: true,
+    seed: 7, // spread makes many seeds fail cleanly in a hall this small; this one fits
+  };
+  const layout = generateLevel(sinky);
+  const third = (x: number) => (x < -sinky.width / 6 ? 0 : x > sinky.width / 6 ? 2 : 1);
+
+  it("makes a valid one-dry-route layout", () => {
+    assert.deepEqual(validateLayout(layout), []);
+    for (const id of layout.safePath) assert.equal(reachesExit(layout, [id], PLAYER_REACH_M), false, `without ${id}`);
+  });
+
+  it("fills left, centre and right: each third holds at least 20% of the platforms", () => {
+    const counts = [0, 0, 0];
+    for (const p of layout.platforms) counts[third(p.x)]++;
+    for (const c of counts) assert.ok(c >= 0.2 * layout.platforms.length, `thirds ${counts.join("/")}`);
+  });
+
+  it("makes half the route crumble (rounded), and nothing else crumbles", () => {
+    const crumbling = layout.platforms.filter((p) => p.sink === "crumble");
+    assert.equal(crumbling.length, Math.round(0.5 * layout.safePath.length));
+    for (const p of crumbling) assert.ok(layout.safePath.includes(p.id), `crumbling ${p.id} is off the route`);
+  });
+
+  it("makes decoy tiles one-way, never route tiles", () => {
+    const oneway = layout.platforms.filter((p) => p.sink === "oneway");
+    assert.ok(oneway.length >= 2 * 4, `one-way tiles ${oneway.length}`); // ≥ 2 decoys × 4 jumps
+    for (const p of oneway) assert.ok(!layout.safePath.includes(p.id), `one-way ${p.id} is on the route`);
+  });
+});
+
+describe("generateLevel with meander (S-curve routes)", () => {
+  const curvy: GenOptions = { ...opts, width: 40, length: 40, platforms: 30, routeMin: 9, routeMax: 30, gapMin: 2.6, gapMax: 2.8, maxTurnDeg: 85, meander: true, seed: 2 };
+  const layout = generateLevel(curvy);
+  const route = layout.safePath.map((id) => layout.platforms.find((p) => p.id === id)!);
+
+  it("keeps every route jump within 2.6–2.8 m, diagonals included", () => {
+    const steps = [layout.start, ...route.map((p) => ({ x: p.x, z: p.z, width: p.size, depth: p.size })), layout.exit];
+    for (let i = 1; i < steps.length; i++) {
+      const g = edgeGap(steps[i - 1], steps[i]);
+      assert.ok(g >= 2.6 - 0.08 && g <= 2.8 + 1e-9, `step ${i}: ${g.toFixed(2)} m`); // 5 cm rounding
+    }
+  });
+
+  it("wanders sideways instead of running straight", () => {
+    const xs = route.map((p) => p.x);
+    assert.ok(Math.max(...xs) - Math.min(...xs) >= 10, `route spans only ${(Math.max(...xs) - Math.min(...xs)).toFixed(1)} m across`);
+  });
+});

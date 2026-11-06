@@ -98,6 +98,21 @@ describe("validateLayout", () => {
   });
 });
 
+describe("sinking tiles (Level 4)", () => {
+  it("accepts crumbling and one-way tiles", () => {
+    const l = tiny();
+    l.platforms[0].sink = "crumble";
+    l.platforms.push({ id: 2, x: 2, z: 6, size: 1, sink: "oneway" });
+    assert.deepEqual(validateLayout(l), []);
+  });
+
+  it("rejects an unknown kind of sinking", () => {
+    const l = tiny();
+    (l.platforms[0] as { sink?: string }).sink = "lava";
+    assert.match(validateLayout(l).join("\n"), /platform 1: sink must be "crumble" or "oneway"/);
+  });
+});
+
 describe("per-level max gap (edge-of-the-jump levels)", () => {
   // start → 1 → exit with a 3.0 m step: too far for the default 2.8 m.
   function long(): LevelLayout {

@@ -45,7 +45,7 @@ What is each level, and in what order do new mechanics arrive?
 | Gaps | 2.4–2.8 → **2.6–2.8 m**; small 1.6 m tiles 30% → **~50%**; ferry boarding gaps 2.0–2.4 m |
 | Ferries | 3 → **4** route tiles across unjumpable channels: travel 4–5 → **5–6 m** in 3 → **2 s**, pause 1 → **0.5 s**. Warm edge glow. Nothing may come within **1.5 m** of a ferry's slide (server rule; after a diagonal ferry passed 0.6 m from a tile) |
 | Mechanics | no Reveal, no fakes |
-| Listener | roams **Hidden** (drone only) + glimpses; user-tuned in the Editor (14 m/s, alert 0 s, glimpse every 15 s); starts in the **middle of the pool** |
+| Listener | roams **Hidden** (drone only) + glimpses; user-tuned in the Editor (14 m/s, alert 0 s, glimpse every 15 s → **5 s** on 2026-11-06, user's choice: more pressure; each glimpse lasts 2.5 s); starts in the **middle of the pool** |
 | Timer / par | suggested **200 / 120 s** (19 jumps at L2's pace + ferry waits + a decoy detour); tune after the playtest |
 | Goal text | "Some paths lead nowhere. Ride the ferries across." |
 | Lamps | **35**, about 15 m apart (Build Level caps big halls near 32 lamps for phone fps) |
@@ -59,5 +59,28 @@ What is each level, and in what order do new mechanics arrive?
 - Server checks treat a ferry as the **rectangle it sweeps** (A to B): the route reaches it at A and leaves at B; any decoy near *any* point of its slide would count as a shortcut, so the dead-end rule stays safe while it moves. Ferries only on the route; `seconds > 0`, `pause ≥ 0`, sweep inside the water, 1.5 m clearance.
 - Riding: the player is carried by the ferry's movement each frame (`PlatformMover` runs first, `PlayerMotor` adds its `Delta`). Falling off = a normal splash. You can climb onto a ferry from the water like any route tile.
 
-## Level 4+
-_(plan with the user when Level 3 is playable)_
+## Level 4 — Undertow (locked 2026-11-06, by: me; name and goal text can change)
+**User's idea:** sinking platforms, but no moving ones (Level 5 will mix sinking + moving + more). Platforms spread **left, centre and right**, not bunched on one side.
+
+| Setting | Value |
+|---|---|
+| Hall | **70 × 100 m** (like L3), **filled across the whole width**: each third (left / centre / right) holds ≥ 20% of the platforms (generator + test) |
+| Platforms | **~110**: a winding route (~20–25 jumps, turns up to 70°) + decoy branches (5–9 jumps) + short dead ends; one-dry-route proof on (generated, not hand-tuned) |
+| Gaps | **2.6–2.8 m** (default max 2.8: the sinking adds the pressure, not the jump length) |
+| **New: crumbling** | **~half the route tiles**: stand on one **1.5 s** → it shakes → sinks over **0.5 s** → rises **3 s** later. Leaving resets the timer, unless it's already shaking. Pale yellow glow |
+| **New: one-way** | **decoy tiles**: sinks **0.3 s** after you jump off, **stays down** for the attempt. A wrong turn = the way back is gone, you swim (Listener). Red glow |
+| Mechanics | no Reveal, no fakes, no ferries |
+| Listener | roams **Hidden** + glimpses; speed/alert user-tuned in the Editor (L3: 14 m/s, 0 s) |
+| Timer / par | provisional **200 / 120 s**; tune after the playtest |
+| Goal text | "Don't stand still. Some paths close behind you." |
+
+**Built:** `npm run level:gen -- --id level04 --name "Undertow" --width 70 --length 92 --platforms 110 --route 24-36 --gaps 2.6-2.8 --sizes 2,1.6 --small 0.4 --max-turn 85 --meander --decoys 4-6 --decoy-length 5-9 --spread --crumble 0.5 --oneway-decoys --seed 3` → 110 platforms, route of **29 tiles (30 jumps)** sweeping right → centre → left wall, gaps 2.60–2.80 m, **15 crumbling** route tiles, **23 one-way** decoy tiles, left / centre / right **31 / 36 / 43**, deepest dead end 11 jumps. **Then hand-edited** (2026-11-06): +19 tiles near the start, mostly left (129 total, 19 crumbling / 25 one-way; a stacked Ctrl+D copy, id 146, removed from the JSON), exported, `level:route` → same 30-jump route, dead-end proof still passes (not hand-tuned mode). (`--meander` was needed: with tight 2.6–2.8 gaps the old walk could only go straight.)
+
+**Rules (by: delegated):**
+- Which tiles: JSON `sink: "crumble" | "oneway"` per platform (layout data); the timings live in `LevelConfig` (tuning): crumble stand 1.5 s, sink 0.5 s, rise after 3 s, one-way delay 0.3 s.
+- Server checks are unchanged: every tile exists at the start, so the dead-end proof still holds. `sink` must be one of the two values.
+- A sunk tile is not climbable. A crumbling tile **waits to rise while a swimmer is right above it** (no popping you up); it rises once you've moved off.
+- Retry reloads the scene, so every tile is back.
+
+## Level 5+
+_(the user's idea: show both sinking and moving, and more; plan when Level 4 is playable)_

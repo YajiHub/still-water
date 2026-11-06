@@ -24,6 +24,9 @@ namespace StillWater.Level
 
         public void MakeFake() => IsFake = true;
 
+        /// <summary>Sinking tiles switch this off while they're under water.</summary>
+        public void SetClimbable(bool value) => climbable = value;
+
         /// <summary>The player landed here. A fake starts sinking after <paramref name="delay"/> seconds; safe ones ignore it.</summary>
         public void SteppedOn(float delay)
         {
