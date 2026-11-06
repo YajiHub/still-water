@@ -91,6 +91,8 @@ namespace StillWater.Player
 
         private void UpdateLand(float now, float dt, bool jumpHeld)
         {
+            // Standing on a ferry: it already moved this frame (it runs first), so move with it.
+            if (GroundPlatform != null && GroundPlatform.TryGetComponent(out PlatformMover ferry)) controller.Move(ferry.Delta);
             bool grounded = controller.isGrounded;
             if (grounded) lastGroundedTime = now;
 

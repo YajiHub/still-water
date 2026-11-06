@@ -60,11 +60,9 @@ namespace StillWater.Monster
             rumble.maxDistance = 14f;
             rumble.Play();
 
-            // Starts in the corner of the pool farthest from the player, already swimming.
-            Bounds area = water.Area;
-            Vector3 p = player.transform.position;
-            float x = p.x < area.center.x ? area.max.x - RoamMargin : area.min.x + RoamMargin;
-            float z = p.z < area.center.z ? area.max.z - RoamMargin : area.min.z + RoamMargin;
+            // Starts in the middle of the pool, already swimming: from a far corner the first fall was almost always safe.
+            Vector3 middle = water.Area.center;
+            float x = middle.x, z = middle.z;
             bool back = ListenerRules.ShowsBack(State, config.listenerRoamMode, false);
             transform.position = new Vector3(x, water.SurfaceY - (back ? BackDepth : DeepDepth), z);
             body.SetActive(true);

@@ -25,7 +25,7 @@ linted, tested and auto-deployed by GitHub Actions to an Ubuntu VM through a sel
 Conflicts: decision files win → DESIGN.md / SYSTEM_ATLAS.md → GDD.md. Fix the loser.
 
 ## Commands
-- **Server** (`server/`, run on Windows Node 24): `npm start` (tsx watch, :2567) · `npm run lint` · `npm run typecheck` · `npm test` (`node:test`) · `npm run build` · `npm run level:gen -- --id levelNN …` (seeded layout generator; options in `scripts/generate-level.ts`). Docker: `docker compose -p stillwater-local up -d --build` (:8080).
+- **Server** (`server/`, run on Windows Node 24): `npm start` (tsx watch, :2567) · `npm run lint` · `npm run typecheck` · `npm test` (`node:test`) · `npm run build` · `npm run level:gen -- --id levelNN …` (seeded layout generator; options in `scripts/generate-level.ts`) · `npm run level:route -- --id levelNN [--max-gap 3.1] [--hand-tuned]` (after *Export Level to JSON* from a hand-edited scene). Docker: `docker compose -p stillwater-local up -d --build` (:8080).
 - **Unity:** EditMode tests in Window → General → Test Runner (results: `%USERPROFILE%\AppData\LocalLow\YajiHub\Still Water\TestResults.xml`); Play in the Editor; phone via Build And Run.
 
 ## Never

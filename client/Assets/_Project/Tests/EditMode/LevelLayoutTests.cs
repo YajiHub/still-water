@@ -15,6 +15,18 @@ namespace StillWater.Tests
         }
 
         [Test]
+        public void Level03_FerriesParse_OthersDontMove()
+        {
+            string path = Path.Combine(Application.dataPath, "../../server/src/levels/level03.json");
+            var layout = LevelLayout.FromJson(File.ReadAllText(path));
+            var ferries = System.Array.FindAll(layout.platforms, p => p.Moves);
+            CollectionAssert.AreEqual(new[] { 13, 39, 62, 95 }, System.Array.ConvertAll(ferries, p => p.id));
+            Assert.AreEqual(2f, ferries[0].move.seconds);
+            Assert.AreEqual(0.5f, ferries[0].move.pause);
+            Assert.IsFalse(System.Array.Exists(LoadLevel01().platforms, p => p.Moves), "a missing move must not count as moving");
+        }
+
+        [Test]
         public void Level01_ParsesEveryField()
         {
             var layout = LoadLevel01();

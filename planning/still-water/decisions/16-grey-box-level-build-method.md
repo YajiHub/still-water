@@ -16,7 +16,9 @@ Hand-place Level 1 in the Editor, or generate it from layout data that the serve
 | Hand-place now, export later | Visual now | Extra exporter; the scene becomes the source of truth |
 
 ## Decision
-**Layouts are JSON files in `server/src/levels/` (e.g. `level01.json`). A Unity Editor menu item, *Still Water → Build Level*, builds the grey-box objects from them.**
+**Hand-editing (2026-11-06, by: me):** move/copy/resize platforms in the scene → *Still Water → Export Level to JSON* (copies get new ids, ferries keep their move) → `npm run level:route -- --id levelNN [--max-gap 3.1] [--hand-tuned]` (route = easiest way through; `--hand-tuned` turns off the one-dry-route proof) → *Build Level* again. The JSON stays the one source of truth: never re-run *Build Level* on an edited scene before exporting.
+
+**Layouts are JSON files in `server/src/levels/` (e.g. `level01.json`; made with `npm run level:gen` since Phase 3; a platform may carry `move` for ferries, Level 3). A Unity Editor menu item, *Still Water → Build Level*, builds the grey-box objects from them.**
 
 - **Shape (v1, Draft until Phase 2):** `id`, `name`, `water` (height, bounds), `start` and `exit` (position + size), `platforms[]` (`id`, `x`, `z`, `size`, optional `type` and `path` for moving ones later). All metres, Unity axes (x/z floor, y up).
 - **Editor script** (`_Project/Scripts/Editor/LevelBuilder.cs`, editor-only): reads the JSON from `../server/src/levels/` at edit time, replaces a `Level` root object in the open scene, and copies the JSON into `_Project/Configs/Levels/` as a `TextAsset` for runtime use (the phone can't read the server folder). The human runs the menu item and saves the scene.

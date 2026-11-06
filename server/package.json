@@ -16,7 +16,8 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "node --import tsx --test --test-concurrency=1 \"test/**/*.test.ts\"",
-    "level:gen": "tsx scripts/generate-level.ts"
+    "level:gen": "tsx scripts/generate-level.ts",
+    "level:route": "tsx scripts/route-level.ts"
   },
   "author": "",
   "license": "UNLICENSED",

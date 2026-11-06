@@ -27,6 +27,11 @@ MonoBehaviour:
   revealHeight: 8
   revealGlideSeconds: 1.5
   revealFogMultiplier: 0.35
+  listenerRoamMode: 0
+  listenerRoamSpeed: 3
+  listenerRoamPause: 1.5
+  listenerGlimpseEvery: 0
+  listenerGlimpseSeconds: 2.5
   listenerAlertDelay: 0.6
   listenerHuntSpeed: 8
   listenerSpeedPerSplash: 0.1

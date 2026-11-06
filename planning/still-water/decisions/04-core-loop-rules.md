@@ -61,6 +61,7 @@ Paused from any state: freezes everything, timer included
 | 6/7 | Path between tries | **Fixed per level** (offline). Online uses a seed (Netcode Model). |
 | 8 | Landing on a fake | Sinks after **0.4 s**; jumping off in time saves you. Stays sunk for the rest of the attempt. |
 | 9 | Caught while climbing | Safe once CLIMB starts (the climb takes 0.35 s). |
+| — | Longest jump | **2.8 m** by default (`MAX_GAP_M`). **Amended 2026-11-06 (by: me):** a level may raise it with `maxGap`, never above **3.1 m** (`JUMP_LIMIT_M`, the edge of the jump: run 4.5 m/s, height 1.2 m). Level 3 uses 3.1 (hand-tuned). |
 | 10 | Splash | +1 splash count; the Listener alerts after the level's delay (L1 1.5 s), hunts at its speed (L1 3.5 m/s), **+10% speed per extra splash** this attempt. **Amended 2026-11-05 (by: me):** it is always in the pool and never teleports: roams → hears → swims to the sound, tracking you while you swim → lingers where it last heard you → roams on from there; per-level roam mode Fin / Wake / Hidden + glimpses ([DESIGN §5.2](../../../docs/DESIGN.md)). |
 | 11 | Retry | Full restart: Intro → Reveal again, fakes reset. |
 | — | Stars | ★ clear · ★★ ≤ 1 splash · ★★★ 0 splashes **and** under par time (par per level, in config). |

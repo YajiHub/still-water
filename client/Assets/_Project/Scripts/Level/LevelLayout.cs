@@ -19,6 +19,10 @@ namespace StillWater.Level
         public PlatformSpot[] platforms;
         /// <summary>Platform ids from start to exit: the glowing pattern.</summary>
         public int[] safePath;
+        /// <summary>No fakes: every non-path platform must be a dead end (server-tested).</summary>
+        public bool oneDryRoute;
+        /// <summary>Longest jump this level may ask for; 0 = the default 2.8 m (server-checked, never above 3.1).</summary>
+        public float maxGap;
 
         public static LevelLayout FromJson(string json) => JsonUtility.FromJson<LevelLayout>(json);
     }
@@ -40,5 +44,16 @@ namespace StillWater.Level
     {
         public int id;
         public float x, z, size;
+        /// <summary>Only on ferries. JsonUtility fills a missing one with zeros, so check <see cref="Moves"/>.</summary>
+        public PlatformMove move;
+
+        public bool Moves => move != null && (move.dx != 0f || move.dz != 0f) && move.seconds > 0f;
+    }
+
+    /// <summary>A ferry slides from x/z (end A) to A + (dx, dz) and back (Level Roster, Level 3).</summary>
+    [Serializable]
+    public class PlatformMove
+    {
+        public float dx, dz, seconds, pause, offset;
     }
 }

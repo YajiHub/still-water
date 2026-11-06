@@ -115,7 +115,7 @@ Working concept: a pale, eyeless, long-limbed thing that lives under the water. 
 ### 5.2 Behavior (locked 2026-11-05, by: me: always in the pool, never teleports)
 | State | Trigger | Behavior |
 |---|---|---|
-| Roaming | level start, or after Lingering | Swims slowly (`listenerRoamSpeed`, ~1 m/s) between random points, pausing at each. Starts in the pool corner farthest from the player. How it shows itself depends on the level's **roam mode** (below). |
+| Roaming | level start, or after Lingering | Swims slowly (`listenerRoamSpeed`, ~1 m/s) between random points, pausing at each. Starts in the **middle of the pool** (changed 2026-11-06, by: me: from the far corner the first fall was almost always safe). How it shows itself depends on the level's **roam mode** (below). |
 | Alerted | a splash while Roaming (or you're swimming) | Stops, turns toward the sound and rises toward the surface for the level's alert delay. |
 | Hunting | after the delay; at once if it hears you while Hunting/Lingering | Swims at hunt speed to where it **last heard you**: the splash, then your position while you swim (swimming is noisy). Can't leave the water. |
 | Catch | reaches a player who is swimming | LOSE (offline) or a penalty (online, see §8). Safe once CLIMB starts. |
@@ -144,13 +144,13 @@ Working concept: a pale, eyeless, long-limbed thing that lives under the water. 
 
 ## 6. Levels (Draft; meets lab R1 "each harder or different")
 
-At least 5 levels (the lab's minimum, not a maximum), each planned with the user from their own idea in the [Level Roster](../planning/still-water/decisions/18-level-roster.md). Rows 3–5 below are the **old draft**: ideas only, not decided.
+At least 5 levels (the lab's minimum, not a maximum), each planned with the user from their own idea in the [Level Roster](../planning/still-water/decisions/18-level-roster.md). Rows 4–5 below are the **old draft**: ideas only, not decided.
 
 | # | Name (working) | Goal text shown at start | What's new or harder | Pattern length / glow time per tile | Timer |
 |---|---|---|---|---|---|
 | 1 | Shallow End | "Get to the door without falling into the water." | Teaches moving, jumping and the water danger only: **no Reveal, no fakes**. Most platforms are dead ends; one dry route. Short gaps. | none (no Reveal) | 120 s (generous) |
-| 2 | Deep End | "Deeper and wider. Find the way across." | **Harder, same rules:** 40 × 50 m hall, ~40 platforms (some 1.6 m), ~10-jump route through dead ends, gaps 2.0–2.6 m. No Reveal, no fakes (Locked — [Level Roster](../planning/still-water/decisions/18-level-roster.md)). Bigger hall, longer path, wider gaps, faster monster | 7 / 0.7 s | 120 s |
-| 3 | Current | "Time your jumps. Some platforms drift." | **New:** moving platforms | 7 / 0.6 s | 120 s |
+| 2 | Deep End | "Deeper and wider. Find the way across." | **Harder, same rules:** 40 × 50 m hall, 50 platforms (40% small 1.6 m), ~10-jump route through dead ends, gaps 2.2–2.7 m; Listener roams as a Wake. No Reveal, no fakes (Locked — [Level Roster](../planning/still-water/decisions/18-level-roster.md)) | none (no Reveal) | 110 s, par 55 |
+| 3 | Current | "Some paths lead nowhere. Ride the ferries across." | **New:** 70 × 100 m, 19-jump winding route, gaps 2.6–2.8 m, ~50% small tiles, long **decoy branches** hidden in the fog (wrong turn = long detour), 4 fast **ferries** carry you across unjumpable channels; Listener roams **Hidden** (Locked — [Level Roster](../planning/still-water/decisions/18-level-roster.md)) | none (no Reveal) | 200 s, par 120 (provisional) |
 | 4 | Lights Out | "The lights are failing. Trust your memory." | **New:** fog and flickering lights, timed sinking platforms | 8 / 0.5 s, shown once | 100 s |
 | 5 | The Drain | "Everything you've learned. Get out." | Long path with every mechanic, smaller platforms, fastest monster | 10 / 0.45 s | 120 s |
 
