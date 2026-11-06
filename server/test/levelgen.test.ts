@@ -1,8 +1,8 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 
-import { generateLevel, type GenOptions } from "../scripts/generate-level.js";
-import { edgeGap, PLAYER_REACH_M, reachesExit, validateLayout, type Rect } from "../src/logic/layout.js";
+import { decoyDepth, generateLevel, type GenOptions } from "../scripts/generate-level.js";
+import { edgeGap, PLAYER_REACH_M, reachesExit, validateLayout, type PlatformSpot, type Rect } from "../src/logic/layout.js";
 
 const opts: GenOptions = {
   id: "levelTest",
@@ -67,5 +67,72 @@ describe("generateLevel", () => {
   it("numbers platforms 1..n from the start side", () => {
     assert.deepEqual(layout.platforms.map((p) => p.id), layout.platforms.map((_, i) => i + 1));
     for (let i = 1; i < layout.platforms.length; i++) assert.ok(layout.platforms[i].z >= layout.platforms[i - 1].z);
+  });
+});
+
+describe("generateLevel with decoys and ferries", () => {
+  const big: GenOptions = {
+    ...opts,
+    width: 36,
+    length: 48,
+    platforms: 40,
+    routeMin: 8,
+    routeMax: 13,
+    gapMin: 2.4,
+    gapMax: 2.8,
+    decoys: [2, 2],
+    decoyLength: [4, 5],
+    ferries: [1, 2],
+    ferryTravel: [4, 5],
+    ferryGaps: [2.0, 2.4],
+    ferrySeconds: 3,
+    ferryPause: 1,
+    seed: 1, // seeds can fail cleanly ("try another seed"); this one fits 2 decoys and a ferry
+  };
+  const layout = generateLevel(big);
+  const at = (p: PlatformSpot): Rect => ({ x: p.x, z: p.z, width: p.size, depth: p.size });
+  const atB = (p: PlatformSpot): Rect => ({ x: p.x + p.move!.dx, z: p.z + p.move!.dz, width: p.size, depth: p.size });
+  const byId = (id: number) => layout.platforms.find((p) => p.id === id)!;
+
+  it("makes a valid one-dry-route layout", () => {
+    assert.deepEqual(validateLayout(layout), []);
+    assert.equal(layout.platforms.length, 40);
+  });
+
+  it("puts 1–2 ferries on the route, never first or last, travelling 4–5 m", () => {
+    const route = layout.safePath.map(byId);
+    const ferries = route.filter((p) => p.move);
+    assert.ok(ferries.length >= 1 && ferries.length <= 2, `ferries ${ferries.length}`);
+    assert.ok(!route[0].move && !route.at(-1)!.move);
+    for (const f of ferries) {
+      const travel = Math.hypot(f.move!.dx, f.move!.dz);
+      assert.ok(travel >= 4 - 0.1 && travel <= 5 + 0.1, `travel ${travel}`);
+      assert.equal(f.move!.seconds, 3);
+      assert.equal(f.move!.pause, 1);
+    }
+  });
+
+  it("boards a ferry at end A and leaves it at end B with the ferry gaps", () => {
+    const route = layout.safePath.map(byId);
+    route.forEach((p, i) => {
+      if (!p.move) return;
+      const prev = route[i - 1].move ? atB(route[i - 1]) : at(route[i - 1]);
+      const board = edgeGap(prev, at(p));
+      const leave = edgeGap(atB(p), at(route[i + 1]));
+      assert.ok(board >= 2.0 - 1e-9 && board <= 2.4 + 1e-9, `board ${board.toFixed(2)}`);
+      assert.ok(leave >= 2.0 - 1e-9 && leave <= 2.4 + 1e-9, `leave ${leave.toFixed(2)}`);
+    });
+  });
+
+  it("needs every route platform, ferries included", () => {
+    for (const id of layout.safePath) assert.equal(reachesExit(layout, [id], PLAYER_REACH_M), false, `without ${id}`);
+  });
+
+  it("has a decoy branch at least 4 jumps deep", () => {
+    assert.ok(decoyDepth(layout, big.gapMax) >= 4, `deepest decoy ${decoyDepth(layout, big.gapMax)}`);
+  });
+
+  it("only route platforms move", () => {
+    for (const p of layout.platforms) if (p.move) assert.ok(layout.safePath.includes(p.id));
   });
 });

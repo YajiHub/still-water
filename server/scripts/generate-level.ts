@@ -4,12 +4,14 @@
 //
 //   npm run level:gen -- --id level02 --name "Deep End" --width 40 --length 42 --platforms 40 \
 //     --route 9-11 --gaps 2.0-2.6 --sizes 2,1.6 --small 0.25 --seed 1 [--force]
+//   Level 3 extras: --decoys 3-4 --decoy-length 4-6 --ferries 2-3 --ferry-travel 4-5 --ferry-gaps 2.0-2.4
+//     --ferry-seconds 3 --ferry-pause 1 --max-turn 70 (degrees a route step may turn; default 45)
 //
 // Writes src/levels/<id>.json (refuses to overwrite unless --force) and prints a summary.
 import { existsSync, writeFileSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 
-import { edgeGap, PLAYER_REACH_M, reachesExit, validateLayout, type LevelLayout, type PlatformSpot, type Rect } from "../src/logic/layout.js";
+import { edgeGap, PLAYER_REACH_M, reachesExit, toRect, validateLayout, type LevelLayout, type PlatformSpot, type Rect } from "../src/logic/layout.js";
 
 export interface GenOptions {
   id: string;
@@ -27,6 +29,14 @@ export interface GenOptions {
   maxTurnDeg?: number; // how far a route step may turn from straight ahead (default 45)
   platformTopY?: number; // default 0.5 (Level 1)
   exitTopY?: number; // default 1.1 (Level 1)
+  // Level 3 (Level Roster): long dead ends that head forward like the route, and ferries across channels.
+  decoys?: [number, number]; // how many decoy branches
+  decoyLength?: [number, number]; // jumps per decoy
+  ferries?: [number, number]; // how many route platforms move
+  ferryTravel?: [number, number]; // metres, end A → end B
+  ferryGaps?: [number, number]; // boarding / leaving gaps (shorter: the target moves)
+  ferrySeconds?: number; // one way
+  ferryPause?: number; // at each end
 }
 
 const DECK_DEPTH = 4;
@@ -34,6 +44,7 @@ const WALL_MARGIN = 0.5; // keep platforms off the pool walls
 const ROUTE_TRIES = 3000;
 const STEP_TRIES = 200;
 const DEAD_END_TRIES = 20000;
+const DECOY_TRIES = 300;
 
 // mulberry32: tiny seeded PRNG, good enough for layouts.
 function makeRng(seed: number): () => number {
@@ -48,7 +59,23 @@ function makeRng(seed: number): () => number {
 }
 
 const round = (v: number) => Math.round(v * 20) / 20; // 5 cm grid, readable JSON
-const rectOf = (p: PlatformSpot): Rect => ({ x: p.x, z: p.z, width: p.size, depth: p.size });
+const rectOf = toRect; // a ferry counts as the strip it slides across, so nothing may sit in its way
+const atA = (p: PlatformSpot): Rect => ({ x: p.x, z: p.z, width: p.size, depth: p.size });
+// Where you leave a platform: a ferry's far end (B), otherwise the platform itself.
+const leaveAt = (p: PlatformSpot): Rect => (p.move ? { ...atA(p), x: p.x + p.move.dx, z: p.z + p.move.dz } : atA(p));
+
+/** How many jumps the deepest dead end is from the route (through non-route platforms, jumps of ≤ `gapMax`). */
+export function decoyDepth(layout: LevelLayout, gapMax: number): number {
+  const route = new Set(layout.safePath);
+  const others = layout.platforms.filter((p) => !route.has(p.id));
+  const depth = new Map<number, number>();
+  let frontier = others.filter((p) => layout.platforms.some((q) => route.has(q.id) && edgeGap(toRect(q), toRect(p)) <= gapMax));
+  for (let d = 1; frontier.length > 0; d++) {
+    for (const p of frontier) depth.set(p.id, d);
+    frontier = others.filter((p) => !depth.has(p.id) && frontier.some((q) => edgeGap(toRect(q), toRect(p)) <= gapMax));
+  }
+  return Math.max(0, ...depth.values());
+}
 
 export function generateLevel(o: GenOptions): LevelLayout {
   const rand = makeRng(o.seed);
@@ -59,13 +86,14 @@ export function generateLevel(o: GenOptions): LevelLayout {
   const half = o.width / 2;
   const start: Rect = { x: 0, z: -DECK_DEPTH / 2, width: o.width, depth: DECK_DEPTH };
   const exit: Rect = { x: 0, z: o.length + DECK_DEPTH / 2, width: o.width, depth: DECK_DEPTH };
-  const inWater = (x: number, z: number, s: number) =>
-    x - s / 2 >= -half + WALL_MARGIN && x + s / 2 <= half - WALL_MARGIN && z - s / 2 >= WALL_MARGIN && z + s / 2 <= o.length - WALL_MARGIN;
-  const inGapRange = (g: number) => g >= o.gapMin && g <= o.gapMax;
+  const inWater = (r: Rect) =>
+    r.x - r.width / 2 >= -half + WALL_MARGIN && r.x + r.width / 2 <= half - WALL_MARGIN && r.z - r.depth / 2 >= WALL_MARGIN && r.z + r.depth / 2 <= o.length - WALL_MARGIN;
+  const inGapRange = (g: number, [lo, hi]: [number, number] = [o.gapMin, o.gapMax]) => g >= lo && g <= hi;
+  const ferryGaps = o.ferryGaps ?? [o.gapMin, o.gapMax];
 
-  // A candidate next to `from`, `gapMin..gapMax` of water away, heading `angle` (0 = +z).
-  const near = (from: Rect, angle: number, size: number): PlatformSpot => {
-    const d = between(o.gapMin, o.gapMax) + (from.width + size) / 2;
+  // A candidate next to `from`, `gaps` of water away, heading `angle` (0 = +z).
+  const near = (from: Rect, angle: number, size: number, gaps: [number, number] = [o.gapMin, o.gapMax]): PlatformSpot => {
+    const d = between(gaps[0], gaps[1]) + (from.width + size) / 2;
     return { id: 0, x: round(from.x + d * Math.sin(angle)), z: round(from.z + d * Math.cos(angle)), size };
   };
 
@@ -86,47 +114,94 @@ export function generateLevel(o: GenOptions): LevelLayout {
   const deadEndsHold = (platforms: PlatformSpot[], route: number[]) =>
     route.every((id) => !reachesExit(layoutOf(platforms, route), [id], PLAYER_REACH_M));
 
-  // 1. The route: a forward zig-zag walk from the start deck to the exit deck.
+  // 1. The route: a forward zig-zag walk from the start deck to the exit deck. A ferry step boards at its
+  //    end A and the walk carries on from its end B, so the channel between is only crossable by riding it.
   let route: PlatformSpot[] | null = null;
   for (let attempt = 0; attempt < ROUTE_TRIES && !route; attempt++) {
     const path: PlatformSpot[] = [];
+    let ferriesPlaced = 0;
+    let sinceFerry = 0;
     while (path.length < o.routeMax) {
       const prev = path.at(-1);
+      const makeFerry = !!o.ferries && ferriesPlaced < o.ferries[1] && path.length >= 2 && sinceFerry >= 2 && rand() < 0.4;
+      const gaps: [number, number] = makeFerry || prev?.move ? ferryGaps : [o.gapMin, o.gapMax];
       let next: PlatformSpot | null = null;
       for (let t = 0; t < STEP_TRIES && !next; t++) {
-        const size = pickSize();
-        const c = prev
-          ? near(rectOf(prev), between(-maxTurn, maxTurn), size)
+        const size = makeFerry ? o.sizes[0] : pickSize(); // ferries are full-size: the target moves
+        const angle = prev ? between(-maxTurn, maxTurn) : 0; // same random sequence as before ferries existed
+        const c: PlatformSpot = prev
+          ? near(leaveAt(prev), angle, size, gaps)
           : { id: 0, x: round(between(-half + size, half - size)), z: round(between(o.gapMin, o.gapMax) + size / 2), size };
-        if (!inWater(c.x, c.z, c.size)) continue;
-        if (prev && !inGapRange(edgeGap(rectOf(prev), rectOf(c)))) continue;
+        if (makeFerry) {
+          const travel = between(...(o.ferryTravel ?? [4, 5]));
+          const seconds = o.ferrySeconds ?? 3, pause = o.ferryPause ?? 1;
+          c.move = { dx: round(travel * Math.sin(angle)), dz: round(travel * Math.cos(angle)), seconds, pause, offset: round(rand() * 2 * (seconds + pause)) };
+        }
+        if (!inWater(rectOf(c))) continue;
+        if (prev && !inGapRange(edgeGap(leaveAt(prev), atA(c)), gaps)) continue;
+        // Next to a ferry, keep that gap from its whole slide, not just its end (a diagonal ferry swings close).
+        if (prev && (c.move || prev.move) && edgeGap(rectOf(prev), rectOf(c)) < gaps[0]) continue;
         // Only the next step may be in reach: anything closer would let you skip a platform.
         if (prev && edgeGap(start, rectOf(c)) <= PLAYER_REACH_M) continue;
         if (path.slice(0, -1).some((p) => edgeGap(rectOf(p), rectOf(c)) <= PLAYER_REACH_M)) continue;
         const toExit = edgeGap(rectOf(c), exit);
-        if (toExit < o.gapMin || (toExit <= PLAYER_REACH_M && !inGapRange(toExit))) continue;
+        if (toExit < o.gapMin || (toExit <= PLAYER_REACH_M && (c.move || !inGapRange(toExit)))) continue; // never end on a ferry
         next = c;
       }
       if (!next) break;
       path.push(next);
-      if (inGapRange(edgeGap(rectOf(next), exit))) break; // reached the far side
+      if (next.move) { ferriesPlaced++; sinceFerry = 0; } else sinceFerry++;
+      if (!next.move && inGapRange(edgeGap(rectOf(next), exit))) break; // reached the far side
     }
-    const done = path.length >= o.routeMin && inGapRange(edgeGap(rectOf(path.at(-1)!), exit));
+    const last = path.at(-1);
+    const done = !!last && !last.move && path.length >= o.routeMin && inGapRange(edgeGap(rectOf(last), exit)) && ferriesPlaced >= (o.ferries?.[0] ?? 0);
     if (done) route = path.map((p, i) => ({ ...p, id: i + 1 }));
   }
   if (!route) throw new Error(`no route for seed ${o.seed}: try another seed or loosen the options`);
 
-  // 2. Dead ends: branch off any platform, spaced like the route, never a shortcut.
   const platforms = [...route];
   const routeIds = route.map((p) => p.id);
+  // A new platform fits if it's in the water, spaced like the route, and can't be used to skip a route platform.
+  const fits = (c: PlatformSpot, others: PlatformSpot[]) =>
+    inWater(rectOf(c)) &&
+    !others.some((p) => edgeGap(rectOf(p), rectOf(c)) < o.gapMin) &&
+    edgeGap(start, rectOf(c)) >= o.gapMin && edgeGap(exit, rectOf(c)) >= o.gapMin &&
+    deadEndsHold([...others, c], routeIds);
+
+  // 2a. Decoys: chains that peel off the route sideways, then head forward like the real route and stop in the fog.
+  const decoysWanted = o.decoys ? o.decoys[0] + Math.floor(rand() * (o.decoys[1] - o.decoys[0] + 1)) : 0;
+  const [decoyMin, decoyMax] = o.decoyLength ?? [4, 6];
+  let decoysMade = 0;
+  const anchors = route.filter((p, i) => !p.move && i < route.length - 2);
+  for (let t = 0; t < DECOY_TRIES && decoysMade < decoysWanted; t++) {
+    const root = anchors[Math.floor(rand() * anchors.length)];
+    const length = decoyMin + Math.floor(rand() * (decoyMax - decoyMin + 1));
+    const side = rand() < 0.5 ? -1 : 1;
+    const chain: PlatformSpot[] = [];
+    while (chain.length < length) {
+      const from = chain.at(-1) ?? root;
+      let placed: PlatformSpot | null = null;
+      for (let s = 0; s < STEP_TRIES && !placed; s++) {
+        const angle = chain.length === 0 ? side * between(maxTurn, 2 * maxTurn) : between(-maxTurn, maxTurn);
+        const c = { ...near(atA(from), angle, pickSize()), id: platforms.length + chain.length + 1 };
+        if (fits(c, [...platforms, ...chain])) placed = c;
+      }
+      if (!placed) break;
+      chain.push(placed);
+    }
+    if (chain.length >= decoyMin) {
+      platforms.push(...chain);
+      decoysMade++;
+    }
+  }
+  if (decoysMade < (o.decoys?.[0] ?? 0)) throw new Error(`seed ${o.seed}: only ${decoysMade} decoys fit: try another seed or shorter decoys`);
+
+  // 2b. Short dead ends: branch off any platform, spaced like the route, never a shortcut.
   for (let t = 0; t < DEAD_END_TRIES && platforms.length < o.platforms; t++) {
     const parent = platforms[Math.floor(rand() * platforms.length)];
     const c = { ...near(rectOf(parent), between(-Math.PI, Math.PI), pickSize()), id: platforms.length + 1 };
-    if (!inWater(c.x, c.z, c.size)) continue;
     if (!inGapRange(edgeGap(rectOf(parent), rectOf(c)))) continue;
-    if (platforms.some((p) => edgeGap(rectOf(p), rectOf(c)) < o.gapMin)) continue;
-    if (edgeGap(start, rectOf(c)) < o.gapMin || edgeGap(exit, rectOf(c)) < o.gapMin) continue;
-    if (!deadEndsHold([...platforms, c], routeIds)) continue;
+    if (!fits(c, platforms)) continue;
     platforms.push(c);
   }
   if (platforms.length < o.platforms) {
@@ -180,6 +255,11 @@ function parseArgs(argv: string[]): { options: GenOptions; force: boolean } {
     if (!Number.isFinite(lo) || !Number.isFinite(hi) || lo > hi) throw new Error(`--${k} must look like 2.0-2.6`);
     return [lo, hi];
   };
+  const optionalRange = (k: string): [number, number] | undefined => {
+    if (!args.has(k)) return undefined;
+    const [lo, hi] = range(k);
+    return [lo, hi];
+  };
   const [routeMin, routeMax] = range("route");
   const [gapMin, gapMax] = range("gaps");
   return {
@@ -197,6 +277,14 @@ function parseArgs(argv: string[]): { options: GenOptions; force: boolean } {
       sizes: (args.get("sizes") ?? "2").split(",").map(Number),
       smallChance: num("small", 0),
       seed: num("seed", 1),
+      decoys: optionalRange("decoys"),
+      decoyLength: optionalRange("decoy-length"),
+      ferries: optionalRange("ferries"),
+      ferryTravel: optionalRange("ferry-travel"),
+      ferryGaps: optionalRange("ferry-gaps"),
+      ferrySeconds: args.has("ferry-seconds") ? num("ferry-seconds") : undefined,
+      ferryPause: args.has("ferry-pause") ? num("ferry-pause") : undefined,
+      maxTurnDeg: args.has("max-turn") ? num("max-turn") : undefined,
     },
   };
 }
@@ -217,6 +305,9 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     console.log(`${layout.platforms.length} platforms, route ${layout.safePath.length}: ${layout.safePath.join(" → ")}`);
     console.log(`route jumps ${gaps.length}, gaps ${Math.min(...gaps).toFixed(2)}–${Math.max(...gaps).toFixed(2)} m`);
     console.log(`small platforms: ${layout.platforms.filter((p) => p.size !== options.sizes[0]).length}`);
+    const ferries = layout.platforms.filter((p) => p.move).map((p) => p.id);
+    if (ferries.length > 0) console.log(`ferries: ${ferries.join(", ")}`);
+    console.log(`deepest dead end: ${decoyDepth(layout, options.gapMax)} jumps from the route`);
   } catch (e) {
     console.error(`level:gen: ${(e as Error).message}`);
     process.exitCode = 1;

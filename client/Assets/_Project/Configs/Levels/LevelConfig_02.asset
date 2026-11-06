@@ -28,7 +28,7 @@ MonoBehaviour:
   revealGlideSeconds: 1.5
   revealFogMultiplier: 0.35
   listenerRoamMode: 1
-  listenerRoamSpeed: 1
+  listenerRoamSpeed: 3
   listenerRoamPause: 1.5
   listenerGlimpseEvery: 15
   listenerGlimpseSeconds: 2.5

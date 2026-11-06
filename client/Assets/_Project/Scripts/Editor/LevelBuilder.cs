@@ -31,7 +31,7 @@ namespace StillWater.Editor
         private const string LevelScenesDir = "Assets/_Project/Scenes/Levels";
 
         // Grey-box geometry only (looks, not gameplay): pool depth, wall height, slab thickness.
-        private const float PoolDepth = 3f, WallHeight = 10f, LightHeight = 3.1f, WallThickness = 0.5f, SlabBelowWater = 0.3f, GlowWidth = 0.08f, LampSpacing = 12f;
+        private const float PoolDepth = 3f, WallHeight = 10f, LightHeight = 3.1f, WallThickness = 0.5f, SlabBelowWater = 0.3f, GlowWidth = 0.08f, LampSpacing = 12f, MaxLamps = 32f;
 
         [MenuItem("Still Water/Build Level...")]
         private static void BuildLevelMenu()
@@ -57,6 +57,7 @@ namespace StillWater.Editor
             // Faint on purpose: below the bloom threshold, so the Phase 2 pattern reveal can be the bright one.
             var glow = GetMaterial("Glow", new Color(0.6f, 0.9f, 1f), 0.5f, new Color(0.6f, 0.9f, 1f) * 0.7f);
             var door = GetMaterial("Door", new Color(0.12f, 0.10f, 0.09f), 0.2f);
+            var ferryGlow = GetMaterial("GlowFerry", new Color(1f, 0.75f, 0.4f), 0.5f, new Color(1f, 0.7f, 0.35f) * 0.7f); // warm: "this one moves"
 
             var w = layout.water;
             float top = layout.platformTopY;
@@ -80,8 +81,10 @@ namespace StillWater.Editor
             lights.transform.SetParent(root.transform, false);
             // A lamp about every LampSpacing metres, so big halls have no black zones. Needs the Forward+ renderer:
             // plain Forward lights each object (the one big water plane too) with only 4 extra lights.
-            int lampsX = Mathf.Max(2, Mathf.RoundToInt(widthX / LampSpacing));
-            int lampsZ = Mathf.Max(2, Mathf.RoundToInt((maxZ - minZ) / LampSpacing));
+            // Huge halls space them out instead (about MaxLamps in total), so phones keep their fps.
+            float spacing = Mathf.Max(LampSpacing, Mathf.Sqrt(widthX * (maxZ - minZ) / MaxLamps));
+            int lampsX = Mathf.Max(2, Mathf.RoundToInt(widthX / spacing));
+            int lampsZ = Mathf.Max(2, Mathf.RoundToInt((maxZ - minZ) / spacing));
             for (int ix = 0; ix < lampsX; ix++)
             for (int iz = 0; iz < lampsZ; iz++)
             {
@@ -111,7 +114,10 @@ namespace StillWater.Editor
                 var p = Box($"Platform_{spot.id:00}", root, new Vector3(spot.x, top - h / 2f, spot.z), new Vector3(spot.size, h, spot.size), tile, true);
                 Widen(p, spot.size, spot.size, config.edgeForgiveness);
                 SetFields(p.AddComponent<Platform>(), ("id", spot.id), ("climbable", true), ("onSafePath", System.Array.IndexOf(layout.safePath, spot.id) >= 0));
-                AddGlowStrips(p, spot.size, top, glow);
+                AddGlowStrips(p, spot.size, top, spot.Moves ? ferryGlow : glow);
+                if (spot.Moves)
+                    SetFields(p.AddComponent<PlatformMover>(), ("pointA", p.transform.position), ("travel", new Vector3(spot.move.dx, 0f, spot.move.dz)),
+                        ("seconds", spot.move.seconds), ("pause", spot.move.pause), ("offset", spot.move.offset));
             }
 
             CopyLayoutIntoClient(jsonPath);
@@ -119,6 +125,64 @@ namespace StillWater.Editor
             Selection.activeGameObject = root;
             Debug.Log($"Built level '{layout.name}' with {layout.platforms.Length} platforms. Save the scene (Ctrl+S).");
         }
+
+        // Hand-edited a level in the scene (moved, copied or resized platforms)? Write it back to the server's JSON, which
+        // stays the one source of truth. Then run `npm run level:route -- --id levelNN` (sets the route, server tests
+        // check it) and Build Level again from the JSON.
+        [MenuItem("Still Water/Export Level to JSON")]
+        private static void ExportLevel()
+        {
+            if (!InLevelScene("Export Level")) return;
+            string id = "level" + EditorSceneManager.GetActiveScene().name.Replace("Level", "");
+            string path = Path.Combine(Path.GetFullPath(LevelsSourceDir), id + ".json");
+            if (!File.Exists(path))
+            {
+                Debug.LogError($"No {path}: export only works for a level built from a JSON.");
+                return;
+            }
+            var layout = LevelLayout.FromJson(File.ReadAllText(path));
+            var original = new Dictionary<int, PlatformSpot>();
+            int nextId = 1;
+            foreach (var spot in layout.platforms)
+            {
+                original[spot.id] = spot;
+                nextId = Mathf.Max(nextId, spot.id + 1);
+            }
+
+            // The copy nearest its JSON spot keeps the id; other copies (Ctrl+D) get new ids.
+            var scenePlatforms = new List<Platform>();
+            foreach (var p in Object.FindObjectsByType<Platform>(FindObjectsSortMode.None))
+                if (p.Id > 0) scenePlatforms.Add(p); // 0 = start deck, -1 = exit deck
+            float FromOriginal(Platform p) => original.TryGetValue(p.Id, out var s)
+                ? Vector2.Distance(new Vector2(p.transform.position.x, p.transform.position.z), new Vector2(s.x, s.z)) : 0f;
+            scenePlatforms.Sort((a, b) => FromOriginal(a).CompareTo(FromOriginal(b)));
+
+            var used = new HashSet<int>();
+            var spots = new List<PlatformSpot>();
+            int copies = 0;
+            foreach (var p in scenePlatforms)
+            {
+                var t = p.transform;
+                if (!Mathf.Approximately(t.localScale.x, t.localScale.z))
+                    Debug.LogWarning($"{p.name} is not square ({t.localScale.x} × {t.localScale.z}): exported as {t.localScale.x} m.", p);
+                int newId = used.Add(p.Id) ? p.Id : nextId++;
+                if (newId != p.Id) copies++;
+                original.TryGetValue(p.Id, out var src);
+                spots.Add(new PlatformSpot
+                {
+                    id = newId,
+                    x = Round(t.position.x),
+                    z = Round(t.position.z),
+                    size = Round(t.localScale.x),
+                    move = p.GetComponent<PlatformMover>() != null && src != null && src.Moves ? src.move : null,
+                });
+            }
+            layout.platforms = spots.ToArray();
+            File.WriteAllText(path, JsonUtility.ToJson(layout, true));
+            Debug.Log($"Exported {spots.Count} platforms ({copies} copies got new ids) to {path}. Next: npm run level:route -- --id {id}, then Build Level from the JSON.");
+        }
+
+        private static float Round(float v) => Mathf.Round(v * 20f) / 20f; // 5 cm grid, like the generator
 
         [MenuItem("Still Water/Create Player Rig")]
         private static void CreatePlayerRig()
@@ -564,6 +628,8 @@ namespace StillWater.Editor
                 {
                     case bool b: prop.boolValue = b; break;
                     case int i: prop.intValue = i; break;
+                    case float f: prop.floatValue = f; break;
+                    case Vector3 v: prop.vector3Value = v; break;
                     case Object o: prop.objectReferenceValue = o; break;
                     case null: prop.objectReferenceValue = null; break;
                 }

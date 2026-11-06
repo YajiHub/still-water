@@ -19,3 +19,5 @@
 - [ ] C#: find an index with a loop, then `prev != null && prev.cleared` (`&&` stops early, no null crash) — `ProgressRules.IsUnlocked` (2026-11-05)
 - [ ] Why save atomically (write temp → replace) and save *before* the Result screen — `SaveSystem.Save`, `LevelController` (2026-11-05)
 - [ ] GitHub billing: public-repo Actions show a metered amount that is 100% discounted; a billing lock (e.g. Student plan lapsing) fails jobs in seconds and the ruleset then blocks merges — Settings → Billing, `protect-main` (2026-11-05)
+- [ ] Looping motion with `%` (modulo): one cycle split into pause → slide → pause → slide back, returning 0..1 — `FerryRules.Progress` (written by the agent at my request; try rewriting it from the tests) (2026-11-05)
+- [ ] Carrying the player on a moving platform: the platform moves first (execution order), then the motor adds its `Delta` — `PlatformMover`, `PlayerMotor.UpdateLand` (2026-11-05)
