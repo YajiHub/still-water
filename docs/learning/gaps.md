@@ -20,4 +20,7 @@
 - [ ] Why save atomically (write temp → replace) and save *before* the Result screen — `SaveSystem.Save`, `LevelController` (2026-11-05)
 - [ ] GitHub billing: public-repo Actions show a metered amount that is 100% discounted; a billing lock (e.g. Student plan lapsing) fails jobs in seconds and the ruleset then blocks merges — Settings → Billing, `protect-main` (2026-11-05)
 - [ ] Looping motion with `%` (modulo): one cycle split into pause → slide → pause → slide back, returning 0..1 — `FerryRules.Progress` (written by the agent at my request; try rewriting it from the tests) (2026-11-05)
-- [ ] Carrying the player on a moving platform: the platform moves first (execution order), then the motor adds its `Delta` — `PlatformMover`, `PlayerMotor.UpdateLand` (2026-11-05)
+- [ ] Carrying the player on a moving platform: the platform moves first (execution order), then the motor adds its `Delta` — `PlatformMover`, `PlayerMotor.UpdateLand` (2026-11-05; ownership check 2026-11-06: explained by the agent, not yet answered by me)
+- [ ] Why Build Level erases scene edits: it deletes the `Level` object and rebuilds from the server JSON (the source of truth); export first — `LevelBuilder.BuildLevel`, *Export Level to JSON* (2026-11-06)
+- [ ] Why gaps stop at 2.8 m (3.1 max): the jump's reach (run speed × air time) sets the limit, so harder levels need other levers — `MAX_GAP_M`, `JUMP_LIMIT_M`, `MovementConfig` (2026-11-06)
+- [ ] URP Forward vs Forward+: Forward lights each object with ≤ 4 extra lights, so many lamps need Forward+ — `Mobile_Renderer` (2026-11-06)
