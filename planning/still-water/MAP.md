@@ -11,6 +11,7 @@
 | 1. Feel prototype | Grey-box Level 1 built from `level01.json`; own `PlayerMotor` (jump aids, deep-water swim, climb-out); touch UI (floating stick, drag-to-look, Jump/Climb); first vs third person rigs; 1-day art spike. **Exit bar:** on the phone, 10 jumps in a row with ≤1 miss; misses feel like the player's fault; 1 new tester clears L1 in ≤3 tries unaided; steady 30+ fps; Camera Style + Art Style locked. | ~~[Camera Style](./decisions/05-camera-style.md)~~ ✅ first person, ~~[Art Style](./decisions/08-art-style.md)~~ ✅ C. Hybrid | 🟡 In Progress: built + phone-verified; left: 10-jump bar, 1 outside tester (deferred, can run during Phase 2) |
 | 2. Core loop + progression | Reveal, safe/fake platforms, splash → Listener → catch, win/lose, stars, GameState, save, Level Select with locks, Result screen | ~~[Core Loop Rules](./decisions/04-core-loop-rules.md)~~ ✅, ~~[Save Data](./decisions/11-save-data.md)~~ ✅ | 🟡 Merged (PR #13) + Editor-verified (win → stars → save); left: phone playtest (deferred) |
 | 3. Levels 2–5+ + offline | At least 5 levels, **planned one at a time with the user** ([Level Roster](./decisions/18-level-roster.md)); Level 2 = bigger/harder, same rules. Later levels may add the Reveal, fakes, moving/sinking platforms, lights out. Optional Ghost rival; airplane-mode test. *(Checkpoints 3–4)* | [Level Roster](./decisions/18-level-roster.md) (per level), [Offline Rival](./decisions/09-offline-rival.md) | 🟡 Levels 1–4 done (L4 Undertow merged, Editor-cleared); next: L4 phone run, then plan Level 5 |
+| 3b. Visual Pass | Before Level 5: Listener model + animations (glimpse/swim, surfacing, catch reveal), water shader + splash/ripples, pool hall look (tiles, walls, lamps). ₱0, credited, 30+ fps with 35 lamps | ~~[Visual Pass](./decisions/19-visual-pass.md)~~ ✅, ~~[Title and Monster Identity](./decisions/06-title-and-monster.md) (monster half)~~ ✅, ~~[Listener Asset Source](./decisions/20-listener-asset-source.md)~~ ✅, ~~[Water and Hall Look](./decisions/21-water-and-hall-look.md)~~ ✅ | 🟡 Code done (2026-11-07); left: Editor confirm, Test Runner 96, phone fps after, screenshots, PR |
 | 4. Online | Colyseus RaceRoom, NetClient, lobby (quick match + room code), interpolation, server-decided result, error/disconnect handling, logic tests for every server rule, deployed by the pipeline to the VM (LAN), optional Render for internet play. *(Checkpoint 5)* | [Online Match Format](./decisions/07-online-match-format.md), [Netcode Model](./decisions/10-netcode-model.md) | [ ] Pending |
 | 5. UI, audio, polish, builds | All screens, pause, settings, credits, sound, juice, icon; APK on 2+ phones; test matrix. *(Checkpoints 6–7)* | [Title and Monster Identity](./decisions/06-title-and-monster.md) | [ ] Pending |
 | 6. Playtest & submit | Lab 5: 5+ testers, analysis, ≥ 3 fixes + retest, README, release `lab5-v1.0`, demo video, IEEE paper. Lab 6: results table (≥ 5 deploy timings), release `lab6-v1.0`, its own IEEE paper. *(Checkpoint 8, final)* | — | [ ] Pending |
@@ -79,6 +80,22 @@ Branch `feat/phase2-core-loop` (from `main` after the Phase 1 PR merges). Same c
 - [ ] 🧑 Decide [Pattern Re-show](./decisions/17-pattern-reshow.md): moved out of Phase 2 (blocked until a level uses the Reveal)
 - [ ] 🧑 Phase 1 leftovers: 10-jump bar + 1 outside tester (now with the real loop)
 
+### Phase 3b — Visual Pass · per [Visual Pass](./decisions/19-visual-pass.md), [Listener Asset Source](./decisions/20-listener-asset-source.md), [Water and Hall Look](./decisions/21-water-and-hall-look.md)
+**Exit bar:** on the phone in Look C, a glimpse reads as a pale creature's back (not a shape); falling in shows a splash; L3/L4 stay ≥ 30 fps (record before → after); server + EditMode tests green; every asset in CREDITS.
+- [x] 🧑 Download Quaternius Base Characters + Animation Library 1 + 2 → `C:\Users\LEGION2\Downloads\quaternius` (checked: CC0, separate `Eyes`)
+- [x] 🧑 Download ambientCG **Tiles020** 1K-JPG → `C:\Users\LEGION2\Downloads\ambientcg\Tiles020`
+- [x] 🧑 Phone baseline (2026-11-06, before any change), lowest fps: **L3** Look A ~50 / Look C ~58, **L4** Look A ~40 / Look C ~50; otherwise stable 60
+- [x] 🤖 Import: copy `Superhero_Male_FullBody.fbx`, `UAL1_Standard.fbx`, `UAL2_Standard.fbx`, male Normal/Roughness/Light textures → `Art/Listener/`; Humanoid rig via an `AssetPostprocessor`; CREDITS rows (same commit)
+- [x] 🤖 **Spike (~1 h)** (2026-11-07: swims face-down in Play ✅, eyeless, gaunt, forearms 1.8×, long neck + head tilt, face mask (`ListenerBody` sliders); accepted from the swim view; **face mask close-up + phone fps checked in-level** with the catch task; gotcha: never delete/recreate the controller asset, it breaks Animators → `controller=none`): Listener prefab (Eyes/Eyebrows off, pale wet skin material), `ListenerBody` `LateUpdate` stretches `lowerarm_*`/`hand_*` and thins limbs/spine; Animator controller built by an Editor menu. 🧑 check in Play + phone fps → keep or fall back (Mixamo rigger / Blender)
+- [x] 🤖 `ListenerLook` (pure C#; retagged 🤝 → 🤖 at the user's request; 8 EditMode tests): which clip + playback speed + how deep the body sits for each `ListenerState` / glimpse (only spine + shoulder blades above the water line) + EditMode tests
+- [x] 🤖 `ListenerAI` drives the prefab (code done; 🧑 verify in Level04 Play) instead of primitives: swim (roam/hunt), idle (linger), glimpse = rise to show the back, catch = `LayToIdle` fast → `Zombie_Scratch`; *Set Up Level Loop* wires it; the old glow stays for Look C readability
+- [x] 🤖 Water (code done 2026-11-07; 🧑 verify): URP **Lit** on `Water.mat`, not a hand-coded shader (see decision), two drifting wave normals baked by *Art Spike → Set Up Water*, glossy lamp glints; `PoolWater` drifts + tiles by pool size
+- [x] 🤖 Splash on falling in, ripple rings (Listener wake replaces the old discs, swimming player), foam rings around platform bases: `WaterFx` (3 particle systems, added by `PoolWater` at runtime, so no Build Level needed); materials from *Set Up Water* in `Resources/WaterFx` (code done 2026-11-07; 🧑 verify)
+- [x] 🤖 Splash **sound** (user: "sounds like steam" = plain white noise): synth bubbles still sounded fake → **user's Pixabay recording** (Universfield "Water Splash 02", `Resources/Audio/Splash.mp3`, credited); synth plop + wash kept as fallback (2026-11-07; 🧑 verify). Splash *visual* felt artificial → tune later
+- [x] 🤖 Hall: Tiles020 (CC0, credited) on `Tile.mat` / `Wall.mat` via *Art Spike → Set Up Hall*; `HallDressing` (added by `PoolWater` at runtime, no rebuild) box-projects UVs to 1.5 m per repeat and hangs a glowing shade + cable on each `HallLight` (code done 2026-11-07; 🧑 verify)
+- [x] 🤖 Fixes from Play (2026-11-07): headlamp cone edge 0.6 → 0.2 + water smoothness 0.93 → 0.85 (a bright arc on the water; still there → real cause: the water reflected Unity's default sky horizon → environment reflections off on `Water.mat`; **arc still visible at some angles: deferred by the user to after Level 5**); crumbling/one-way/ferry edge emission 0.7 → 0.2 (bloomed next to the dim cyan edges; applied by *Set Up Hall*)
+- [ ] 🧑 Rebuild Levels 1–4 (*Build Level* + *Set Up Looks*), Play each; phone: lowest fps L3/L4 **after**, 2 screenshots (glimpse, hall) → `docs/screenshots/`
+
 ### Phase 3 — Levels 2–5+ · per [Level Roster](./decisions/18-level-roster.md) (one level at a time)
 Branch `feat/phase3-levels`. Each level: plan with the user → generate layout → build scene → playtest → tune.
 - [x] 🤖 Level generator `server/scripts/generate-level.ts` (`npm run level:gen`): seeded, hall size, route length, gap range, platform sizes; dead-end rule via the tested `reachesExit`. Level JSON gains `"oneDryRoute": true`, and the dead-end test runs for **every** level with it (not just level01). Done: 7 generator tests (RED: module missing + level01 flag), server 44/44
@@ -132,19 +149,24 @@ A submitted lab build: an Android APK of a 3D poolrooms horror platformer with 5
 - [Camera Style](./decisions/05-camera-style.md) (by: me): first person + jump aids, from the Phase 1 phone test; third person stays as a debug toggle until Phase 5.
 - [Art Style](./decisions/08-art-style.md) (by: me): C. Hybrid horror (fog, cold dim lights, grain), from the Phase 1 phone spike; values in `Art/Looks/Look_C`.
 - [Core Loop Rules](./decisions/04-core-loop-rules.md) (by: me): only the safe path (`safePath` ids in the JSON) holds you, all others fake **from Level 2** (Level 1 has no fakes); overhead-camera Reveal; timer after Reveal, 0 = lose; fixed path offline; levels grow bigger/sparser, max gap 2.8 m.
+- [Title and Monster Identity](./decisions/06-title-and-monster.md) (by: me, monster half): the Listener = pale, long-limbed, eyeless humanoid swimming face-down; glimpse = spine + shoulder blades; catch = rises, arms out. Title open.
+- [Water and Hall Look](./decisions/21-water-and-hall-look.md) (by: me / delegated): own hand-coded opaque water shader (no depth texture), splash + ripple + foam-ring particles/meshes; ambientCG Tiles020 (CC0) tiles, primitive lamp fixtures.
+- [Listener Asset Source](./decisions/20-listener-asset-source.md) (by: me): Quaternius CC0 Base Character + Animation Library 1 (swim, crawl) + 2 (zombie); own pale skin, no eyes, arms stretched in code; spike first.
+- [Visual Pass](./decisions/19-visual-pass.md) (by: me): Phase 3b before Level 5 = Listener model + animations, water shader + splash/ripples, pool hall look; catch moment → Phase 5.
 - [Save Data](./decisions/11-save-data.md) (by: me): `save.json` in persistentDataPath, per-level records by name (`level01`), open = previous cleared, best-only merge, atomic write before Result, corrupt → defaults.
 
 ## Active Frontier (Open & Unblocked)
-- [ ] [Level Roster](./decisions/18-level-roster.md) — grill, per level (Levels 1–4 locked; Level 5 next, after Level 4 is playable)
+- [ ] [Title and Monster Identity](./decisions/06-title-and-monster.md) — grill (title half only, Phase 5)
+- [ ] [Level Roster](./decisions/18-level-roster.md) — grill, per level (Levels 1–4 locked; Level 5 after Phase 3b)
 - [ ] [Online Match Format](./decisions/07-online-match-format.md) — grill
 - [ ] [Offline Rival](./decisions/09-offline-rival.md) — grill
-- [ ] [Title and Monster Identity](./decisions/06-title-and-monster.md) — grill
 
 ## Blocked
 - [ ] [Pattern Re-show](./decisions/17-pattern-reshow.md) — grill (Blocked by: [Level Roster](./decisions/18-level-roster.md): only matters once a level uses the Reveal)
 - [ ] [Netcode Model](./decisions/10-netcode-model.md) — domain-model (Blocked by: [Online Match Format](./decisions/07-online-match-format.md))
 
 ## Fog of War (Not Yet Specified)
+- Scripted catch moment (camera jerk + lunge + sound): Phase 5
 - Ledge grab and visible first-person shoes/legs (first person won Camera Style; Phase 2 or 5)
 - Exact layouts and tuning for Levels 2–5 (needs the Level 1 feel prototype first)
 - Tutorial / first-time hints design for Level 1

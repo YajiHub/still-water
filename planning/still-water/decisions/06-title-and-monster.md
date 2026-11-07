@@ -1,6 +1,6 @@
 # Title and Monster Identity
 
-- **Status:** Open
+- **Status:** Monster **locked** (2026-11-06, by: me); title still open
 - **Type:** grill
 - **Blocks:** Phase 5 (title screen, icon, store-ready name); Phase 2 only needs a placeholder monster
 
@@ -32,4 +32,10 @@ Before locking: search the Play Store and itch.io for clashes.
 Keep **Still Water** + **the Listener** unless something better comes up. Show it mostly as a silhouette under the water (cheap and scary), with one full reveal on the catch.
 
 ## Decision
-_(fill in when locked)_
+**Monster (locked 2026-11-06, by: me): the Listener is a pale, long-limbed, eyeless humanoid** that swims face-down.
+- **Glimpse / roaming:** only the spine ridge and shoulder blades break the surface (fits the existing Fin / Wake / Hidden roam modes).
+- **Catch:** it rises out of the water, faceless, too-long arms out: the one full look.
+- Original design; nothing crab-like or from the Roblox inspiration.
+- Being humanoid means a standard humanoid rig, so free swim / crawl animations can be retargeted (source decided under Phase 3b asset sources).
+
+**Title:** still open (working title Still Water); lock in Phase 5 after a Play Store / itch.io clash search.

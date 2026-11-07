@@ -20,6 +20,9 @@ namespace StillWater.Monster
         // Looks, not gameplay: how deep it swims, and how fast it rises or sinks (the water is opaque).
         private const float BackDepth = 0.35f, DeepDepth = 2.2f, RiseSpeed = 1.2f, ReachedDistance = 0.3f, RoamMargin = 1.5f;
         private const float WakeEvery = 0.35f, WakeLife = 1.6f, WakeSize = 1.4f;
+        // Humanoid body: keep its chest bone this far above the Listener's origin, so "back at the surface" puts the
+        // chest on the water line and the back and shoulder blades out of it (not just the raised head).
+        private const float ChestLift = BackDepth;
 
         public ListenerState State { get; private set; } = ListenerState.Roaming;
         /// <summary>Raised once when it reaches a swimming player.</summary>
@@ -34,17 +37,19 @@ namespace StillWater.Monster
         private Vector3 heardAt, roamTarget;
         private AudioSource heartbeat;
         private AudioClip splashClip;
-        private Transform[] wake;
-        private float[] wakeAge;
-        private int nextWake;
         private Material skin; // runtime copy: glow changes never touch the material asset
+        private Animator animator; // the Quaternius body (Visual Pass); null on an old grey-box Listener
+        private Transform chest;
+        private string clip;
+        private Vector3 lastPos;
 
         public void Init(LevelConfig levelConfig, PlayerMotor motor, PoolWater pool)
         {
             config = levelConfig;
             player = motor;
             water = pool;
-            splashClip = ProceduralAudio.Splash();
+            splashClip = Resources.Load<AudioClip>("Audio/Splash"); // real recording (CREDITS.md)
+            if (splashClip == null) splashClip = ProceduralAudio.Splash();
             heartbeat = gameObject.AddComponent<AudioSource>();
             heartbeat.clip = ProceduralAudio.Heartbeat();
             heartbeat.loop = true;
@@ -66,9 +71,11 @@ namespace StillWater.Monster
             bool back = ListenerRules.ShowsBack(State, config.listenerRoamMode, false);
             transform.position = new Vector3(x, water.SurfaceY - (back ? BackDepth : DeepDepth), z);
             body.SetActive(true);
+            animator = body.GetComponentInChildren<Animator>();
+            if (animator != null) chest = animator.GetBoneTransform(HumanBodyBones.Chest);
+            lastPos = transform.position;
             roamTarget = PickRoamTarget();
             glimpseTimer = NextGlimpse();
-            CreateWake();
         }
 
         /// <summary>The player hit the water at <paramref name="where"/>.</summary>
@@ -113,6 +120,7 @@ namespace StillWater.Monster
                     if (swimming && FlatDistance(player.transform.position) <= config.listenerCatchDistance)
                     {
                         caught = true;
+                        Animate(0f);
                         Caught?.Invoke();
                     }
                     break;
@@ -122,6 +130,9 @@ namespace StillWater.Monster
             float targetY = water.SurfaceY - (back ? BackDepth : DeepDepth);
             var pos = transform.position;
             transform.position = new Vector3(pos.x, Mathf.MoveTowards(pos.y, targetY, RiseSpeed * Time.deltaTime), pos.z);
+
+            Animate(FlatDistance(lastPos) / Mathf.Max(Time.deltaTime, 1e-4f));
+            lastPos = transform.position;
 
             UpdateWake(State == ListenerState.Roaming && config.listenerRoamMode == ListenerRoamMode.Wake && !back);
             UpdateHeartbeat();
@@ -146,6 +157,23 @@ namespace StillWater.Monster
                 roamPauseLeft = config.listenerRoamPause;
                 roamTarget = PickRoamTarget();
             }
+        }
+
+        // After the Animator posed it: slide the whole body so the chest sits at ChestLift, whatever the swim stroke does.
+        private void LateUpdate()
+        {
+            if (animator == null || chest == null) return;
+            float off = transform.position.y + ChestLift - chest.position.y;
+            body.transform.position += Vector3.up * off;
+        }
+
+        private void Animate(float speed)
+        {
+            if (animator == null) return;
+            string next = ListenerLook.ClipFor(State, caught);
+            if (next != clip) animator.CrossFadeInFixedTime(next, 0.25f);
+            clip = next;
+            animator.speed = caught ? 1.5f : ListenerLook.Playback(speed); // the lunge is quick
         }
 
         private Vector3 PickRoamTarget()
@@ -182,7 +210,6 @@ namespace StillWater.Monster
                 if (bodyRenderer == null) return;
                 skin = new Material(bodyRenderer.sharedMaterial);
                 foreach (var r in body.GetComponentsInChildren<Renderer>()) r.sharedMaterial = skin;
-                if (wake != null) foreach (var w in wake) w.GetComponent<Renderer>().sharedMaterial = skin;
             }
             skin.EnableKeyword("_EMISSION");
             skin.SetColor("_EmissionColor", color);
@@ -193,43 +220,12 @@ namespace StillWater.Monster
             if (skin != null) Destroy(skin);
         }
 
-        // shortcut: wake = pale flat discs that grow and vanish; replace with a ripple shader/particles in Phase 5.
-        private void CreateWake()
-        {
-            var bodyRenderer = body.GetComponentInChildren<Renderer>(); // already the glowing copy if SetGlow ran first
-            wake = new Transform[Mathf.CeilToInt(WakeLife / WakeEvery) + 1];
-            wakeAge = new float[wake.Length];
-            for (int i = 0; i < wake.Length; i++)
-            {
-                var disc = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-                Destroy(disc.GetComponent<Collider>());
-                if (bodyRenderer != null) disc.GetComponent<Renderer>().sharedMaterial = bodyRenderer.sharedMaterial;
-                disc.name = "Wake";
-                disc.SetActive(false);
-                wake[i] = disc.transform;
-                wakeAge[i] = WakeLife;
-            }
-        }
-
+        // Wake mode: ripple rings trailing it across the surface (WaterFx).
         private void UpdateWake(bool emit)
         {
-            if (emit && (wakeTimer -= Time.deltaTime) <= 0f)
-            {
-                wakeTimer = WakeEvery;
-                wake[nextWake].position = new Vector3(transform.position.x, water.SurfaceY + 0.01f, transform.position.z);
-                wake[nextWake].gameObject.SetActive(true);
-                wakeAge[nextWake] = 0f;
-                nextWake = (nextWake + 1) % wake.Length;
-            }
-            for (int i = 0; i < wake.Length; i++)
-            {
-                if (wakeAge[i] >= WakeLife) continue;
-                wakeAge[i] += Time.deltaTime;
-                float t = wakeAge[i] / WakeLife;
-                float size = Mathf.Lerp(0.3f, WakeSize, t) * (1f - t * t); // grows, then shrinks away
-                wake[i].localScale = new Vector3(size, 0.005f, size);
-                if (wakeAge[i] >= WakeLife) wake[i].gameObject.SetActive(false);
-            }
+            if (!emit || water.Fx == null || (wakeTimer -= Time.deltaTime) > 0f) return;
+            wakeTimer = WakeEvery;
+            water.Fx.Ripple(transform.position, WakeSize * 1.6f, WakeLife);
         }
 
         private void UpdateHeartbeat()

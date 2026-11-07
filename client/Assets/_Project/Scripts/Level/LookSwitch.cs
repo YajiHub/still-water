@@ -33,7 +33,7 @@ namespace StillWater.Level
                 headlamp = CreateHeadlamp(cam.transform);
             }
             listener = FindFirstObjectByType<ListenerAI>();
-            Apply(0);
+            Apply(looks.Length - 1); // the last look = C, the dark game look (A stays as the comparison)
         }
 
         public void Next() => Apply((index + 1) % looks.Length);
@@ -68,7 +68,7 @@ namespace StillWater.Level
                 headlamp.intensity = look.headlampIntensity;
                 headlamp.range = look.headlampRange;
                 headlamp.spotAngle = look.headlampAngle;
-                headlamp.innerSpotAngle = look.headlampAngle * 0.6f; // soft edge
+                headlamp.innerSpotAngle = look.headlampAngle * 0.2f; // very soft edge: a hard one draws a bright arc on the glossy water
             }
             if (listener != null) listener.SetGlow(look.listenerGlow);
 

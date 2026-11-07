@@ -57,9 +57,9 @@ namespace StillWater.Editor
             // Faint on purpose: below the bloom threshold, so the Phase 2 pattern reveal can be the bright one.
             var glow = GetMaterial("Glow", new Color(0.6f, 0.9f, 1f), 0.5f, new Color(0.6f, 0.9f, 1f) * 0.7f);
             var door = GetMaterial("Door", new Color(0.12f, 0.10f, 0.09f), 0.2f);
-            var crumbleGlow = GetMaterial("GlowCrumble", new Color(1f, 0.95f, 0.6f), 0.5f, new Color(1f, 0.92f, 0.5f) * 0.7f); // pale yellow: don't stand still
-            var onewayGlow = GetMaterial("GlowOneway", new Color(0.9f, 0.25f, 0.2f), 0.5f, new Color(0.9f, 0.2f, 0.15f) * 0.7f); // red: no way back
-            var ferryGlow = GetMaterial("GlowFerry", new Color(1f, 0.75f, 0.4f), 0.5f, new Color(1f, 0.7f, 0.35f) * 0.7f); // warm: "this one moves"
+            var crumbleGlow = GetMaterial("GlowCrumble", new Color(1f, 0.95f, 0.6f), 0.5f, new Color(1f, 0.92f, 0.5f) * 0.2f); // pale yellow: don't stand still
+            var onewayGlow = GetMaterial("GlowOneway", new Color(0.9f, 0.25f, 0.2f), 0.5f, new Color(0.9f, 0.2f, 0.15f) * 0.2f); // red: no way back
+            var ferryGlow = GetMaterial("GlowFerry", new Color(1f, 0.75f, 0.4f), 0.5f, new Color(1f, 0.7f, 0.35f) * 0.2f); // warm: "this one moves"
 
             var w = layout.water;
             float top = layout.platformTopY;
@@ -414,26 +414,19 @@ namespace StillWater.Editor
             SetFields(GetOrAdd<PatternRevealer>(controllerGo), ("brightGlow", brightGlow));
             SetFields(GetOrAdd<LevelHud>(controllerGo), ("level", controller));
 
-            // The Listener: a dark, long shape with a ridge, mostly under the surface (grey box until Phase 5 art).
+            // The Listener: the Quaternius body (Visual Pass), swimming face-down; only its back breaks the surface.
+            var bodyPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Project/Art/Listener/Listener.prefab");
+            if (bodyPrefab == null)
+            {
+                Debug.LogError("Set Up Level Loop: run Still Water → Art Spike → Build Listener Prefab first.");
+                return;
+            }
             var old = GameObject.Find("Listener");
             if (old != null) Undo.DestroyObjectImmediate(old);
             var listener = new GameObject("Listener");
             Undo.RegisterCreatedObjectUndo(listener, "Set Up Level Loop");
-            var body = new GameObject("Body");
-            body.transform.SetParent(listener.transform, false);
-            var dark = GetMaterial("ListenerPale", new Color(0.78f, 0.80f, 0.77f), 0.85f); // pale and wet (DESIGN §5.1), readable in the dark look
-            var torso = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-            Object.DestroyImmediate(torso.GetComponent<Collider>());
-            torso.transform.SetParent(body.transform, false);
-            torso.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
-            torso.transform.localScale = new Vector3(0.8f, 1.3f, 0.5f);
-            torso.GetComponent<Renderer>().sharedMaterial = dark;
-            var ridge = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            Object.DestroyImmediate(ridge.GetComponent<Collider>());
-            ridge.transform.SetParent(body.transform, false);
-            ridge.transform.localPosition = new Vector3(0f, 0.35f, 0.2f);
-            ridge.transform.localScale = new Vector3(0.08f, 0.45f, 1.2f);
-            ridge.GetComponent<Renderer>().sharedMaterial = dark;
+            var body = (GameObject)PrefabUtility.InstantiatePrefab(bodyPrefab, listener.transform);
+            body.name = "Body"; // move its Y in the scene if the back sits too high or low in the water
             SetFields(listener.AddComponent<ListenerAI>(), ("body", body));
 
             EditorSceneManager.MarkSceneDirty(scene);

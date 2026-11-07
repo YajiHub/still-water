@@ -26,4 +26,7 @@
 - [ ] Commit-on-shake state machine: a crumbling tile resets if you leave before it shakes, but once Shaking it ignores `standing` and sinks — `SinkRules.StepCrumble` (2026-11-06; ownership check: explained by the agent, not yet answered by me)
 - [ ] Float noise in exported positions: Unity writes 3.6 as 3.5999999, so a jump generated at exactly the limit can measure just over it; round when tidying — `route-level.ts`, `edgeGap` (2026-11-06; ownership check skipped)
 - [ ] Scenes must be in the build list to exist on the phone: the menu reads the catalog, the APK only packs `EditorBuildSettings` scenes — *Update Build List* (2026-11-06)
+- [ ] Where runtime visuals hook in without rebuilding scenes: every level has one `PoolWater`, which adds `WaterFx` + `HallDressing`; shared materials change all levels at once — `PoolWater.Awake` (2026-11-07; ownership check skipped)
+- [ ] Humanoid animation in Unity: Avatar (bone map) + AnimatorController (states with clips); an empty or unsaved controller = frozen pose — `ListenerPrefabBuilder.Controller`, `Listener.controller` (2026-11-07)
+- [ ] Reflections vs lights: a glare that moves with the camera is a reflection (here the default sky), not a light — `Water.mat` environment reflections (2026-11-07)
 - [ ] URP Forward vs Forward+: Forward lights each object with ≤ 4 extra lights, so many lamps need Forward+ — `Mobile_Renderer` (2026-11-06)
