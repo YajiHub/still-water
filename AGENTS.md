@@ -6,9 +6,9 @@ offline solo, and an online 1v1 race on a **Colyseus (Node 24 + TypeScript)** se
 linted, tested and auto-deployed by GitHub Actions to an Ubuntu VM through a self-hosted runner. Budget ₱0.
 
 ## Current Status & Next Step
-- **Phase:** 3 (Levels) 🟡: Levels 1–4 merged. **Phase 3b Visual Pass** 🟡 code done on `feat/visual-pass-3b` (uncommitted): Quaternius Listener (`ListenerBody`/`ListenerLook`), moving water + `WaterFx` splash/ripples/foam, Pixabay splash sound, Tiles020 hall + lamp fixtures, Look C default. Phase 2 phone loop + Phase 1 outside tester deferred; Phase 0 Checkpoint 1 open. Active plan: [planning/still-water/MAP.md](planning/still-water/MAP.md)
-- **Next:** confirm in Unity (arc gone, tiles/lamps/edges) → Test Runner EditMode (expect **96**) → phone lowest fps L3/L4 (≥ 30) + 2 screenshots → PR `feat/visual-pass-3b` → `/skill:wayfinder continue planning/still-water/MAP.md` (plan Level 5). Visual one-click menus: *Still Water → Art Spike → Build Listener Prefab / Set Up Water / Set Up Hall*; hand-edited levels: *Export Level to JSON* → `npm run level:route` → *Build Level*.
-- **Latest session:** [docs/sessions/2026-11-07-visual-pass.md](docs/sessions/2026-11-07-visual-pass.md)
+- **Phase:** 3 (Levels) 🟡: **all 5 levels exist.** Levels 1–4 merged; **Phase 3b Visual Pass** committed on `feat/visual-pass-3b` (PR pending; water arc deferred); **Level 5 "The Drain"** (ferries + crumbling + one-way) generated and scene built on `feat/level5-drain` (uncommitted, unplayed). Phase 2 phone loop + Phase 1 outside tester deferred; Phase 0 Checkpoint 1 open. Active plan: [planning/still-water/MAP.md](planning/still-water/MAP.md)
+- **Next:** merge the 3b PR (Test Runner EditMode first, expect **96**) → play Level 5 (Editor + phone: tries, time vs par 140, lowest fps L4/L5 ≥ 30) → commit `feat/level5-drain` via PR. Visual menus: *Still Water → Art Spike → Build Listener Prefab / Set Up Water / Set Up Hall*; hand-edited levels: *Export Level to JSON* → `npm run level:route` → *Build Level*.
+- **Latest session:** [docs/sessions/2026-11-07-level5-drain.md](docs/sessions/2026-11-07-level5-drain.md)
 
 ## Routing (one home per fact)
 | Need | File |

@@ -97,6 +97,8 @@ What is each level, and in what order do new mechanics arrive?
 | Timer / par | provisional **220 / 140 s**; tune after the playtest |
 | Goal text | "Everything you've learned. Get out." |
 
+**Built:** `npm run level:gen -- --id level05 --name "The Drain" --width 70 --length 92 --platforms 120 --route 26-38 --gaps 2.6-2.8 --sizes 2,1.6 --small 0.4 --max-turn 85 --meander --decoys 4-6 --decoy-length 5-9 --spread --crumble 0.5 --oneway-decoys --ferries 2-3 --ferry-travel 5-6 --ferry-gaps 2.0-2.4 --ferry-seconds 2 --ferry-pause 0.5 --seed 3` → 120 platforms, route of **31 tiles (32 jumps)**: left → ferry up the left → two ferries across the middle → up the right wall → across the top; gaps 2.12–2.80 m (ferry gaps 2.0–2.4), **3 ferries** (8, 26, 35), **16 crumbling**, **31 one-way**, left / centre / right **37 / 44 / 39**, deepest dead end 13 jumps. All 16 probed seeds generated (the ferry + spread + meander mix works).
+
 **Rules (by: delegated):** no new rules: ferries, crumbling and one-way behave exactly as on L3/L4 (same code, same `LevelConfig` timings). Check while generating: ferries + `--spread` + `--meander` together (never combined before); if the walk can't fit ferries on the meandering route, draw the map for the user and adjust before building.
 
 ## Level 6+

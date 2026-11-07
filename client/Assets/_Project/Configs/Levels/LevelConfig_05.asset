@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a63a23067d1b2fb4394233ad895b3190, type: 3}
+  m_Name: LevelConfig_05
+  m_EditorClassIdentifier: StillWater::StillWater.Level.LevelConfig
+  id: level05
+  displayName: The Drain
+  sceneName: Level05
+  goalText: Everything you've learned. Get out.
+  layout: {fileID: 4900000, guid: a098641dce141e2468f32dcdcb2bbabb, type: 3}
+  fakePlatforms: 0
+  fakeSinkDelay: 0.4
+  timeLimit: 220
+  parTime: 140
+  revealPath: 0
+  introSeconds: 2
+  glowSecondsPerTile: 0.8
+  revealHeight: 8
+  revealGlideSeconds: 1.5
+  revealFogMultiplier: 0.35
+  crumbleStandSeconds: 1.5
+  crumbleShakeSeconds: 0.6
+  sinkSeconds: 0.5
+  crumbleRiseAfter: 3
+  onewayDelay: 0.3
+  listenerRoamMode: 2
+  listenerRoamSpeed: 1
+  listenerRoamPause: 1.5
+  listenerGlimpseEvery: 6
+  listenerGlimpseSeconds: 2.5
+  listenerAlertDelay: 0
+  listenerHuntSpeed: 20
+  listenerSpeedPerSplash: 0.1
+  listenerLingerSeconds: 2
+  listenerCatchDistance: 0.9
