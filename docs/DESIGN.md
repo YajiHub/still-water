@@ -153,7 +153,7 @@ At least 5 levels (the lab's minimum, not a maximum), each planned with the user
 | 2 | Deep End | "Deeper and wider. Find the way across." | **Harder, same rules:** 40 × 50 m hall, 50 platforms (40% small 1.6 m), ~10-jump route through dead ends, gaps 2.2–2.7 m; Listener roams as a Wake. No Reveal, no fakes (Locked — [Level Roster](../planning/still-water/decisions/18-level-roster.md)) | none (no Reveal) | 110 s, par 55 |
 | 3 | Current | "Some paths lead nowhere. Ride the ferries across." | **New:** 70 × 100 m, 19-jump winding route, gaps 2.6–2.8 m, ~50% small tiles, long **decoy branches** hidden in the fog (wrong turn = long detour), 4 fast **ferries** carry you across unjumpable channels; Listener roams **Hidden** (Locked — [Level Roster](../planning/still-water/decisions/18-level-roster.md)) | none (no Reveal) | 200 s, par 120 (provisional) |
 | 4 | Undertow | "Don't stand still. Some paths close behind you." | **New:** crumbling tiles on the route, one-way tiles on decoys; 70 × 100 m filled left, centre and right (Locked — [Level Roster](../planning/still-water/decisions/18-level-roster.md)) | none (no Reveal) | 200 s, par 120 (provisional) |
-| 5 | The Drain | "Everything you've learned. Get out." | Long path with every mechanic, smaller platforms, fastest monster | 10 / 0.45 s | 120 s |
+| 5 | The Drain | "Everything you've learned. Get out." | **Finale, no new mechanics:** 70 × 100 m filled left/centre/right, ~120 platforms, ~30-jump S-curve, 2–3 **ferries** + **crumbling** route tiles + **one-way** decoys; Listener Hidden (Locked — [Level Roster](../planning/still-water/decisions/18-level-roster.md)) | none (no Reveal) | 220 s, par 140 (provisional) |
 
 Extra levels (6+) are post-lab ideas. See [IDEAS.md](IDEAS.md).
 

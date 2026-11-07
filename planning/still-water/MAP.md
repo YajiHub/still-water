@@ -120,7 +120,10 @@ Branch `feat/phase3-levels`. Each level: plan with the user → generate layout 
 - [x] 🤖 `SinkRules` (pure C#: crumble stand timer → shaking → sunk → rising; one-way after leaving) + EditMode tests; `Platform` crumble/one-way behaviour (+ wait to rise under a swimmer); `LevelConfig` timings; C# `PlatformSpot.sink`; *Build Level* yellow / red glows; *Export Level* keeps `sink`. Done in code: `SinkRules` (18 EditMode tests), `SinkingPlatform`, `Platform.SetClimbable`, `LevelConfig` sinking timings, `level:route` keeps `sink`, C# test on level04.json; user hand-edited (+19 tiles), exported, rebuilt (129 tiles) and **cleared it in the Editor** 2026-11-06; Unity EditMode **88/88**; merged PR #18
 - [x] 🧑 Level04 scene (same steps as Level03) + `LevelConfig_04` (timer 200 / par 120, Hidden, Listener your choice) → *Update Build List*
 - [ ] 🧑 Playtest L4 on the phone (fps, tries, time, do crumbling/one-way tiles read clearly) → tune
-- [ ] 🧑 Plan Level 5 with the agent (wayfinder, Level Roster)
+- [x] 🧑 Plan Level 5 with the agent (wayfinder, Level Roster): **The Drain** = ferries + crumbling + one-way, 70 × 100 m spread, ~120 platforms, ~30 jumps (2026-11-07)
+- [ ] 🤖 `level05.json`: generator with ferries + spread + meander + crumble + one-way decoys together (test that mix); map drawn for the user first; server tests green
+- [ ] 🧑 Level05 scene (same steps as Level04) + `LevelConfig_05` (timer 220 / par 140, Hidden, Listener as L4) → *Update Build List*
+- [ ] 🧑 Playtest L5 (Editor + phone): tries, time, fps → tune
 
 ## Destination
 A submitted lab build: an Android APK of a 3D poolrooms horror platformer with 5 unlockable levels, offline solo (+ AI rival if time allows), and an online 1v1 race through a deployed Colyseus server. Meets R1–R10, with playtest-driven fixes, GDD, README and paper. The same repo satisfies Lab 6: the server is linted, tested and auto-deployed by GitHub Actions to a VM through a self-hosted runner, with Tests A/B/C documented and its own paper. The codebase is clean enough to keep growing as a portfolio piece afterwards.

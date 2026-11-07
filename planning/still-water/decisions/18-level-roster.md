@@ -82,5 +82,22 @@ What is each level, and in what order do new mechanics arrive?
 - A sunk tile is not climbable. A crumbling tile **waits to rise while a swimmer is right above it** (no popping you up); it rises once you've moved off.
 - Retry reloads the scene, so every tile is back.
 
-## Level 5+
-_(the user's idea: show both sinking and moving, and more; plan when Level 4 is playable)_
+## Level 5 — The Drain (locked 2026-11-07, by: me; name and goal text can change)
+**User's idea:** the finale mixes what came before: moving (L3) + sinking (L4). No new mechanics (lights out, fakes + Reveal stay unused; Pattern Re-show stays blocked).
+
+| Setting | Value |
+|---|---|
+| Hall | **70 × 100 m**, filled **left / centre / right** (each third ≥ 20%, like L4) |
+| Platforms | **~120**: S-curve route of **~30 jumps** (meander) + decoy branches (5–9 jumps) + short dead ends; one-dry-route proof on (generated) |
+| Gaps | **2.6–2.8 m** (ferry gaps as on L3) |
+| Ferries (L3) | **2–3**, mid-route, across channels you can't jump |
+| Crumbling (L4) | **~half the route tiles** (never a ferry); a crumbling tile right after a ferry is allowed: that's the finale's squeeze |
+| One-way (L4) | **decoy tiles** |
+| Listener | roams **Hidden** + glimpses, L4 speed (user-tuned in the Editor) |
+| Timer / par | provisional **220 / 140 s**; tune after the playtest |
+| Goal text | "Everything you've learned. Get out." |
+
+**Rules (by: delegated):** no new rules: ferries, crumbling and one-way behave exactly as on L3/L4 (same code, same `LevelConfig` timings). Check while generating: ferries + `--spread` + `--meander` together (never combined before); if the walk can't fit ferries on the meandering route, draw the map for the user and adjust before building.
+
+## Level 6+
+_(post-lab ideas: lights out, fakes + the Reveal; see [IDEAS.md](../../../docs/IDEAS.md))_
