@@ -14,11 +14,26 @@ namespace StillWater.Core
         public static AudioClip Chime(float frequency, float seconds = 0.6f) =>
             Make("chime", seconds, t => Mathf.Sin(2f * Mathf.PI * frequency * t) * Mathf.Exp(-5f * t) * 0.5f);
 
-        /// <summary>A noise burst that fades out (the splash).</summary>
-        public static AudioClip Splash(float seconds = 0.7f)
+        /// <summary>
+        /// Fallback splash if Resources/Audio/Splash is missing: a low "plop" dropping in pitch plus a muffled wash
+        /// (low-passed noise; plain noise sounds like steam, synthesized bubbles sound fake).
+        /// </summary>
+        public static AudioClip Splash(float seconds = 0.9f)
         {
             var random = new System.Random(7);
-            return Make("splash", seconds, t => ((float)random.NextDouble() * 2f - 1f) * Mathf.Exp(-6f * t) * 0.8f);
+            int count = Mathf.CeilToInt(seconds * Rate);
+            var samples = new float[count];
+            float wash = 0f;
+            for (int i = 0; i < count; i++)
+            {
+                float t = i / (float)Rate;
+                wash += 0.15f * (((float)random.NextDouble() * 2f - 1f) - wash); // one-pole low-pass ≈ 1.1 kHz
+                float plop = Mathf.Sin(2f * Mathf.PI * (60f * t + 120f / 25f * (1f - Mathf.Exp(-25f * t)))) * Mathf.Exp(-22f * t); // 180 → 60 Hz
+                samples[i] = plop * 0.5f + wash * Mathf.Min(1f, t * 200f) * Mathf.Exp(-6f * t) * 1.4f;
+            }
+            var clip = AudioClip.Create("splash", count, 1, Rate, false);
+            clip.SetData(samples, 0);
+            return clip;
         }
 
         /// <summary>Two low thumps (lub-dub) for the heartbeat loop.</summary>

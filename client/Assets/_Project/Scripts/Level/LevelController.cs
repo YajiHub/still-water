@@ -17,11 +17,12 @@ namespace StillWater.Level
     [RequireComponent(typeof(PatternRevealer))]
     public class LevelController : MonoBehaviour
     {
-        public enum LevelPhase { Intro, Reveal, Crossing, Won, Lost }
+        public enum LevelPhase { Intro, Reveal, Crossing, Won, Lost, Caught } // Caught: the catch camera, then Lost
 
         [SerializeField] private LevelConfig config;
 
         private const float DoorReach = 1.6f; // metres from the door that count as "through it"
+        private const float CatchSeconds = 2.4f; // looks: the catch camera holds this long before the Lost screen
 
         public LevelConfig Config => config;
         public LevelPhase Phase { get; private set; } = LevelPhase.Intro;
@@ -38,16 +39,26 @@ namespace StillWater.Level
         private CameraModeSwitch cameras;
         private ListenerAI listener;
         private Transform door;
+        private PoolWater water;
         private readonly List<Platform> path = new List<Platform>();
 
         private IEnumerator Start()
         {
+            // Online has its own HUD, timer and server-decided results. Never initialize the offline Listener/save flow.
+            if (StillWater.Net.LanRace.Active)
+            {
+                var hud = GetComponent<LevelHud>();
+                if (hud != null) hud.enabled = false;
+                gameObject.AddComponent<StillWater.Net.OnlineLevelController>();
+                enabled = false;
+                yield break;
+            }
             motor = FindFirstObjectByType<PlayerMotor>();
             touch = FindFirstObjectByType<TouchControls>();
             cameras = FindFirstObjectByType<CameraModeSwitch>();
             listener = FindFirstObjectByType<ListenerAI>();
             door = FindFirstObjectByType<ExitDoor>().transform;
-            var water = FindFirstObjectByType<PoolWater>();
+            water = FindFirstObjectByType<PoolWater>();
 
             var byId = new Dictionary<int, Platform>();
             foreach (var p in FindObjectsByType<Platform>(FindObjectsSortMode.None)) byId[p.Id] = p;
@@ -58,8 +69,12 @@ namespace StillWater.Level
 
             motor.Splashed += OnSplash;
             listener.Init(config, motor, water);
-            listener.Caught += () => Lose("The Listener caught you.");
+            listener.Caught += () => StartCoroutine(CaughtSequence());
             touch.PausePressed += TogglePause;
+
+            var music = MusicDirector.Instance;
+            music.Play(config.revealPath ? MusicDirector.Reveal : MusicDirector.Ambience);
+            music.SetThreat(0f);
 
             yield return null; // let every other Start run first (the camera rigs), then take the camera
             motor.InputEnabled = false;
@@ -81,6 +96,7 @@ namespace StillWater.Level
                 yield return new WaitForSeconds(config.introSeconds); // goal text only, already in first person
             }
 
+            music.Play(MusicDirector.Ambience);
             motor.InputEnabled = true;
             touch.enabled = true;
             TimeLeft = config.timeLimit;
@@ -101,6 +117,7 @@ namespace StillWater.Level
             }
 
             if (motor.GroundPlatform != null) motor.GroundPlatform.SteppedOn(config.fakeSinkDelay);
+            MusicDirector.Instance.SetThreat(listener.Threat);
 
             Vector3 d = motor.transform.position - door.position;
             if (new Vector2(d.x, d.z).magnitude <= DoorReach) Win();
@@ -118,15 +135,29 @@ namespace StillWater.Level
             Phase = LevelPhase.Won;
             Stars = ProgressRules.Stars(Splashes, Elapsed, config.parTime);
             GameState.RecordWin(config, Stars, Elapsed); // saved before the Result screen shows (lab R5)
+            MusicDirector.Instance.Stinger(MusicDirector.Win, true);
             StopPlayer();
         }
 
         private void Lose(string reason)
         {
-            if (Phase != LevelPhase.Crossing) return;
+            if (Phase != LevelPhase.Crossing && Phase != LevelPhase.Caught) return;
+            if (Phase == LevelPhase.Crossing) MusicDirector.Instance.Stinger(MusicDirector.Lose, true); // the catch had its own
             Phase = LevelPhase.Lost;
             LoseReason = reason;
             StopPlayer();
+        }
+
+        // The timer stops at once (Phase leaves Crossing); the Lost screen waits until you have seen what caught you.
+        private IEnumerator CaughtSequence()
+        {
+            if (Phase != LevelPhase.Crossing) yield break;
+            Phase = LevelPhase.Caught;
+            MusicDirector.Instance.Stinger(MusicDirector.Catch, true);
+            StopPlayer();
+            cameras.DisableAll();
+            yield return CatchCamera.Play(Camera.main, motor.transform, listener, water.SurfaceY, CatchSeconds);
+            Lose("The Listener caught you.");
         }
 
         private void StopPlayer()
@@ -137,7 +168,7 @@ namespace StillWater.Level
 
         public void TogglePause()
         {
-            if (Phase == LevelPhase.Won || Phase == LevelPhase.Lost) return;
+            if (Phase == LevelPhase.Won || Phase == LevelPhase.Lost || Phase == LevelPhase.Caught) return;
             Paused = !Paused;
             Time.timeScale = Paused ? 0f : 1f; // freezes everything, the timer and the Listener included
             AudioListener.pause = Paused;      // timeScale doesn't stop sound: the heartbeat kept beating

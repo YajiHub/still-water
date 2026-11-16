@@ -51,10 +51,13 @@ namespace StillWater.Player
         private float climbTime;
         private readonly Collider[] overlapHits = new Collider[8];
         private Collider groundHit;
+        private Vector3 pushVelocity; // a shove from another player (online), fading out
 
         private void Awake()
         {
             controller = GetComponent<CharacterController>();
+            // The visible body (replaces the grey-box capsule). Added here so every level scene gets it without an edit.
+            if (!TryGetComponent<PlayerAvatar>(out _)) gameObject.AddComponent<PlayerAvatar>();
             // Rebuilding the level replaces the Water object and empties this link, so find it again.
             if (water == null) water = FindFirstObjectByType<PoolWater>();
         }
@@ -81,6 +84,8 @@ namespace StillWater.Player
                     UpdateLand(now, dt, jumpHeld);
                     break;
             }
+
+            pushVelocity = Vector3.MoveTowards(pushVelocity, Vector3.zero, config.pushDrag * dt);
 
             if (FaceMoveDirection && horizontalVelocity.sqrMagnitude > 0.01f)
             {
@@ -116,7 +121,7 @@ namespace StillWater.Player
             verticalVelocity = Mathf.Max(verticalVelocity, -config.maxFallSpeed);
 
             groundHit = null;
-            controller.Move((horizontalVelocity + Vector3.up * verticalVelocity) * dt);
+            controller.Move((horizontalVelocity + pushVelocity + Vector3.up * verticalVelocity) * dt);
             GroundPlatform = groundHit != null ? groundHit.GetComponentInParent<Platform>() : null;
             State = grounded || controller.isGrounded ? MotorState.Grounded : MotorState.Airborne;
 
@@ -136,7 +141,7 @@ namespace StillWater.Player
             // Float: ease the feet toward swimDepth below the surface. Deep water, so there's no floor to stand on.
             float targetY = water.SurfaceY - config.swimDepth;
             verticalVelocity = Mathf.Lerp(verticalVelocity, (targetY - transform.position.y) * 3f, 5f * dt);
-            controller.Move((horizontalVelocity + Vector3.up * verticalVelocity) * dt);
+            controller.Move((horizontalVelocity + pushVelocity + Vector3.up * verticalVelocity) * dt);
 
             ClimbTarget = FindClimbTarget();
             if (jumpPressed && ClimbTarget != null) StartClimb(ClimbTarget);
@@ -208,6 +213,34 @@ namespace StillWater.Player
                 controller.enabled = true;
                 State = MotorState.Grounded;
             }
+        }
+
+        /// <summary>
+        /// Another player shoved you (online): you fly along <paramref name="velocity"/> (horizontal), slowing by
+        /// MovementConfig.pushDrag; on land you're knocked off your feet a little (pushHop), maybe into the water.
+        /// </summary>
+        public void ApplyPush(Vector3 velocity)
+        {
+            if (State == MotorState.Climbing) return;
+            velocity.y = 0f;
+            pushVelocity = velocity;
+            if (State == MotorState.Grounded) verticalVelocity = config.pushHop;
+        }
+
+        /// <summary>Apply a server respawn/correction without carrying jump, climb or ferry velocity into it.</summary>
+        public void Teleport(Vector3 position)
+        {
+            controller.enabled = false;
+            transform.position = position;
+            horizontalVelocity = Vector3.zero;
+            pushVelocity = Vector3.zero;
+            verticalVelocity = 0f;
+            lastGroundedTime = lastJumpPressedTime = Never;
+            climbTime = 0f;
+            GroundPlatform = ClimbTarget = null;
+            NearTooHighEdge = false;
+            State = MotorState.Airborne;
+            controller.enabled = true;
         }
 
         /// <summary>Stick input turned into a world direction, relative to where the camera looks.</summary>

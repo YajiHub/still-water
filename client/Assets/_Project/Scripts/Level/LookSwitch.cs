@@ -33,10 +33,17 @@ namespace StillWater.Level
                 headlamp = CreateHeadlamp(cam.transform);
             }
             listener = FindFirstObjectByType<ListenerAI>();
-            Apply(0);
+            Apply(looks.Length - 1); // the last look = C, the dark game look (A stays as the comparison)
         }
 
         public void Next() => Apply((index + 1) % looks.Length);
+
+        /// <summary>Lamps were added (the online circuit loads more rooms): find them all and apply the look again.</summary>
+        public void Refresh()
+        {
+            hallLights = System.Array.FindAll(FindObjectsByType<Light>(FindObjectsSortMode.None), l => l.type == LightType.Point && l.GetComponentInParent<Camera>() == null);
+            Apply(index);
+        }
 
         private void Apply(int i)
         {
@@ -68,7 +75,7 @@ namespace StillWater.Level
                 headlamp.intensity = look.headlampIntensity;
                 headlamp.range = look.headlampRange;
                 headlamp.spotAngle = look.headlampAngle;
-                headlamp.innerSpotAngle = look.headlampAngle * 0.6f; // soft edge
+                headlamp.innerSpotAngle = look.headlampAngle * 0.2f; // very soft edge: a hard one draws a bright arc on the glossy water
             }
             if (listener != null) listener.SetGlow(look.listenerGlow);
 

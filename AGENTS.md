@@ -6,9 +6,9 @@ offline solo, and an online 1v1 race on a **Colyseus (Node 24 + TypeScript)** se
 linted, tested and auto-deployed by GitHub Actions to an Ubuntu VM through a self-hosted runner. Budget ₱0.
 
 ## Current Status & Next Step
-- **Phase:** 3 (Levels) 🟡: Levels 1–4 merged (L3 "Current" hand-tuned: ferries, decoys, maxGap 3.1; L4 "Undertow": crumbling + one-way tiles, PR #18); roaming Listener, dark-look readability (Forward+). Phase 2 phone loop + Phase 1 outside tester deferred; Phase 0 Checkpoint 1 (GDD + paper photo) open. Active plan: [planning/still-water/MAP.md](planning/still-water/MAP.md)
-- **Next:** Level 4 phone run (fps, tries, time vs par 120, yellow/red readable), then `/skill:wayfinder continue planning/still-water/MAP.md` → plan Level 5 ([Level Roster](planning/still-water/decisions/18-level-roster.md)). Unity verification: Test Runner (EditMode, 88) + `Editor.log`; hand-edited levels: *Export Level to JSON* → `npm run level:route` → *Build Level*.
-- **Latest session:** [docs/sessions/2026-11-06-level4-undertow.md](docs/sessions/2026-11-06-level4-undertow.md)
+- **Phase:** 4 (Online LAN race) 🟡 on `feat/lan-race`: **all 5 offline levels exist** (L5 The Drain on `e45ff29`), plus lab-ready LAN 1v1 server (`RaceRoom` + `race.ts`, 156/156 server tests) and Unity client (`LanRace`, `OnlineLevelController`, `MainMenu` Online 1v1 + Sound toggle + Credits) implemented; awaiting Unity compile, EditMode Test Runner, and 2-device LAN + APK verification. Active plan: [planning/lab-ready-plan.md](planning/lab-ready-plan.md) · roadmap: [planning/still-water/MAP.md](planning/still-water/MAP.md)
+- **Next:** Unity compile + EditMode Test Runner → Editor + phone LAN smoke test (`npm start` on Windows :2567) → two-device LAN race + airplane-mode offline + 5-level save checks → Android APK build (`Builds/Still Water.apk`). Visual menus: *Still Water → Art Spike → Build Listener Prefab / Set Up Water / Set Up Hall*; hand-edited levels: *Export Level to JSON* → `npm run level:route` → *Build Level*.
+- **Latest session:** [docs/sessions/2026-11-07-level5-drain.md](docs/sessions/2026-11-07-level5-drain.md)
 
 ## Routing (one home per fact)
 | Need | File |

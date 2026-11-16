@@ -1,6 +1,6 @@
 # Netcode Model
 
-- **Status:** Blocked (by [Online Match Format](./07-online-match-format.md))
+- **Status:** Locked (2026-11-16, by: delegated under deadline authority)
 - **Type:** domain-model
 - **Blocks:** Phase 4
 
@@ -25,4 +25,4 @@ Who simulates what, what is synced, how often, and how is cheating or desync han
 Client-authoritative movement means a modified client could fake positions. Validation catches only obvious cases.
 
 ## Decision
-_(fill in when unblocked and locked)_
+[Lab-ready build](../../lab-ready-plan.md) locks this pass: client-side movement, bounded finite/speed validation on server; server derives water entry, simulates per-player Listener, decides catch/respawn, finish/timeout/forfeit. Fixed Level01 layout on both sides, no moving/sinking/fake platforms online. Two scene-ready clients trigger countdown; positions at 15 Hz, complete JSON-string snapshots at 10 Hz via a NoState room (no schema generation); client interpolates opponent. Configurable LAN endpoint; no connection until user selects Online; timeout/disconnect offers lobby/menu. Catch respawns at start with 3 s penalty. No reconnect. Protocol fields and scope in lab-ready plan. This is plausibility checking, not cheat-proof authoritative player physics.

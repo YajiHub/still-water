@@ -32,6 +32,10 @@ namespace StillWater.Player
         [Tooltip("seconds the climb-out takes")] public float climbDuration = 0.35f;
         [Tooltip("degrees: the edge must be within this angle of where you face to climb it")] [Range(0f, 180f)] public float climbMaxAngle = 60f;
 
+        [Header("Pushed (online)")]
+        [Tooltip("m/s² a shove slows by (the shove's speed comes from the server)")] public float pushDrag = 9f;
+        [Tooltip("m/s upward when shoved on land: a stagger off your feet")] public float pushHop = 3f;
+
         [Header("Look")]
         [Tooltip("degrees turned by dragging the full screen height")] public float lookDegreesPerScreen = 180f;
         [Tooltip("first person field of view, degrees")] public float firstPersonFov = 80f;

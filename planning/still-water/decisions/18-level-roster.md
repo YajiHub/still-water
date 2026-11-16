@@ -82,5 +82,24 @@ What is each level, and in what order do new mechanics arrive?
 - A sunk tile is not climbable. A crumbling tile **waits to rise while a swimmer is right above it** (no popping you up); it rises once you've moved off.
 - Retry reloads the scene, so every tile is back.
 
-## Level 5+
-_(the user's idea: show both sinking and moving, and more; plan when Level 4 is playable)_
+## Level 5 — The Drain (locked 2026-11-07, by: me; name and goal text can change)
+**User's idea:** the finale mixes what came before: moving (L3) + sinking (L4). No new mechanics (lights out, fakes + Reveal stay unused; Pattern Re-show stays blocked).
+
+| Setting | Value |
+|---|---|
+| Hall | **70 × 100 m**, filled **left / centre / right** (each third ≥ 20%, like L4) |
+| Platforms | **~120**: S-curve route of **~30 jumps** (meander) + decoy branches (5–9 jumps) + short dead ends; one-dry-route proof on (generated) |
+| Gaps | **2.6–2.8 m** (ferry gaps as on L3) |
+| Ferries (L3) | **2–3**, mid-route, across channels you can't jump |
+| Crumbling (L4) | **~half the route tiles** (never a ferry); a crumbling tile right after a ferry is allowed: that's the finale's squeeze |
+| One-way (L4) | **decoy tiles** |
+| Listener | roams **Hidden** + glimpses, L4 speed (user-tuned in the Editor) |
+| Timer / par | provisional **220 / 140 s**; tune after the playtest |
+| Goal text | "Everything you've learned. Get out." |
+
+**Built:** `npm run level:gen -- --id level05 --name "The Drain" --width 70 --length 92 --platforms 120 --route 26-38 --gaps 2.6-2.8 --sizes 2,1.6 --small 0.4 --max-turn 85 --meander --decoys 4-6 --decoy-length 5-9 --spread --crumble 0.5 --oneway-decoys --ferries 2-3 --ferry-travel 5-6 --ferry-gaps 2.0-2.4 --ferry-seconds 2 --ferry-pause 0.5 --seed 3` → 120 platforms, route of **31 tiles (32 jumps)**: left → ferry up the left → two ferries across the middle → up the right wall → across the top; gaps 2.12–2.80 m (ferry gaps 2.0–2.4), **3 ferries** (8, 26, 35), **16 crumbling**, **31 one-way**, left / centre / right **37 / 44 / 39**, deepest dead end 13 jumps. All 16 probed seeds generated (the ferry + spread + meander mix works).
+
+**Rules (by: delegated):** no new rules: ferries, crumbling and one-way behave exactly as on L3/L4 (same code, same `LevelConfig` timings). Check while generating: ferries + `--spread` + `--meander` together (never combined before); if the walk can't fit ferries on the meandering route, draw the map for the user and adjust before building.
+
+## Level 6+
+_(post-lab ideas: lights out, fakes + the Reveal; see [IDEAS.md](../../../docs/IDEAS.md))_

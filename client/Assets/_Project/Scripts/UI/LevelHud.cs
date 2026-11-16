@@ -15,7 +15,8 @@ namespace StillWater.UI
             switch (level.Phase)
             {
                 case LevelController.LevelPhase.Intro:
-                    Gui.Text(6f, config.displayName, Gui.Title, 2.5f);
+                    Gui.Vignette();
+                    Gui.BigTitle(6f, config.displayName, 2.5f);
                     Gui.Text(9f, config.goalText);
                     break;
 

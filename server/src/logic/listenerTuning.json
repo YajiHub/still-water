@@ -1,0 +1,7 @@
+{
+  "level01": { "roamSpeed": 3, "roamPauseSeconds": 1.5, "alertDelaySeconds": 0.6, "huntSpeed": 8, "speedPerSplash": 0.1, "lingerSeconds": 2, "catchDistance": 0.9 },
+  "level02": { "roamSpeed": 3, "roamPauseSeconds": 1.5, "alertDelaySeconds": 0, "huntSpeed": 11, "speedPerSplash": 0.1, "lingerSeconds": 2, "catchDistance": 0.9 },
+  "level03": { "roamSpeed": 3, "roamPauseSeconds": 1.5, "alertDelaySeconds": 0, "huntSpeed": 14, "speedPerSplash": 0.1, "lingerSeconds": 2, "catchDistance": 0.9 },
+  "level04": { "roamSpeed": 1, "roamPauseSeconds": 1.5, "alertDelaySeconds": 0, "huntSpeed": 18, "speedPerSplash": 0.1, "lingerSeconds": 2, "catchDistance": 0.9 },
+  "level05": { "roamSpeed": 1, "roamPauseSeconds": 1.5, "alertDelaySeconds": 0, "huntSpeed": 20, "speedPerSplash": 0.1, "lingerSeconds": 2, "catchDistance": 0.9 }
+}

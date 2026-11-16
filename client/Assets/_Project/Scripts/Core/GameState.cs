@@ -30,7 +30,7 @@ namespace StillWater.Core
             SaveSystem.Save(Save, Application.persistentDataPath);
         }
 
-        /// <summary>Debug: wipe all progress (Main Menu → Reset progress).</summary>
+        /// <summary>Debug: wipe all progress. No button any more (removed from the menu 2026-11-16); for tests or a debug hook.</summary>
         public static void ResetProgress()
         {
             save = new SaveData();
