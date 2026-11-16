@@ -13,8 +13,10 @@ services:
     plan: free
     region: singapore # nearest to the Philippines; can't be changed after the service is created
     rootDir: server # only changes under server/ redeploy it
-    dockerfilePath: ./server/Dockerfile # paths here are from the repo root
-    dockerContext: ./server
+    # Relative to rootDir (server/), not the repo root: "./server" became server/server and the first deploy failed
+    # with "lstat /opt/render/project/src/server/server: no such file or directory" (2026-11-16).
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
     healthCheckPath: /health
     branch: main
     autoDeployTrigger: checksPass # deploy a main commit only after the GitHub Actions checks (lint + tests) pass
