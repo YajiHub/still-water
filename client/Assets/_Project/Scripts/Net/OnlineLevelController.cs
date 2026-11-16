@@ -95,7 +95,7 @@ namespace StillWater.Net
                 yield break;
             }
             world = gameObject.AddComponent<CircuitWorld>();
-            yield return world.Build(session.Geometry);
+            yield return world.Build(session.Geometry, session.IsLocal ? () => session.LocalRaceTime : null);
             MakeListeners(template, world.RoomCount);
             building = false;
 
@@ -404,9 +404,13 @@ namespace StillWater.Net
             {
                 int n = s?.players?.Length ?? 1;
                 Gui.BigTitle(2.5f, "CO-OP RACE", 2.4f);
-                Gui.Text(6f, $"Players {n} / 4");
-                Gui.Whisper(7.4f, n >= 2 ? $"Starting in {Mathf.CeilToInt(s.lobby)} s (or as soon as 4 are in)" : "Waiting for at least one more player...");
-                Gui.Whisper(9f, "Room ID: " + session.RoomId);
+                Gui.Text(6f, $"Players {n} / {session.MaxPlayers}");
+                if (session.IsLocal) Gui.Text(7.4f, "Waiting for both phones to finish loading...");
+                else
+                {
+                    Gui.Whisper(7.4f, n >= 2 ? $"Starting in {Mathf.CeilToInt(s.lobby)} s (or as soon as 4 are in)" : "Waiting for at least one more player...");
+                    Gui.Whisper(9f, "Room ID: " + session.RoomId);
+                }
                 if (Gui.Button(15f, "Leave")) session.ReturnToLobby();
                 return;
             }
@@ -447,7 +451,8 @@ namespace StillWater.Net
                 Gui.Dim();
                 Gui.Text(4f, "The race goes on while this menu is open");
                 if (Gui.Button(8f, "Resume")) menu = false;
-                if (Gui.Button(10f, "Leave")) session.ReturnToLobby();
+                if (Gui.Button(10f, GameSettings.SoundLabel)) GameSettings.ToggleSound();
+                if (Gui.Button(12f, "Leave")) session.ReturnToLobby();
             }
         }
 

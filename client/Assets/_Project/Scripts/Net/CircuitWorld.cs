@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using StillWater.Core;
 using UnityEngine;
@@ -24,7 +25,7 @@ namespace StillWater.Net
         private int pendingRoom = -1;
         private int shownRoom = -1;
 
-        public IEnumerator Build(CircuitGeometry geometry)
+        public IEnumerator Build(CircuitGeometry geometry, Func<float> raceTime = null)
         {
             rooms = geometry.rooms;
             roots = new GameObject[rooms.Length];
@@ -43,6 +44,11 @@ namespace StillWater.Net
             pendingRoom = -1;
 
             for (int i = 0; i + 1 < rooms.Length; i++) Join(i);
+            if (raceTime != null)
+                foreach (var root in roots)
+                    if (root != null)
+                        foreach (var ferry in root.GetComponentsInChildren<Level.PlatformMover>(true))
+                            ferry.UseRaceClock(raceTime);
             var look = FindFirstObjectByType<Level.LookSwitch>();
             if (look != null) look.Refresh(); // the new rooms' lamps take the look too
             Show(0);
@@ -130,6 +136,8 @@ namespace StillWater.Net
             foreach (var go in scene.GetRootGameObjects()) if (go.name == name) return go;
             return null;
         }
+
+        private void OnDestroy() => SceneManager.sceneLoaded -= Strip;
 
         private static string SceneFor(string levelId)
         {

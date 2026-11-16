@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace StillWater.Level
@@ -24,6 +25,9 @@ namespace StillWater.Level
         // rooms down the line; with the saved world position, ferries in rooms 3–5 snapped back to their old spot (inside
         // rooms 1–2) and slid through other platforms.
         private Vector3 localA;
+        private Func<float> raceTime;
+
+        public void UseRaceClock(Func<float> clock) => raceTime = clock;
 
         private void Awake()
         {
@@ -35,7 +39,7 @@ namespace StillWater.Level
         {
             var root = transform.parent;
             var a = root != null ? root.TransformPoint(localA) : localA;
-            var next = a + travel * FerryRules.Progress(Time.timeSinceLevelLoad, seconds, pause, offset);
+            var next = a + travel * FerryRules.Progress(raceTime?.Invoke() ?? Time.timeSinceLevelLoad, seconds, pause, offset);
             Delta = next - transform.position;
             transform.position = next;
         }

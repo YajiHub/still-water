@@ -1,3 +1,4 @@
+using StillWater.Core;
 using StillWater.Level;
 using UnityEngine;
 
@@ -56,9 +57,10 @@ namespace StillWater.UI
         {
             Gui.Dim();
             Gui.Text(3f, "Paused", Gui.Title, 2.5f);
-            if (Gui.Button(8f, "Resume")) level.TogglePause();
-            if (Gui.Button(10.2f, "Retry")) level.Retry();
-            if (Gui.Button(12.4f, "Menu")) level.ToMenu();
+            if (Gui.Button(7f, "Resume")) level.TogglePause();
+            if (Gui.Button(9.2f, "Retry")) level.Retry();
+            if (Gui.Button(11.4f, GameSettings.SoundLabel)) GameSettings.ToggleSound();
+            if (Gui.Button(13.6f, "Menu")) level.ToMenu();
         }
     }
 }

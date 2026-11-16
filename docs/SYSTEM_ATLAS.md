@@ -131,6 +131,8 @@ Clients move themselves instantly. Remote players are drawn with interpolation (
 
 ### 4.2 As built: the co-op race circuit (2026-11-16, [Online Match Format](../planning/still-water/decisions/07-online-match-format.md) revision)
 
+**Local Multiplayer:** `LanRace.Local` uses `LocalRaceLink` for a direct two-phone connection on TCP port 2569. A versioned handshake sends the circuit geometry and initial snapshot. The host's `LocalCircuit` builds from the installed level layouts, uses the Solo Listener tuning, and emits the same snapshot, catch, and push data that the shared race controller already draws. Its clock also drives the moving platforms on both phones. The transport bounds frame sizes and uses a heartbeat to detect a missing peer.
+
 The client joins the `circuit` room (`rooms/CircuitRoom.ts`). Its rules are in `logic/circuit.ts`, a pure module with
 node:test coverage. `logic/circuitLevels.ts` imports the five level JSON files, so `build/` carries them.
 

@@ -1,48 +1,14 @@
 # Hosting and LAN Plan
 
-- **Status:** Locked (2026-11-03) (by: delegated: the user asked for the recommended option). The instructor is **not** being asked (by: me): we follow the handout and document the deviation below.
-- **Type:** research
-- **Blocks:** Phase 0 (server skeleton), Phase 4
+- **Status:** Locked (2026-11-16, by: me). Add direct phone-hosted multiplayer to meet Lab 5 Option A.
+- **Blocks:** Phase 4 and Lab 5 Checkpoint 5.
 
-## Question
-Where does the Colyseus server run for development, for the "same Wi-Fi" requirement (Option A), and for internet play (Option B)?
-
-> Context from [Lab 6 Integration](./13-lab6-integration.md): the CI/CD pipeline deploys the server to an Ubuntu VM on the laptop. That VM is the natural same-Wi-Fi server (phones → laptop IP:8080). Render is now only needed for internet play.
-
-## Facts (verified 2026-10-27; re-check before deploying)
-- Render free web service: spins down after **15 min** without traffic (HTTP or WebSocket messages); waking takes **~1 min**; 750 free instance hours/month. WebSocket messages on an open connection count as activity.
-- Colyseus: MIT-licensed Node/TS server with an official Unity SDK (installed via the Package Manager git URL). The current major line was 0.18 at the time of writing. Match the SDK and server versions.
-- The lab's Option A, as written: "one phone hosts, the other joins by IP, no server needed". Ours uses a laptop server, which **differs**.
-
-## Options for Option A
-| Option | For | Against |
+| Use | Host | Join |
 |---|---|---|
-| **Laptop runs Colyseus on the same Wi-Fi/hotspot; phones join by IP/room code**: either the dev server (:2567) or the pipeline-deployed VM (:8080) | Zero extra code; same server as online; the VM version is also the Lab 6 deployment | Not "phone hosts" literally; needs instructor OK |
-| A phone hosts (Unity Netcode for GameObjects + direct IP) | Matches the handout literally | A second networking stack to build and maintain, roughly doubling online work |
-| Run the Colyseus server on an Android phone (e.g. Termux/Node) | Technically "phone hosts" | Fragile; not worth it |
+| Lab 5 Option A | One Android phone runs the race in the app on the hotspot network | **Local Multiplayer → Join**, using the host's IPv4 address |
+| Lab 5 Option B | Colyseus on Render | **Online → Quick Match** or **Join Room** |
+| Development / Lab 6 | Colyseus on Windows (`:2567`) or in the Ubuntu VM (`:8080`) | **Online**, using the laptop's network address |
 
-## Plan
-1. ~~Ask the instructor~~: dropped (by: me). See *Known deviation*.
-2. Dev: `npm run dev` on Windows (:2567); Unity Editor + phone connect via the laptop's LAN IP.
-3. Same-Wi-Fi demo: the pipeline-deployed server in the VM (`ws://<laptop LAN IP>:8080`).
-4. Internet (Option B, optional): the same Docker image on the Render free tier (wss). Before demos, open the app once to wake it.
-5. In-app: Settings or Lobby has a server picker (Local dev / LAN VM / Cloud, or enter an address) so the demo can switch.
+The local session is a two-player version of the five-room circuit. The host decides catches, pushes, scoring, placement, and the result. Both phones load the circuit from their installed game. Join by address for the lab demo. A lost peer ends the local session and returns the player to the Local Multiplayer screen with a message.
 
-## Decision
-**One Colyseus server everywhere; the game picks the address.**
-
-| Use | Where the server runs | Address the game uses |
-|---|---|---|
-| Development | `npm start` on Windows (:2567) | `ws://localhost:2567` (Editor) / `ws://<laptop Wi-Fi IP>:2567` (phone). Verified 2026-11-03 with `ws://192.168.1.9:2567`. |
-| **Option A** (same Wi-Fi, required) | The pipeline-deployed Docker container in the Ubuntu VM on the laptop | `ws://<laptop Wi-Fi IP>:8080` |
-| **Option B** (internet, higher grade + bonus) | The same Docker image on the Render free tier | `wss://<app>.onrender.com` |
-
-- In-app **server picker** (Settings or Lobby): Local dev / LAN / Cloud, plus a custom address. Never hard-coded.
-- Render is built in Phase 4 after LAN play works (warm it up before demos; the LAN option is the fallback).
-- Player setting **Allow downloads over HTTP = Always allowed** is required for the plain `ws`/`http` LAN servers.
-
-## Why (portfolio + lab)
-One authoritative server for both options means one codebase and one set of tests, and the online rule that "the server decides the winner" applies to both. For a portfolio it's a real deployment story: Docker image → CI/CD to a self-hosted VM → the same image in the cloud. A phone-hosted mode (Netcode for GameObjects) would roughly double the online work for no extra rubric points.
-
-## Known deviation from the handout (write it in the Lab 5 paper)
-The handout's Option A says "one phone hosts, the other joins by IP, no server needed". Ours uses a server on a laptop on the same Wi-Fi (or the laptop's own hotspot, so no outside network is involved). Argue it in the paper: the handout also requires that "the host/server decides the winner", and a dedicated authoritative server meets that more strongly than a phone host. If grading turns out to require a literal phone host, add a phone-host mode in Phase 4 (new decision).
+Use the two-phone steps in [Setup §8](../../../docs/SETUP.md#8-playing-without-internet-on-a-phone-hotspot) to verify Option A with mobile data off. Use the Render steps in [Setup §9](../../../docs/SETUP.md#9-free-internet-server-render-0) for Option B.

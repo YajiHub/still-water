@@ -130,7 +130,16 @@ Then update the Phase table in the [MAP](../planning/still-water/MAP.md) and do 
 - [x] **Test C:** merge an obvious bad text change → roll back via revert PR (Method 1) and via `--no-build` with an old SHA (Method 2)
 - [x] Fill in the results table in [LAB6_REQUIREMENTS.md](LAB6_REQUIREMENTS.md); collect ≥ 5 deploy timings for the paper
 
-## 8. Playing online without the internet: hotspot (₱0)
+## 8. Playing without internet on a phone hotspot
+
+**Lab 5 Option A (two phones):**
+
+1. Install the same APK build on both phones. On Phone A, turn on its Wi-Fi hotspot with mobile data off. Connect Phone B to it and turn off Phone B's mobile data too.
+2. On Phone A, open **Still Water → Local Multiplayer → Host**. This opens the in-app host on TCP port 2569.
+3. On Phone B, open **Still Water → Local Multiplayer**, type Phone A's IP in **Host IP address**, and tap **Join**. Use the address on Phone A or the **Gateway** address in Phone B's hotspot Wi-Fi details.
+4. Both phones load the five-room circuit. Play through the finish and capture the results on both screens. Start another match, leave from Phone A, and confirm Phone B returns to **Local Multiplayer** with a disconnect message.
+
+### Colyseus on a local network
 
 Everyone plays on one local network, and the laptop runs the server.
 

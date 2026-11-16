@@ -168,29 +168,32 @@ Extra levels (6+) are post-lab ideas. See [IDEAS.md](IDEAS.md).
 ## 7. Offline mode (Draft)
 
 - **Solo campaign:** levels 1–5 with locking, stars and saved progress. **Required.**
-- **Vs computer ("Ghost Swimmer"):** an AI rival crosses the same level on a pre-recorded or scripted route, with mistakes that become rarer at higher levels. First to the door wins. The lab rubric's *Excellent* band for offline mode asks for "AI or pass-and-play included", so this is worth building if time allows. *(Open, see [Offline Rival](../planning/still-water/decisions/09-offline-rival.md).)*
-- Works fully in airplane mode. No network code runs offline.
+- **Vs computer ("Ghost Swimmer"):** an AI rival crosses the same level on a pre-recorded or scripted route, with mistakes that become rarer at higher levels. First to the door wins. The lab rubric's *Excellent* band for offline mode asks for "AI or pass-and-play included". **Not built** (2026-11-16): the solo campaign is the offline mode, and the Listener is the computer-controlled opponent in every level. *(Still Open, see [Offline Rival](../planning/still-water/decisions/09-offline-rival.md).)*
+- Solo works fully in airplane mode and opens no network connections.
+- **Local Multiplayer:** two phones race through the same five-room circuit over a hotspot. The host phone starts the match when both phones finish loading, runs the Listeners, and decides scores and finishing places. The guest joins by IP. Losing the connection during a match returns the player to the local lobby with a message.
 
-## 8. Online mode (Draft; details Open in [Online Match Format](../planning/still-water/decisions/07-online-match-format.md))
+## 8. Online mode (the co-op race circuit: [Online Match Format](../planning/still-water/decisions/07-online-match-format.md), co-op amendment and race revision)
 
-- **Format:** real-time **1v1 race**. Both players cross the same layout with the same seed (same safe path). First to the Exit wins.
-- **What you see:** the opponent as a slightly translucent figure. No collisions between players.
-- **Splash online:** the Listener hunts whoever splashed. If caught, that player respawns at their last safe platform after a **time penalty** (e.g. 3 s) instead of losing outright, so the race keeps going.
-- **Who decides:** the server holds the layout and seed, checks positions for impossible moves, decides splashes, catches and finishes, and announces the winner (lab rule: the host/server decides).
+- **Format:** a real-time **co-op race for 2–4 players** through all five rooms joined end to end (Level 1 → 5), with no loading between rooms. Doors are open: everyone races ahead, but the team also scores when all of them get through in time.
+- **What you see:** the other players' bodies (female or male, as each picked) and every room's Listener. **PUSH** shoves a player in front of you.
+- **Splash online:** the room's Listener (the same speed as that solo level) hunts the splash. A caught player sees their own catch, everyone sees it happen, and the caught player restarts at the start of that room.
+- **Points:** first through each door 3/2/1/0, finishing places 10/6/3/1, splash −1, caught −3, and +5 each if the whole team clears it. A 15-minute match clock.
+- **Who decides:** the Colyseus server holds the rooms, checks positions for impossible moves, runs the Listeners, decides splashes, catches, pushes and places, and ends the match (lab rule: the host/server decides).
 - **Effect on offline progress:** online results do **not** unlock offline levels (the lab's simplest rule).
-- **Lobby (Draft):** Quick Match (matchmaking) + Create/Join Private Room by code. A clear error screen when the server can't be reached.
-- **Disconnect:** if a player leaves mid-match, the other wins by forfeit and sees a message, then returns to the menu.
+- **Lobby:** Quick Match + Create/Join a room by code, with a 15 s wait for more players once two are ready. Server address: a laptop on the same Wi-Fi or hotspot (`ws://…:2567`), or the free internet server on Render (`https://still-water-server.onrender.com`). A clear message when the server can't be reached (5 s timeout; up to 90 s while the internet server wakes up).
+- **Disconnect:** the others play on; the match ends when everyone has left or finished. A dropped player sees a message and goes back to the Online menu.
 
 ---
 
 ## 9. Screens (lab flow)
 
-Title → Main Menu (Play, Settings, Credits) → Mode Select (Offline / Online)
-- Offline → Level Select (lock icons, stars) → Level (HUD: goal, timer, splash count, pause) → Result (Retry / Next / Menu)
-- Online → Lobby (Quick Match / Room code, status text) → Online Match → Online Result → back to Lobby
-- Connection Error (message + back to Mode Select)
-- Pause menu (Resume, Restart, Sound on/off, Quit to menu)
-- Settings (music volume, SFX volume, vibration, camera sensitivity, *optional:* text size)
+Title / Main Menu (Solo, Local Multiplayer, Online, Settings, Credits, Quit): the title page is also the mode select.
+- Local Multiplayer → Host or Join by IP → Circuit → Results → Local Multiplayer lobby
+- Solo → Level Select ("Locked" levels, stars) → Level (HUD: goal, timer, splash count, pause) → Result (Retry / Next / Menu)
+- Online → Lobby (server address, Quick Match / Room code, status text) → Online Match → Online Result (leaderboard) → back to the Online menu
+- Connection error: a message on the Online page, which stays open to try again or go Back
+- Pause menu: Resume, Retry, Sound On/Off, Menu (online: Resume, Sound On/Off, Leave; the race doesn't pause)
+- Settings: Sound On/Off, master and music volume, look sensitivity, button size, left-handed layout, first/third-person camera, character
 - Credits
 
 Android back gesture = Back on every screen.
