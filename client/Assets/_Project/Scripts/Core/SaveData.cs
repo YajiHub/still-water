@@ -41,5 +41,6 @@ namespace StillWater.Core
         public bool leftHanded;            // stick on the right, JUMP/PUSH on the left
         public bool firstPerson = true;    // the camera you start in (the in-game 1st/3rd pill changes it too)
         public int character;              // 0 female, 1 male (PlayerAvatar.Bodies)
+        public bool soundOn = true;        // Sound On/Off (Settings and the pause menus, lab R10); off is silent but keeps the volumes
     }
 }

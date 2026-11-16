@@ -14,20 +14,32 @@
 | R4 | Level n+1 locked until n is cleared | Lock icon, can't open | Level Select reads `unlockedLevel` | [ ] |
 | R5 | Progress saved, survives closing the app | Clear L2, force-close, reopen → L3 open | JSON save written before the Result screen | [ ] |
 | R6 | Offline mode works in airplane mode | Airplane mode + play | Solo campaign (+ Ghost rival) with no network code | [ ] |
-| R7 | Online: two players, two devices, same match, real-time or turn-based | Two phones play one match | 1v1 race over the Colyseus server | [ ] |
-| R8 | Mode selection on the main menu + clear message if the server is unreachable | Wi-Fi off → Online → error, not a crash | NetClient timeout → Connection Error screen | [ ] |
-| R9 | Runs on a real phone, fixed orientation, touch controls | Installed on a team member's phone | Android APK, joystick + jump | [ ] |
-| R10 | Basic polish: title screen, pause menu, sound on/off, readable text | Checklist during demo | Body text ≥ 28 px at 720p-equivalent, buttons ≥ ~9 mm | [ ] |
+| R7 | Online: two players, two devices, same match, real-time or turn-based | Two phones play one match | Two-player phone-hosted circuit in Local Multiplayer or 2-4 players through Colyseus in Online | [ ] |
+| R8 | Mode selection on the main menu + clear message if the server is unreachable | Wi-Fi off → Online → error, not a crash | Title page offers Solo, Local Multiplayer and Online. Connection errors and disconnects show a message in the selected multiplayer menu. | [ ] |
+| R9 | Runs on a real phone, fixed orientation, touch controls | Installed on a team member's phone | Android APK, landscape only (left/right), joystick + jump | [ ] |
+| R10 | Basic polish: title screen, pause menu, sound on/off, readable text | Checklist during demo | Title, pause menu (Resume / Retry / **Sound On/Off** / Menu), Sound On/Off also in Settings; text and buttons sized from the screen's safe area | [ ] |
+
+> Code status 2026-11-16: R1–R10 are all implemented. The boxes are ticked once each is shown on a phone (video or demo).
 
 ### Online options
-- **Option A (all teams must do it):** two phones on the **same Wi-Fi**, no external server (one phone hosts).
-  ⚠️ **Deviation:** a Colyseus server on a laptop on the same Wi-Fi (the pipeline-deployed VM, `ws://<laptop IP>:8080`) instead of a phone host. Argued in the paper; see [Hosting and LAN Plan](../planning/still-water/decisions/12-hosting-and-lan.md#known-deviation-from-the-handout-write-it-in-the-lab-5-paper).
-- **Option B (higher grade + bonus):** internet matchmaking (the handout uses Nakama). Our equivalent is Colyseus deployed on Render.
+- **Option A (all teams must do it):** **Local Multiplayer** lets one phone host and a second phone join by IP over a hotspot. Run the two-phone test with mobile data off and record the results on both phones. See [Setup §8](SETUP.md#8-playing-without-internet-on-a-phone-hotspot).
+- **Option B (higher grade + bonus):** internet matchmaking (the handout uses Nakama). Our equivalent is Colyseus deployed on Render: **live** at `https://still-water-server.onrender.com` (2026-11-16, `render.yaml`).
   ⚠️ Deviation: Colyseus instead of Nakama for the "working Option B deployment" bonus; the paper explains the equivalence (internet matchmaking + an authoritative server).
+
+### Accepted deviations (the instructor accepts some; argue each in the paper)
+- **Solo, not a team of 2–3** (by: me): one student, committing as both `YajiHub` and "Jopur Jay Montecillo II". The contribution log and the paper say both are the same person; peer evaluation doesn't apply.
+- **Unity + Colyseus instead of Godot + ENet/Nakama** (instructor-approved).
+- **Online is a 2–4 player co-op race, not a 1v1** (decision 07 amendment): still "two phones play one match", plus up to two more.
+- **No offline AI rival or pass-and-play:** the solo campaign is the offline mode, and the Listener is the computer opponent. The "Ghost Swimmer" stays Open ([decision 09](../planning/still-water/decisions/09-offline-rival.md)); expect "Satisfactory" rather than "Excellent" on that rubric row.
+- **Locked levels show the word "Locked"**, not a lock icon (the handout's own Step 3.4 uses text first).
+- **The title page is the mode select** (Solo / Local Multiplayer / Online).
+- **Shared repo for Labs 5 and 6**, tags `lab5-v1.0` / `lab6-v1.0` instead of `v1.0`, and the repo isn't named `itsd85-lab<no>-…`.
 - **Online design rules:** decide whether online affects offline unlocks (ours: it doesn't). Handle disconnects with a message + return to the menu. The host/server, not each phone, decides the winner.
 
 ## Bonus (up to +10)
 Star rating per level + star-gated worlds · online leaderboard / player names · settings screen (volume, vibration, language) · tutorial / first-time hints · accessibility (color-blind-friendly palette, adjustable text size) · working Option B deployment.
+
+Ours (2026-11-16): ✅ stars per level (no star-gated worlds) · ✅ online leaderboard (end-of-race places and points) · ✅ settings screen (sound, volumes, controls, camera, character) · ✅ Option B on Render · partial accessibility (left-handed layout, button size). Not done: a tutorial, text size.
 
 ## Rubric (100 pts)
 | Criteria | Pts | "Excellent" means |

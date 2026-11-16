@@ -3,7 +3,7 @@
 > Placeholder README in the format both lab handouts require. Fill it in near submission.
 > For project context (humans and AI assistants), start at [AGENTS.md](AGENTS.md).
 
-Student(s): _TBD_  Section: _TBD_  Instructor: _TBD_  Platform: Android
+Student: Jopur Jay Montecillo II (solo; commits as `YajiHub` and under my name)  Section: _TBD_  Instructor: _TBD_  Platform: Android
 
 This repository holds two labs:
 - **Lab 5:** a mobile game with level progression and offline/online multiplayer (`client/` Unity game + `server/` Colyseus server). Release: `lab5-v1.0`.
@@ -20,7 +20,9 @@ _One-paragraph pitch + 2 screenshots._
 _Controls, goal, how levels unlock._
 
 ## Offline and online modes
-_How to play offline; how to join an online match (server picker: Local dev / LAN VM / Cloud)._
+- **Solo:** play the five-level campaign on one phone in airplane mode.
+- **Local Multiplayer:** one phone hosts the five-room race and the other joins by IP on the same hotspot. See [two-phone setup](docs/SETUP.md#8-playing-without-internet-on-a-phone-hotspot).
+- **Online:** play with 2–4 players through Colyseus. Enter the server URL, then use **Quick Match** or **Join Room**.
 
 ## How to build
 _Unity 6000.3.27f2 + Android Build Support; export steps. Server: `cd server && npm install && npm start`._

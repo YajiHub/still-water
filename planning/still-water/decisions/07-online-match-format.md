@@ -32,6 +32,8 @@ Deadline scope in [Lab-ready build](../../lab-ready-plan.md) supersedes proposal
 **Amendment, 2026-11-16 (by: me): the co-op circuit replaces the 1v1 race online.** The client uses the new
 `circuit` room. The old `race` room and its tests stay on the server, unused.
 
+For the separately selected two-player phone-hosted circuit, see [Hosting and LAN Plan](12-hosting-and-lan.md).
+
 Decided by me:
 - **2–4 players.**
 - **The circuit:** rooms 1→5 joined end to end in one scene. You walk through each door into the next room: no

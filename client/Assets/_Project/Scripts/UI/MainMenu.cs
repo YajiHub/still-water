@@ -13,19 +13,20 @@ namespace StillWater.UI
         // PlayerPrefs keys from before the Settings page (migrated into save.json once, then deleted).
         private const string OldMuteKey = "sw_mute", OldCharacterKey = "sw_player_body";
 
-        private enum Page { Title, Levels, Online, Settings, Credits }
+        private enum Page { Title, Levels, Local, Online, Settings, Credits }
 
         private Page current = Page.Title;
         private string endpointInput;
         private string roomIdInput = "";
+        private string localAddressInput = "";
         private float openedAt;
         private bool settingsDirty;
 
         private void Awake()
         {
-            if (PlayerPrefs.HasKey(OldMuteKey)) // "Sound: Off" from before Settings existed → master volume 0
+            if (PlayerPrefs.HasKey(OldMuteKey)) // "Sound: Off" from before Settings existed → Sound: Off
             {
-                if (PlayerPrefs.GetInt(OldMuteKey, 0) == 1) GameSettings.Current.masterVolume = 0f;
+                if (PlayerPrefs.GetInt(OldMuteKey, 0) == 1) GameSettings.Current.soundOn = false;
                 PlayerPrefs.DeleteKey(OldMuteKey);
                 GameSettings.Changed();
             }
@@ -39,10 +40,10 @@ namespace StillWater.UI
             AudioListener.pause = false;
             openedAt = Time.unscaledTime;
             MusicDirector.Instance.Play(MusicDirector.Menu);
-            if (LanRace.OpenOnlineMenu)
+            if (LanRace.OpenMultiplayerMenu)
             {
-                LanRace.OpenOnlineMenu = false;
-                current = Page.Online;
+                LanRace.OpenMultiplayerMenu = false;
+                current = LanRace.Instance != null && LanRace.Instance.IsLocal ? Page.Local : Page.Online;
             }
         }
 
@@ -65,10 +66,11 @@ namespace StillWater.UI
                     Gui.BigTitle(2.0f, "STILL WATER", 2.4f);
                     Gui.Whisper(4.5f, "Don't make a sound.", 0.55f + 0.45f * Mathf.PingPong(Time.unscaledTime * 0.25f, 1f));
                     if (Gui.Button(7.4f, "Solo", 0.26f)) { LanRace.Cancel(); current = Page.Levels; }
-                    if (Gui.Button(9.0f, "Online", 0.26f)) current = Page.Online;
-                    if (Gui.Button(10.6f, "Settings", 0.26f)) current = Page.Settings;
-                    if (Gui.Button(12.2f, "Credits", 0.26f)) current = Page.Credits;
-                    if (Gui.Button(13.8f, "Quit", 0.26f)) Application.Quit();
+                    if (Gui.Button(9.0f, "Local Multiplayer", 0.30f)) OpenMultiplayer(Page.Local);
+                    if (Gui.Button(10.6f, "Online", 0.26f)) OpenMultiplayer(Page.Online);
+                    if (Gui.Button(12.2f, "Settings", 0.26f)) current = Page.Settings;
+                    if (Gui.Button(13.8f, "Credits", 0.26f)) current = Page.Credits;
+                    if (Gui.Button(15.4f, "Quit", 0.26f)) Application.Quit();
                     break;
 
                 case Page.Levels:
@@ -87,6 +89,10 @@ namespace StillWater.UI
                         GUI.enabled = true;
                     }
                     if (Gui.Button(17.5f, "Back", 0.25f)) current = Page.Title;
+                    break;
+
+                case Page.Local:
+                    DrawLocal();
                     break;
 
                 case Page.Online:
@@ -115,26 +121,29 @@ namespace StillWater.UI
             var s = GameSettings.Current;
             Gui.Text(0.8f, "Settings", Gui.Title, 2.2f);
 
-            Gui.Whisper(3.3f, "SOUND", 0.7f);
-            float master = Gui.Slider(4.4f, "Master volume", s.masterVolume, 0f, 1f, $"{Mathf.RoundToInt(s.masterVolume * 100)}%");
-            float music = Gui.Slider(5.8f, "Music", s.musicVolume, 0f, 1f, $"{Mathf.RoundToInt(s.musicVolume * 100)}%");
+            Gui.Whisper(3.0f, "SOUND", 0.7f);
+            if (Gui.Button(4.0f, GameSettings.SoundLabel, 0.62f)) GameSettings.ToggleSound(); // saves at once
+            GUI.enabled = s.soundOn; // the sliders do nothing while the sound is off
+            float master = Gui.Slider(5.3f, "Master volume", s.masterVolume, 0f, 1f, $"{Mathf.RoundToInt(s.masterVolume * 100)}%");
+            float music = Gui.Slider(6.6f, "Music", s.musicVolume, 0f, 1f, $"{Mathf.RoundToInt(s.musicVolume * 100)}%");
+            GUI.enabled = true;
 
-            Gui.Whisper(7.4f, "CONTROLS", 0.7f);
-            float look = Gui.Slider(8.5f, "Look sensitivity", s.lookSensitivity, GameSettings.MinLook, GameSettings.MaxLook, $"{s.lookSensitivity:0.0}×");
-            float size = Gui.Slider(9.9f, "Button size", s.controlsScale, GameSettings.MinControlsScale, GameSettings.MaxControlsScale, $"{Mathf.RoundToInt(s.controlsScale * 100)}%");
-            if (Gui.Button(11.4f, s.leftHanded ? "Layout: left-handed (stick right)" : "Layout: right-handed (stick left)", 0.62f))
+            Gui.Whisper(7.9f, "CONTROLS", 0.7f);
+            float look = Gui.Slider(8.9f, "Look sensitivity", s.lookSensitivity, GameSettings.MinLook, GameSettings.MaxLook, $"{s.lookSensitivity:0.0}×");
+            float size = Gui.Slider(10.2f, "Button size", s.controlsScale, GameSettings.MinControlsScale, GameSettings.MaxControlsScale, $"{Mathf.RoundToInt(s.controlsScale * 100)}%");
+            if (Gui.Button(11.5f, s.leftHanded ? "Layout: left-handed (stick right)" : "Layout: right-handed (stick left)", 0.62f))
             {
                 s.leftHanded = !s.leftHanded;
                 settingsDirty = true;
             }
-            if (Gui.Button(12.9f, s.firstPerson ? "Camera: first person" : "Camera: third person", 0.62f))
+            if (Gui.Button(12.8f, s.firstPerson ? "Camera: first person" : "Camera: third person", 0.62f))
             {
                 s.firstPerson = !s.firstPerson;
                 settingsDirty = true;
             }
 
-            Gui.Whisper(14.5f, "PLAYER", 0.7f);
-            if (Gui.Button(15.5f, $"Character: {PlayerAvatar.Bodies[PlayerAvatar.Choice]}", 0.62f))
+            Gui.Whisper(14.2f, "PLAYER", 0.7f);
+            if (Gui.Button(15.2f, $"Character: {PlayerAvatar.Bodies[PlayerAvatar.Choice]}", 0.62f))
                 PlayerAvatar.Choice = (PlayerAvatar.Choice + 1) % PlayerAvatar.Bodies.Length; // saves at once
 
             if (!Mathf.Approximately(master, s.masterVolume) || !Mathf.Approximately(music, s.musicVolume) ||
@@ -168,6 +177,34 @@ namespace StillWater.UI
         }
 
         private void OnDestroy() => SaveSettings();
+
+        private void OpenMultiplayer(Page page)
+        {
+            LanRace.Ensure().SelectMultiplayerMode(page == Page.Local);
+            current = page;
+        }
+
+        private void DrawLocal()
+        {
+            var net = LanRace.Ensure();
+            Gui.Text(0.8f, "Local multiplayer (2 players)", Gui.Title, 2.2f);
+            Gui.Text(3.0f, "Turn on the host phone's hotspot and connect the other phone.");
+            GUI.enabled = !net.Connecting;
+            if (Gui.Button(5f, "Host")) net.HostLocal();
+            Gui.Text(7f, "Host IP address");
+            localAddressInput = Gui.Field(8.1f, localAddressInput, 0.45f);
+            GUI.enabled = !net.Connecting && !string.IsNullOrWhiteSpace(localAddressInput);
+            if (Gui.Button(10f, "Join")) net.JoinLocal(localAddressInput);
+            GUI.enabled = true;
+            if (net.HostAddresses.Length > 0)
+                Gui.Text(11.8f, "Host IP: " + string.Join(", ", net.HostAddresses), height: 1.5f);
+            if (net.Connecting)
+                Gui.Text(13.2f, "The guest can find the host IP as Gateway in its hotspot Wi-Fi details.");
+            if (!string.IsNullOrEmpty(net.Status))
+                Gui.Text(14.5f, net.Status);
+            if (net.Connecting && Gui.Button(16f, "Cancel", 0.3f)) net.CancelConnect();
+            if (Gui.Button(17.6f, "Back", 0.28f)) { net.CancelConnect(); current = Page.Title; }
+        }
 
         private void DrawOnline()
         {

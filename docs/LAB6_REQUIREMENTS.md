@@ -5,6 +5,12 @@
 > not the handout's sample Express app.** See [Lab 6 Integration](../planning/still-water/decisions/13-lab6-integration.md).
 > We follow the handout as written and don't ask for exceptions (by: me, 2026-11-03). The shared repo and the `lab6-v1.0` tag are explained in the README and the paper.
 
+> **Status 2026-11-16:** the pipeline is complete. Runner `stillwater-vm` online (labels `self-hosted, Linux, X64, deploy`);
+> ruleset `protect-main` active (PR + `test` check, no force push or deletion); fork-PR approval = all external contributors;
+> the last three `main` runs were test ✅ → deploy ✅. Left: the paper, `lab6-v1.0` release, `docs/pipeline.png`, the missing
+> screenshots (CP1, CP3, CP4, CP6, `cp-testA`, `cp-testC-bad`), the README, and a runner-Idle-after-VM-reboot check.
+> Solo work (one student, committing as both `YajiHub` and "Jopur Jay Montecillo II"). Deviations (VMware for VirtualBox, the game server as the app, shared repo) are argued in the paper.
+
 ## What the handout asks you to build
 - A small Node.js web API **with automated tests** → ours: the game server + tests on its game logic
 - A `Dockerfile` + `compose.yaml` that package and run it

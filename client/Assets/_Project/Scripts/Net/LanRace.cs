@@ -8,11 +8,8 @@ using UnityEngine.SceneManagement;
 
 namespace StillWater.Net
 {
-    /// <summary>
-    /// Persistent LAN multiplayer session (DontDestroyOnLoad) for the 2-4 player co-op circuit (decision 07). Created
-    /// only when the player opens Online, so offline play never initializes Colyseus or touches the network.
-    /// </summary>
-    public class LanRace : MonoBehaviour
+    /// <summary>Shared circuit session for Colyseus and phone-hosted play. Solo never opens a connection.</summary>
+    public partial class LanRace : MonoBehaviour
     {
         private const string EndpointKey = "sw_endpoint";
         private const string DefaultEndpoint = "ws://localhost:2567";
@@ -24,8 +21,8 @@ namespace StillWater.Net
         private const float WakeTimeoutSeconds = 90f, WakePollSeconds = 2f;
 
         public static LanRace Instance { get; private set; }
-        public static bool Active => Instance != null && Instance.room != null;
-        public static bool OpenOnlineMenu { get; set; }
+        public static bool Active => Instance != null && (Instance.room != null || Instance.localActive);
+        public static bool OpenMultiplayerMenu { get; set; }
 
         public string Status { get; private set; } = "";
         public bool Connecting { get; private set; }
@@ -108,6 +105,7 @@ namespace StillWater.Net
             operationId++;
             if (Connecting)
             {
+                CloseLocal();
                 Connecting = false;
                 Status = "Cancelled.";
             }
@@ -124,8 +122,10 @@ namespace StillWater.Net
 
         public void ReturnToLobby(string message = "")
         {
+            bool leavingLocalRace = localActive;
             operationId++;
             Connecting = false;
+            CloseLocal();
             var old = room;
             room = null;
             SessionId = null;
@@ -133,15 +133,16 @@ namespace StillWater.Net
             Snapshot = null;
             Geometry = null;
             Status = message ?? "";
-            OpenOnlineMenu = true;
+            OpenMultiplayerMenu = true;
 
             _ = SafeLeave(old);
-            if (this != null && SceneManager.GetActiveScene().name != GameState.MenuScene)
+            if (this != null && (leavingLocalRace || SceneManager.GetActiveScene().name != GameState.MenuScene))
                 SceneManager.LoadScene(GameState.MenuScene);
         }
 
         private async Task ConnectAsync(string roomId)
         {
+            IsLocal = false;
             int op = ++operationId;
             Connecting = true;
             Status = "Connecting...";
@@ -250,7 +251,7 @@ namespace StillWater.Net
             };
 
             SendSafe("geometry", null); // handlers are registered now: ask for the rooms (the join-time copy may be lost)
-            OpenOnlineMenu = true;
+            OpenMultiplayerMenu = true;
             SceneManager.LoadScene(RaceSceneName);
         }
 
@@ -279,6 +280,12 @@ namespace StillWater.Net
 
         private async void SendSafe(string type, string payload)
         {
+            if (IsLocal)
+            {
+                if (localCircuit != null) ApplyLocalInput(0, type, payload);
+                else localLink?.Send(type, payload);
+                return;
+            }
             if (room == null) return;
             try
             {
@@ -320,6 +327,7 @@ namespace StillWater.Net
         private void OnDestroy()
         {
             if (Instance == this) Instance = null;
+            CloseLocal();
             var old = room;
             room = null;
             _ = SafeLeave(old);

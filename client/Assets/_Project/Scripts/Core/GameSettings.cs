@@ -24,10 +24,19 @@ namespace StillWater.Core
             SaveSystem.Save(GameState.Save, Application.persistentDataPath);
         }
 
-        /// <summary>Apply what isn't read live (the master volume). Called when the menu opens and on every change.</summary>
+        /// <summary>Apply what isn't read live (Sound On/Off and the master volume). Called when the menu opens and on every change.</summary>
         public static void Apply()
         {
-            AudioListener.volume = Mathf.Clamp01(Current.masterVolume);
+            AudioListener.volume = Current.soundOn ? Mathf.Clamp01(Current.masterVolume) : 0f;
         }
+
+        /// <summary>Sound On/Off: flips it, applies it at once and saves (used by Settings and the pause menus).</summary>
+        public static void ToggleSound()
+        {
+            Current.soundOn = !Current.soundOn;
+            Changed();
+        }
+
+        public static string SoundLabel => Current.soundOn ? "Sound: On" : "Sound: Off";
     }
 }
