@@ -2,13 +2,30 @@
 
 **What:** a 3D Android horror platformer (Unity 6.3 LTS `6000.3.27f2`, C#, URP). Memorize the glowing safe platforms,
 jump across a flooded "poolrooms" hall, and don't splash, because the Listener hunts by sound. 5+ unlockable levels,
-offline solo, and an online 1v1 race on a **Colyseus (Node 24 + TypeScript)** server. **Lab 6:** the same server is
+offline solo, and an online 2–4 player co-op race through all five rooms on a **Colyseus (Node 24 + TypeScript)**
+server (hosted free on Render). **Lab 6:** the same server is
 linted, tested and auto-deployed by GitHub Actions to an Ubuntu VM through a self-hosted runner. Budget ₱0.
 
 ## Current Status & Next Step
-- **Phase:** 4 (Online LAN race) 🟡 on `feat/lan-race`: **all 5 offline levels exist** (L5 The Drain on `e45ff29`), plus lab-ready LAN 1v1 server (`RaceRoom` + `race.ts`, 156/156 server tests) and Unity client (`LanRace`, `OnlineLevelController`, `MainMenu` Online 1v1 + Sound toggle + Credits) implemented; awaiting Unity compile, EditMode Test Runner, and 2-device LAN + APK verification. Active plan: [planning/lab-ready-plan.md](planning/lab-ready-plan.md) · roadmap: [planning/still-water/MAP.md](planning/still-water/MAP.md)
-- **Next:** Unity compile + EditMode Test Runner → Editor + phone LAN smoke test (`npm start` on Windows :2567) → two-device LAN race + airplane-mode offline + 5-level save checks → Android APK build (`Builds/Still Water.apk`). Visual menus: *Still Water → Art Spike → Build Listener Prefab / Set Up Water / Set Up Hall*; hand-edited levels: *Export Level to JSON* → `npm run level:route` → *Build Level*.
-- **Latest session:** [docs/sessions/2026-11-07-level5-drain.md](docs/sessions/2026-11-07-level5-drain.md)
+- **Phase:** 4–5 🟡, all on `main` (PRs #20, #21).
+  - 5 offline levels.
+  - The original Blender Listener (`art/listener/build_listener.py`).
+  - Quaternius player bodies picked in Settings.
+  - Original music (`art/music/compose.py`).
+  - The online **2–4 player co-op race circuit**: server `circuit` room (175/175 tests) and client `CircuitWorld`.
+  - A Settings page.
+  - The server live on Render free tier (`https://still-water-server.onrender.com`, `render.yaml`).
+  - Roadmap: [planning/still-water/MAP.md](planning/still-water/MAP.md)
+- **Next:**
+  1. Unity EditMode Test Runner (new: `CircuitSnapshotTests`, `PlayerLookTests`, `ListenerTuningParityTests`).
+  2. *Still Water → Art Spike → Build Listener Prefab* (and *Build Player Bodies* / *Build Menu Backdrop* after
+     changing those builders).
+  3. Build And Run on phones, then a 2+ phone co-op run over Render: push strength, control size, catch camera, fps
+     in rooms 3–5.
+  4. APK build (`Builds/Still Water.apk`).
+  - Regenerate art: `blender -b --python art/listener/build_listener.py -- …` (see `art/*/README.md`).
+  - Hosting / hotspot: [docs/SETUP.md](docs/SETUP.md) §8–9.
+- **Latest session:** [docs/sessions/2026-11-16-listener-coop-render.md](docs/sessions/2026-11-16-listener-coop-render.md)
 
 ## Routing (one home per fact)
 | Need | File |
