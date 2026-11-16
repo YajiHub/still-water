@@ -50,7 +50,16 @@ JSON file. Lock it as proposed.
 - **Best values only go up:** replaying keeps max stars and min time.
 - **Write safely:** write `save.json.tmp`, then replace `save.json`, so a crash mid-save can't corrupt it. Save happens **before** the Result screen (lab R5). Settings save when changed.
 - **Corrupt or missing file → defaults** (log a warning, never crash). Unknown future `version` → defaults too (no migration code until a v2 exists).
-- Hidden debug **Reset progress** button (Settings) for testing and the demo.
+- ~~Hidden debug **Reset progress** button (Settings) for testing and the demo.~~ **Removed 2026-11-16 (by: me).**
+  `GameState.ResetProgress()` stays for tests and debugging.
+- **Settings page (2026-11-16, by: me):** Main Menu → Settings edits `settings` in save.json and saves when you leave
+  the page (or the app goes to the background).
+  - Fields: `masterVolume`, `musicVolume`, `lookSensitivity`, `controlsScale` (0.75–1.5), `leftHanded`,
+    `firstPerson`, `character`.
+  - Older saves get the defaults for the new fields.
+  - The old PlayerPrefs `sw_mute` / `sw_player_body` are migrated once, then deleted.
+  - `sfxVolume`, `vibration` and `brightness` stay in the schema, unused. (There's no separate effects bus, so
+    master covers effects.)
 - Progression UX: Level Select with locks and stars, plus **Next** on the Result screen for continuous play (lab R3/R4).
 
 ## Consequences

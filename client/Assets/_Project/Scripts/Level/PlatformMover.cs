@@ -20,9 +20,22 @@ namespace StillWater.Level
         /// <summary>How far it moved this frame: whoever stands on it moves the same.</summary>
         public Vector3 Delta { get; private set; }
 
+        // End A relative to the level root, taken before anything moves the root. The online circuit shifts whole
+        // rooms down the line; with the saved world position, ferries in rooms 3–5 snapped back to their old spot (inside
+        // rooms 1–2) and slid through other platforms.
+        private Vector3 localA;
+
+        private void Awake()
+        {
+            var root = transform.parent;
+            localA = root != null ? root.InverseTransformPoint(pointA) : pointA;
+        }
+
         private void Update()
         {
-            var next = pointA + travel * FerryRules.Progress(Time.timeSinceLevelLoad, seconds, pause, offset);
+            var root = transform.parent;
+            var a = root != null ? root.TransformPoint(localA) : localA;
+            var next = a + travel * FerryRules.Progress(Time.timeSinceLevelLoad, seconds, pause, offset);
             Delta = next - transform.position;
             transform.position = next;
         }

@@ -1,0 +1,23 @@
+# Render Blueprint: the Still Water game server on Render's free tier, for internet play (2026-11-16).
+# The same Docker image as the Lab 6 VM deploy (server/Dockerfile); this is an extra host, it doesn't replace that one.
+#
+# Free tier (checked 2026-11-16): 0.1 CPU / 512 MB, 750 instance-hours a month. It sleeps after 15 minutes with no
+# traffic (WebSocket messages count) and takes about a minute to wake; the client waits for that (LanRace).
+# Rooms live in memory, so a restart or sleep ends any match in progress.
+#
+# Set up once: Render dashboard → New → Blueprint → this repository. Steps: docs/SETUP.md "Free internet server (Render)".
+services:
+  - type: web
+    name: still-water-server
+    runtime: docker
+    plan: free
+    region: singapore # nearest to the Philippines; can't be changed after the service is created
+    rootDir: server # only changes under server/ redeploy it
+    dockerfilePath: ./server/Dockerfile # paths here are from the repo root
+    dockerContext: ./server
+    healthCheckPath: /health
+    branch: main
+    autoDeployTrigger: checksPass # deploy a main commit only after the GitHub Actions checks (lint + tests) pass
+    envVars:
+      - key: NODE_ENV
+        value: production

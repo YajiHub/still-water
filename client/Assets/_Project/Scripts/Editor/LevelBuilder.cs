@@ -356,12 +356,9 @@ namespace StillWater.Editor
             RenderSettings.fog = true;
             RenderSettings.fogMode = FogMode.ExponentialSquared;
 
-            var touch = Object.FindFirstObjectByType<TouchControls>();
-            if (touch != null) SetFields(touch, ("lookSwitch", lookSwitch));
-            else Debug.LogWarning("No TouchControls in the scene: run Create Player Rig, then Set Up Looks again.");
-
+            // (The touch controls no longer have a Look A/C toggle: the game always starts in the last look, C.)
             EditorSceneManager.MarkSceneDirty(lookGo.scene);
-            Debug.Log("Looks A and C set up. Play: L (or the 'Look' box) switches. Tune them in Assets/_Project/Art/Looks. Save the scene (Ctrl+S).");
+            Debug.Log("Looks A and C set up; the game uses C. Tune them in Assets/_Project/Art/Looks. Save the scene (Ctrl+S).");
         }
 
         [MenuItem("Still Water/Set Up Level Loop")]
@@ -414,7 +411,7 @@ namespace StillWater.Editor
             SetFields(GetOrAdd<PatternRevealer>(controllerGo), ("brightGlow", brightGlow));
             SetFields(GetOrAdd<LevelHud>(controllerGo), ("level", controller));
 
-            // The Listener: the Quaternius body (Visual Pass), swimming face-down; only its back breaks the surface.
+            // The Listener: the modelled body (Listener.prefab), swimming face-down; only its back breaks the surface.
             var bodyPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Project/Art/Listener/Listener.prefab");
             if (bodyPrefab == null)
             {

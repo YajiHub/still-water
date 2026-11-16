@@ -10,10 +10,18 @@ namespace StillWater.Player
         [SerializeField] private bool startInFirstPerson = true;
 
         public bool IsFirstPerson { get; private set; }
+        /// <summary>The first person rig is driving the camera right now (not the Reveal or the catch camera).</summary>
+        public bool FirstPersonActive => firstPerson != null && firstPerson.enabled;
 
-        private void Start() => Apply(startInFirstPerson);
+        // The Settings page's Camera choice; the in-game 1st/3rd pill changes it too, and it's remembered.
+        private void Start() => Apply(Core.GameState.Save != null ? Core.GameSettings.Current.firstPerson : startInFirstPerson);
 
-        public void Toggle() => Apply(!IsFirstPerson);
+        public void Toggle()
+        {
+            Apply(!IsFirstPerson);
+            Core.GameSettings.Current.firstPerson = IsFirstPerson;
+            Core.GameSettings.Changed();
+        }
 
         /// <summary>Both rigs off, so another script (the Reveal) can drive the camera.</summary>
         public void DisableAll()

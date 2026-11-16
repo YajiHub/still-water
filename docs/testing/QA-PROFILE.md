@@ -12,7 +12,7 @@ Game rules live in [DESIGN.md](../DESIGN.md); lab acceptance checks in [LAB5](..
 
 ## How to run
 All Node commands run on **Windows Node 24** (from WSL: `cmd.exe /c` / `powershell.exe`), never a Linux Node.
-- **Server (dev):** `cd server && npm start` → `http://localhost:2567`. Routes: `/` (status page: `Still Water server` + version), `/health` (`{"status":"ok","version":"dev"}`), `/api/hello`, `/playground` and `/monitor` (dev only; 404 in the Docker image). Room: `my_room` (until `RaceRoom` exists).
+- **Server (dev):** `cd server && npm start` → `http://localhost:2567`. Routes: `/` (status page: `Still Water server` + version), `/health` (`{"status":"ok","version":"dev"}`), `/api/hello`, `/playground` and `/monitor` (dev only; 404 in the Docker image). Rooms: `my_room` (smoke), `race` (1v1 LAN race on Level01).
 - **Server checks:** `cd server && npm run lint && npm run typecheck && npm test` (all must exit 0). Test files run one at a time (port 2568).
 - **Docker image (local):** `cd server && APP_VERSION=manual docker compose -p stillwater-local up -d --build` → `http://localhost:8080/health` shows `manual` → `docker compose -p stillwater-local down`. Use `-p stillwater-local`, never `-p stillwater` (that's the VM's project name).
 - **Server (deployed, after Phase 0b):** `http://localhost:8080/health` → `{"status":"ok","version":"<commit sha>"}`.
@@ -26,7 +26,7 @@ No accounts or database. Progress lives in `save.json` under `Application.persis
 ## Protocol conventions
 - Matchmaking is HTTP (`POST /matchmake/...`), then the room is a WebSocket. Plain `http`/`ws` needs **Allow downloads over HTTP = Always allowed** in Player Settings.
 - Close codes seen so far: `4000` = client called `Leave()` cleanly · `1006` = connection dropped (app closed or backgrounded, Wi-Fi lost).
-- Messages and state: [SYSTEM_ATLAS §4.1](../SYSTEM_ATLAS.md#41-message-protocol-draft--finalized-in-netcode-model) (Draft until [Netcode Model](../../planning/still-water/decisions/10-netcode-model.md) is locked).
+- Messages and state: [SYSTEM_ATLAS §4.1](../SYSTEM_ATLAS.md#41-message-protocol-draft--finalized-in-netcode-model) (locked for the lab-ready pass in [Netcode Model](../../planning/still-water/decisions/10-netcode-model.md) and [Lab-ready build](../../planning/lab-ready-plan.md)).
 
 ## Rules worth probing
 - **Offline never touches the network (R6):** airplane mode → offline play has no waits, no errors, no network calls.

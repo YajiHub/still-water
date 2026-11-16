@@ -129,6 +129,58 @@ on platform positions. *(Locked — [Grey-box Level Build Method](../planning/st
 
 Clients move themselves instantly. Remote players are drawn with interpolation (~100 ms buffer).
 
+### 4.2 As built: the co-op race circuit (2026-11-16, [Online Match Format](../planning/still-water/decisions/07-online-match-format.md) revision)
+
+The client joins the `circuit` room (`rooms/CircuitRoom.ts`). Its rules are in `logic/circuit.ts`, a pure module with
+node:test coverage. `logic/circuitLevels.ts` imports the five level JSON files, so `build/` carries them.
+
+`buildCircuit` lays the rooms end to end along +z: each start deck begins where the previous exit deck ends, and each
+door is lined up in x. All doors are open (it's a race), and each room has its own Listener. It's a NoState room; all
+messages are JSON strings:
+
+| Direction | Message | Payload | When |
+|---|---|---|---|
+| C → S | `ready` | `{ body }` (0 female, 1 male) | scene loaded |
+| C → S | `geometry` | — | once its handlers are registered |
+| C → S | `pos` | `{ x, y, z, yaw }` | 15 Hz while running; speed-checked (looser for 1.5 s after a push) |
+| C → S | `push` | — | PUSH / F; the server checks range, cone and cooldown |
+| S → C | `circuit` | `{ rooms: [{ index, id, name, offsetX/Z, minZ, maxZ, water, spawn, exitTopY, door, doorZone, listenerStart }] }` | on join and on `geometry` |
+| S → C | `respawn` | `{ x, y, z }` | to the caught player |
+| S → C | `caught` | `{ id, x, z, room }` | to everyone: play the catch there |
+| S → C | `pushed` | `{ dx, dz, speed }` | to the pushed player |
+| S → C | `shove` | `{ pusher, target }` | to everyone (sound) |
+| S → C | `snapshot` | `{ phase, lobby, countdown, remaining, roomCount, result, reason, listeners [{ room, x, z, state }], players [{ id, slot, body, x, y, z, yaw, room, reached, place, splashes, catches, penalty, score }] }` | 10 Hz, and at once on changes |
+
+On the client:
+- `LanRace` joins `circuit` and loads Level01.
+- `OnlineLevelController` builds `CircuitWorld`, which loads Level02–05 additively and keeps only each scene's `Level`
+  root. Their other roots are switched off before Start, then deleted.
+- At each join, `CircuitWorld` swaps the meeting end walls for an open doorway, and draws only the rooms around you.
+- `PlatformMover` keeps its ferry relative to its room, so a moved room's ferries stay home.
+- `OnlineLevelController` also:
+  - mirrors the other players, wearing the bodies they picked;
+  - draws one Listener per room (ducking under platforms via `PlatformAvoidance`);
+  - plays each catch where it happened, with `CatchCamera` for your own;
+  - applies pushes through `PlayerMotor.ApplyPush`;
+  - runs the race HUD and the leaderboard.
+
+---|---|---|---|
+| C → S | `ready` | `{ body }` (0 female, 1 male) | scene loaded |
+| C → S | `geometry` | — | once its handlers are registered |
+| C → S | `pos` | `{ x, y, z, yaw }` | 15 Hz while running; speed-checked; rejected past the shut door |
+| S → C | `circuit` | `{ rooms: [{ index, id, name, offsetX/Z, minZ, maxZ, water, spawn, exitTopY, door, doorZone, listenerStart }] }` | on join and on `geometry` |
+| S → C | `respawn` | `{ x, y, z }` | the Listener caught you |
+| S → C | `snapshot` | `{ phase, lobby, countdown, remaining, room, roomCount, result, reason, listener {x,z,state}, players [{ id, slot, body, x, y, z, yaw, splashes, catches, penalty, score, arrived }] }` | 10 Hz, and at once on changes |
+
+On the client:
+- `LanRace` joins `circuit` and loads Level01.
+- `OnlineLevelController` builds `CircuitWorld`, which loads Level02–05 additively and keeps only each scene's
+  `Level` root. Their other roots are switched off before Start, then deleted.
+- `CircuitWorld` swaps the meeting end walls for a doorway with a gate, which lifts when `snapshot.room` advances.
+  Only the rooms around the team stay active.
+- `OnlineLevelController` also mirrors teammates (with their chosen bodies), shows the server's Listener (diving under
+  platforms via `PlatformAvoidance`), and runs the HUD and the leaderboard.
+
 ---
 
 ## 5. Save data (Locked — [Save Data](../planning/still-water/decisions/11-save-data.md))

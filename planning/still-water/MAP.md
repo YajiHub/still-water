@@ -12,7 +12,7 @@
 | 2. Core loop + progression | Reveal, safe/fake platforms, splash → Listener → catch, win/lose, stars, GameState, save, Level Select with locks, Result screen | ~~[Core Loop Rules](./decisions/04-core-loop-rules.md)~~ ✅, ~~[Save Data](./decisions/11-save-data.md)~~ ✅ | 🟡 Merged (PR #13) + Editor-verified (win → stars → save); left: phone playtest (deferred) |
 | 3. Levels 2–5+ + offline | At least 5 levels, **planned one at a time with the user** ([Level Roster](./decisions/18-level-roster.md)); Level 2 = bigger/harder, same rules. Later levels may add the Reveal, fakes, moving/sinking platforms, lights out. Optional Ghost rival; airplane-mode test. *(Checkpoints 3–4)* | [Level Roster](./decisions/18-level-roster.md) (per level), [Offline Rival](./decisions/09-offline-rival.md) | 🟡 All 5 levels built (L1–4 merged; L5 The Drain on `feat/level5-drain`, unplayed); next: playtest L5, PRs |
 | 3b. Visual Pass | Before Level 5: Listener model + animations (glimpse/swim, surfacing, catch reveal), water shader + splash/ripples, pool hall look (tiles, walls, lamps). ₱0, credited, 30+ fps with 35 lamps | ~~[Visual Pass](./decisions/19-visual-pass.md)~~ ✅, ~~[Title and Monster Identity](./decisions/06-title-and-monster.md) (monster half)~~ ✅, ~~[Listener Asset Source](./decisions/20-listener-asset-source.md)~~ ✅, ~~[Water and Hall Look](./decisions/21-water-and-hall-look.md)~~ ✅ | 🟡 Code done (2026-11-07); left: Editor confirm, Test Runner 96, phone fps after, screenshots, PR |
-| 4. Online | Colyseus RaceRoom, NetClient, lobby (quick match + room code), interpolation, server-decided result, error/disconnect handling, logic tests for every server rule, deployed by the pipeline to the VM (LAN), optional Render for internet play. *(Checkpoint 5)* | [Online Match Format](./decisions/07-online-match-format.md), [Netcode Model](./decisions/10-netcode-model.md) | [ ] Pending |
+| 4. Online | Colyseus `RaceRoom`, `LanRace`, lobby (quick match + room ID), interpolation, server-decided result, error/disconnect handling, logic + room tests; lab-ready LAN pass (`feat/lan-race`) implemented with Sound toggle + Credits; awaiting Unity/2-phone verification. *(Checkpoint 5)* | ~~[Online Match Format](./decisions/07-online-match-format.md)~~ ✅, ~~[Netcode Model](./decisions/10-netcode-model.md)~~ ✅ | 🟡 Code done (2026-11-16); left: Unity compile/tests, 2-phone LAN + APK |
 | 5. UI, audio, polish, builds | All screens, pause, settings, credits, sound, juice, icon; APK on 2+ phones; test matrix. *(Checkpoints 6–7)* | [Title and Monster Identity](./decisions/06-title-and-monster.md) | [ ] Pending |
 | 6. Playtest & submit | Lab 5: 5+ testers, analysis, ≥ 3 fixes + retest, README, release `lab5-v1.0`, demo video, IEEE paper. Lab 6: results table (≥ 5 deploy timings), release `lab6-v1.0`, its own IEEE paper. *(Checkpoint 8, final)* | — | [ ] Pending |
 
@@ -89,6 +89,41 @@ Branch `feat/phase2-core-loop` (from `main` after the Phase 1 PR merges). Same c
 - [x] 🤖 **Spike (~1 h)** (2026-11-07: swims face-down in Play ✅, eyeless, gaunt, forearms 1.8×, long neck + head tilt, face mask (`ListenerBody` sliders); accepted from the swim view; **face mask close-up + phone fps checked in-level** with the catch task; gotcha: never delete/recreate the controller asset, it breaks Animators → `controller=none`): Listener prefab (Eyes/Eyebrows off, pale wet skin material), `ListenerBody` `LateUpdate` stretches `lowerarm_*`/`hand_*` and thins limbs/spine; Animator controller built by an Editor menu. 🧑 check in Play + phone fps → keep or fall back (Mixamo rigger / Blender)
 - [x] 🤖 `ListenerLook` (pure C#; retagged 🤝 → 🤖 at the user's request; 8 EditMode tests): which clip + playback speed + how deep the body sits for each `ListenerState` / glimpse (only spine + shoulder blades above the water line) + EditMode tests
 - [x] 🤖 `ListenerAI` drives the prefab (code done; 🧑 verify in Level04 Play) instead of primitives: swim (roam/hunt), idle (linger), glimpse = rise to show the back, catch = `LayToIdle` fast → `Zombie_Scratch`; *Set Up Level Loop* wires it; the old glow stays for Look C readability
+- [ ] 🤖 **Own Listener model (2026-11-16)** per the [Title and Monster Identity](./decisions/06-title-and-monster.md) amendment: `art/listener/build_listener.py` (Blender 5.3, headless) → `Art/Listener/Listener_Custom.fbx`. It has an eel tail, mantis arms and a head that splits open. Generic rig, 54 bones, ~15.5k tris, 2 materials. Clips: `Swim_Fwd_Loop` / `Swim_Idle_Loop` / `Zombie_Scratch`. `ListenerImport` sets it to Generic. `ListenerPrefabBuilder` builds from it, without `ListenerBody`. `ListenerAI.FindChest` handles Generic rigs, and the catch no longer pins the chest to the water. Code compiles (dotnet). 🧑 still to check: open Unity → *Build Listener Prefab* → Level 1 Play (glimpse, lunge) → phone fps. If it faces backwards in Unity, rotate the model 180° in the builder. *First test: the facing was right.*
+- [ ] 🤖 **Listener v2 (2026-11-16):** 1.5× size, baked veined skin, wet hair, glowing sound pits that pulse with the AI state, an ember in the throat, a 2 s catch clip. New `LevelPhase.Caught` and `CatchCamera`: a low shot looking up at the catch, 2.4 s before the Lost screen. 5 materials from `ListenerPrefabBuilder`. Code compiles (dotnet). 🧑 still to check: rebuild the prefab → catch shot, pits in Look C, phone fps (~19.5k tris, 5 submeshes). *Test 2: it swam tail first (a Generic rig keeps the FBX's −Z facing), so `ListenerPrefabBuilder` now nests the model under a root, turned 180°.*
+- [ ] 🤖 **Free internet hosting (2026-11-16, by: me "prepare Render"):**
+  - `render.yaml`: Render free tier, Singapore, Docker from `server/`, deploys main after checks pass.
+  - The client wakes a sleeping `wss://` server (polls `/health`, up to 90 s) and accepts `https://` URLs.
+  - Local check: `docker build ./server`, then a run with `PORT=10000` answered `/health` and served a circuit room.
+  - 🧑 still to do: get render.yaml onto main (PR), then Render dashboard → New → Blueprint (docs/SETUP.md §9). Hotspot play is in §8.
+- [ ] 🤖 **Settings page (2026-11-16):**
+  - **Main Menu → Settings:** master/music volume, look sensitivity, button size, left-handed layout, camera, character. Saved in save.json (decision 11).
+  - **Removed:** the Reset progress button, the Sound On/Off button and the Look A/C scenery toggle; character moved from Level Select.
+  - Code compiles (dotnet). 🧑 still to check: in the Editor and on a phone.
+- [ ] 🤖 **Online Listener speed (2026-11-16):** online used Level 1's tuning in every room (8 m/s instead of 11-20). Each room now uses its solo level's numbers (`listenerTuning.json`, checked by `ListenerTuningParityTests`), and the client predicts each Listener between the 10 Hz updates. Server 175/175.
+- [ ] 🤖 **Co-op test 1 fixes (2026-11-16):**
+  - **Ferries in moved rooms:** they snapped back to their old world spot, inside rooms 1–2, and slid through platforms. `PlatformMover` now works relative to its room.
+  - **The co-op circuit is now a race** (decision 07 revision): open doors, a Listener per room, every catch shown to everyone (the catch camera on your own), and PUSH with knockback (`PlayerMotor.ApplyPush`, `MovementConfig` pushDrag/pushHop).
+  - **Bigger, restyled touch controls:** glass discs with glowing rims, sized from the safe area.
+  - Server 173/173 tests pass; the client compiles; `CircuitSnapshotTests` is updated.
+  - 🧑 still to check: restart the server, then a 2+ phone run.
+- [ ] 🤖 **Test 4 (2026-11-16, mobile):**
+  - **Ghost Listener fixed:** `PlatformAvoidance` steers it round platforms and decks, and dives under when it can't (offline, online and the menu).
+  - **Catch ending fixed:** the slam's arms swing to a target with no twist; before, they rolled over (flaps up, fingers backwards).
+  - **UI sized for phones:** `Gui` sizes from the safe area, capped by width; smaller fonts and slimmer buttons; the title page is a left column.
+  - **Online is now the 2–4 player co-op circuit** (decision 07 amendment, SYSTEM_ATLAS §4.2): server `circuit` room, client `CircuitWorld` + `OnlineLevelController`. Server 171/171 tests; the client compiles; new EditMode test `CircuitSnapshotTests`.
+  - 🧑 still to check: Build Listener Prefab, Build Menu Backdrop, then a 2–4 phone LAN run through all five rooms (mobile fps with three rooms active).
+- [ ] 🤖 **Test 3 fixes + Listener v3 + menu (2026-11-16):**
+  - **Silent stingers:** the stinger source sat at volume 0, so `PlayOneShot` was silent. It now plays at full volume, and the Listener screams in 3D from its head (`sfx_listener_scream`).
+  - **Catch camera:** it is now laid along the Listener's facing; the Listener squares up to you on the catch, and walls are avoided.
+  - **Bald player:** the hair is now merged onto each body in Blender (`art/player/build_player_bodies.py` → `Art/Player/Player*_FullBody.fbx`).
+  - **Listener v3:** 1.8× size (~7.6 m long, ~4.5 m across the arms), wider shoulders with a hunched hump, a wider skull, ragged skin flaps on the arms.
+  - **Baked maps:** colour with smoothness in its alpha (rot, blood, veins, ivory teeth), a normal map (wrinkles, pores, raised veins), and a vein emission mask. The look glow now lights the veins and pulses with the sound pits.
+  - **Menu:** *Build Menu Backdrop* turns the Menu scene into a dark poolroom with the Listener circling under the surface (`MenuListener`, `MenuAtmosphere`).
+  - **UI:** restyled (`Gui`: glowing, flickering title, glass buttons, vignette, fade-ins).
+  - Code compiles (dotnet). 🧑 still to check: run the builders, then play.
+- [ ] 🤖 **Player bodies (2026-11-16, by: me, "both, pick in menu"):** Quaternius CC0 Female (Hair_Long) and Male (Hair_SimpleParted) with light skin textures in `Art/Player`. *Build Player Bodies* puts them in `Resources/Player/PlayerBody_*.prefab`, using `Player.controller` with UAL clips. `PlayerMotor` adds `PlayerAvatar`, which spawns the chosen body, hides the capsule, animates from `PlayerLook` (EditMode tests added), lifts the body to the surface while swimming, and draws only its shadow in first person. Choose the body on the level-select page. Online, the other racer wears the body you didn't pick.
+- [ ] 🤖 **Music (2026-11-16, by: me, "compose it in code"):** `art/music/compose.py` (Blender's Python: numpy + OGG) writes 8 original tracks to `Resources/Music`. `MusicDirector` plays them: the menu theme, the music box during the Reveal, the pool ambience while crossing, a hunt layer rising with `ListenerAI.Threat`, and catch / win / lose stingers. Online uses the race theme with the same layer and stingers. `MusicImport` streams the loops. Code compiles (dotnet). 🧑 still to check: listen to the mix balance and the loop seams on a phone.
 - [x] 🤖 Water (code done 2026-11-07; 🧑 verify): URP **Lit** on `Water.mat`, not a hand-coded shader (see decision), two drifting wave normals baked by *Art Spike → Set Up Water*, glossy lamp glints; `PoolWater` drifts + tiles by pool size
 - [x] 🤖 Splash on falling in, ripple rings (Listener wake replaces the old discs, swimming player), foam rings around platform bases: `WaterFx` (3 particle systems, added by `PoolWater` at runtime, so no Build Level needed); materials from *Set Up Water* in `Resources/WaterFx` (code done 2026-11-07; 🧑 verify)
 - [x] 🤖 Splash **sound** (user: "sounds like steam" = plain white noise): synth bubbles still sounded fake → **user's Pixabay recording** (Universfield "Water Splash 02", `Resources/Audio/Splash.mp3`, credited); synth plop + wash kept as fallback (2026-11-07; 🧑 verify). Splash *visual* felt artificial → tune later
@@ -157,16 +192,16 @@ A submitted lab build: an Android APK of a 3D poolrooms horror platformer with 5
 - [Listener Asset Source](./decisions/20-listener-asset-source.md) (by: me): Quaternius CC0 Base Character + Animation Library 1 (swim, crawl) + 2 (zombie); own pale skin, no eyes, arms stretched in code; spike first.
 - [Visual Pass](./decisions/19-visual-pass.md) (by: me): Phase 3b before Level 5 = Listener model + animations, water shader + splash/ripples, pool hall look; catch moment → Phase 5.
 - [Save Data](./decisions/11-save-data.md) (by: me): `save.json` in persistentDataPath, per-level records by name (`level01`), open = previous cleared, best-only merge, atomic write before Result, corrupt → defaults.
+- [Online Match Format](./decisions/07-online-match-format.md) (by: delegated, 2026-11-16): 1v1 race on Level01, quick match + room ID, per-player server Listener, catch = start respawn + 3 s penalty, 180 s timeout nearest exit, disconnect = forfeit.
+- [Netcode Model](./decisions/10-netcode-model.md) (by: delegated, 2026-11-16): client-side movement with server plausibility/bounds/water/catch/finish authority, 15 Hz `pos`, 10 Hz JSON-string `snapshot` (`NoState` room).
 
 ## Active Frontier (Open & Unblocked)
 - [ ] [Title and Monster Identity](./decisions/06-title-and-monster.md) — grill (title half only, Phase 5)
 - [ ] [Level Roster](./decisions/18-level-roster.md) — grill, per level (Levels 1–4 locked; Level 5 after Phase 3b)
-- [ ] [Online Match Format](./decisions/07-online-match-format.md) — grill
 - [ ] [Offline Rival](./decisions/09-offline-rival.md) — grill
 
 ## Blocked
 - [ ] [Pattern Re-show](./decisions/17-pattern-reshow.md) — grill (Blocked by: [Level Roster](./decisions/18-level-roster.md): only matters once a level uses the Reveal)
-- [ ] [Netcode Model](./decisions/10-netcode-model.md) — domain-model (Blocked by: [Online Match Format](./decisions/07-online-match-format.md))
 
 ## Fog of War (Not Yet Specified)
 - Scripted catch moment (camera jerk + lunge + sound): Phase 5

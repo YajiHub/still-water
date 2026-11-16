@@ -38,6 +38,13 @@ namespace StillWater.Level
 
         public void Next() => Apply((index + 1) % looks.Length);
 
+        /// <summary>Lamps were added (the online circuit loads more rooms): find them all and apply the look again.</summary>
+        public void Refresh()
+        {
+            hallLights = System.Array.FindAll(FindObjectsByType<Light>(FindObjectsSortMode.None), l => l.type == LightType.Point && l.GetComponentInParent<Camera>() == null);
+            Apply(index);
+        }
+
         private void Apply(int i)
         {
             if (looks.Length == 0) return;

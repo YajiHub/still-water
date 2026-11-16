@@ -129,3 +129,49 @@ Then update the Phase table in the [MAP](../planning/still-water/MAP.md) and do 
 - [x] **Test B:** branch → break a logic function (e.g. the winner decision) → PR → `test` red, merge blocked → close the PR
 - [x] **Test C:** merge an obvious bad text change → roll back via revert PR (Method 1) and via `--no-build` with an old SHA (Method 2)
 - [x] Fill in the results table in [LAB6_REQUIREMENTS.md](LAB6_REQUIREMENTS.md); collect ≥ 5 deploy timings for the paper
+
+## 8. Playing online without the internet: hotspot (₱0)
+
+Everyone plays on one local network, and the laptop runs the server.
+
+1. On the laptop, open **Settings → Network & internet → Mobile hotspot** and turn it on (it can share Wi-Fi or
+   Ethernet, or nothing).
+2. Start the server:
+   ```bash
+   npm start
+   ```
+   Run it in `server/`. If Windows Firewall asks, allow Node on **private** networks.
+3. Connect each phone to the laptop's hotspot. In the game: **Online → Server URL** `ws://192.168.137.1:2567` →
+   **Quick Match**.
+
+Using a phone's hotspot instead also works: connect the laptop to it, and use the laptop's IP on that network
+(`ipconfig`). Some phone hotspots block devices from seeing each other; if so, use the laptop's hotspot.
+
+## 9. Free internet server (Render, ₱0)
+
+`render.yaml` (repo root) runs `server/` on Render's free tier in Singapore. It uses the same Docker image as the Lab 6
+VM. Checked 2026-11-16:
+- 0.1 CPU, 512 MB, 750 hours a month, no card.
+- It sleeps after 15 minutes with nobody connected and takes about a minute to wake. The game waits for it, up to 90 s,
+  with "Waking the server…".
+- Rooms are in memory, so a redeploy or sleep ends any match in progress.
+
+**Once:**
+1. Make sure `render.yaml` and the server changes are on **main** on GitHub (through a PR, per the ruleset).
+2. Go to <https://dashboard.render.com>, sign in with **GitHub**, and allow Render to see `YajiHub/still-water`.
+3. **New → Blueprint →** pick `still-water` → branch **main** → Render reads `render.yaml` → **Apply**.
+4. Wait for the first deploy (a few minutes). Its URL is shown at the top, e.g.
+   `https://still-water-server.onrender.com`. Open `…/health` in a browser: `{"status":"ok",…}`.
+
+**Playing:** in the game, **Online → Server URL** → paste the Render URL (`https://…` is fine; the game turns it into
+`wss://…`) → **Quick Match**. The first player may wait up to a minute while it wakes.
+
+**Updates:** every merge to `main` that changes `server/` redeploys automatically, after the GitHub Actions checks
+pass (`autoDeployTrigger: checksPass`).
+
+**Quick internet test without Render:** with `npm start` running, run this on the laptop:
+```bash
+cloudflared tunnel --url http://localhost:2567
+```
+Use the `https://….trycloudflare.com` address it prints. It's free with no account, but it changes on every run and
+only works while the laptop is on.
