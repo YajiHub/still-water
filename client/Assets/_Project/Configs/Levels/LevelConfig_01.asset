@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: LevelConfig_01
   m_EditorClassIdentifier: StillWater::StillWater.Level.LevelConfig
   id: level01
-  displayName: Shallow End
+  displayName: Level 1 CI/CD
   sceneName: Level01
   goalText: Get to the door without falling into the water.
   layout: {fileID: 4900000, guid: 2aae5dd2e489db1488ebb2392a9e01e1, type: 3}
