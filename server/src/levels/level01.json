@@ -1,6 +1,6 @@
 {
   "id": "level01",
-  "name": "Shallow End",
+  "name": "Level 1: CI/CD",
   "water": {
     "y": 0,
     "minX": -15,
