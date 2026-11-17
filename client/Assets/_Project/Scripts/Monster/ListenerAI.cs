@@ -33,6 +33,8 @@ namespace StillWater.Monster
         private PoolWater water;
         private int splashes;
         private bool caught;
+        private Vector3 lungeFrom, lungeTo; // the catch: from where it caught you to striking distance
+        private float lungeSlide;
         private float timer, glimpseTimer, glimpseLeft, roamPauseLeft, wakeTimer;
         private Vector3 heardAt, roamTarget;
         private AudioSource heartbeat;
@@ -142,7 +144,14 @@ namespace StillWater.Monster
         private void Update()
         {
             UpdatePits();
-            if (config == null || caught) return;
+            if (config == null) return;
+            if (caught)
+            {
+                // Settle at striking distance, so the slam lands on you (ListenerLook.LungeReach).
+                lungeSlide += Time.deltaTime / ListenerLook.LungeSettle;
+                transform.position = Vector3.Lerp(lungeFrom, lungeTo, Mathf.SmoothStep(0f, 1f, lungeSlide));
+                return;
+            }
             bool swimming = player.State == PlayerMotor.MotorState.Swimming; // Climbing counts as out: safe once CLIMB starts
             if (swimming) heardAt = player.transform.position; // swimming is noisy
 
@@ -173,6 +182,10 @@ namespace StillWater.Monster
                         var toPlayer = player.transform.position - transform.position;
                         toPlayer.y = 0f;
                         if (toPlayer.sqrMagnitude > 0.0001f) transform.rotation = Quaternion.LookRotation(toPlayer);
+                        Vector3 dir = toPlayer.sqrMagnitude > 0.0001f ? toPlayer.normalized : transform.forward;
+                        lungeFrom = transform.position;
+                        lungeTo = new Vector3(player.transform.position.x, transform.position.y, player.transform.position.z) - dir * ListenerLook.LungeReach;
+                        lungeSlide = 0f;
                         Scream();
                         Animate(0f);
                         Caught?.Invoke();

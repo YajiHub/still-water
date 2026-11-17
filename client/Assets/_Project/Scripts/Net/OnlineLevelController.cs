@@ -301,7 +301,7 @@ namespace StillWater.Net
                 : remotes.TryGetValue(c.id, out var r) ? r.go.transform.position : spot;
             var toVictim = victim - m.root.position;
             toVictim.y = 0f;
-            m.root.position = spot - (toVictim.sqrMagnitude > 0.01f ? toVictim.normalized : m.root.forward) * 0.8f;
+            m.root.position = spot - (toVictim.sqrMagnitude > 0.01f ? toVictim.normalized : m.root.forward) * ListenerLook.LungeReach; // the slam lands on them
             if (toVictim.sqrMagnitude > 0.01f) m.root.rotation = Quaternion.LookRotation(toVictim);
             m.root.gameObject.SetActive(true);
             m.lungeUntil = Time.time + CatchSeconds;
