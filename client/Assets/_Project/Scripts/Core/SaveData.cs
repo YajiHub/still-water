@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace StillWater.Core
 {
@@ -42,5 +43,10 @@ namespace StillWater.Core
         public bool firstPerson = true;    // the camera you start in (the in-game 1st/3rd pill changes it too)
         public int character;              // 0 female, 1 male (PlayerAvatar.Bodies)
         public bool soundOn = true;        // Sound On/Off (Settings and the pause menus, lab R10); off is silent but keeps the volumes
+        // The control layout editor (Settings → Edit control layout). Off = the default layout. Centres are 0..1 across the
+        // screen's safe area, for a right-handed layout (left-handed mirrors them), so a layout fits any phone.
+        public bool customLayout;
+        public Vector2 stickPos, jumpPos, pushPos;
+        public bool fixedStick;            // the stick stays where it's placed instead of appearing under your thumb
     }
 }

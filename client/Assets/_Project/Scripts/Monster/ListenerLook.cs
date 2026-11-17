@@ -10,6 +10,10 @@ namespace StillWater.Monster
         public const string Swim = "Swim_Fwd_Loop", Tread = "Swim_Idle_Loop", Lunge = "Zombie_Scratch";
         // Looks, not gameplay: the swim clip looks right at about this speed; slower/faster plays it slower/faster.
         public const float StrokeSpeed = 1.5f, MinPlayback = 0.6f, MaxPlayback = 2.5f;
+        // Looks: on a catch the Listener stands this far (m) from its victim, so the lunge's head comes down on them
+        // (the slam reaches about 1.6 m forward, measured from the clip; closer and it overshoots past them), and how
+        // long it takes to slide there.
+        public const float LungeReach = 1.4f, LungeSettle = 0.3f;
 
         public static string ClipFor(ListenerState state, bool caught)
         {
